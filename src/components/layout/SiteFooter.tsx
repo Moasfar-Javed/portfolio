@@ -8,7 +8,7 @@ export function SiteFooter() {
   const reduce = useReducedMotion();
 
   return (
-    <footer className="border-t border-border bg-surface-1 py-16">
+    <footer className="relative z-20 border-t border-border bg-surface-1 py-16">
       <Container>
         <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
           <div>

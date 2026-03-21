@@ -17,6 +17,35 @@ export const navItems: NavItem[] = [
   { id: "contact", label: "Contact", href: "#contact" },
 ];
 
+/** Full page order for the side git-scroll rail (includes sections not in main nav). */
+export const scrollTreeItems: NavItem[] = [
+  ...navItems.slice(0, -1),
+  { id: "testimonials", label: "Proof", href: "#testimonials" },
+  navItems[navItems.length - 1]!,
+];
+
+/** Sections drawn on the left git graph (starts below hero). */
+export const graphTreeItems: NavItem[] = scrollTreeItems.filter(
+  (item) => item.id !== "hero",
+);
+
+/**
+ * Git-rail branch strokes: tonal range around the site primary (blue / --accent).
+ * Skips near-black and near-white blues so lines stay visible in light and dark UI.
+ * In dark mode the array order is reversed in `ScrollGitTree` (lighter rails first).
+ */
+export const scrollBranchColors: string[] = [
+  "#1e40af", // blue-800
+  "#1d4ed8", // blue-700
+  "#2563eb", // blue-600 — light theme accent
+  "#2f6feb", // between 600–500
+  "#3b82f6", // blue-500
+  "#4f8df8", // between 500–400
+  "#60a5fa", // blue-400 — dark theme accent
+  "#7eb8fc", // softer mid tint
+  "#93c5fd", // blue-300
+];
+
 export const hero = {
   badge: "Available for freelance · Open to senior roles",
   headline: "Product-minded engineer building mobile-first experiences.",
