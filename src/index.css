@@ -1,0 +1,135 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Instrument Sans", ui-sans-serif, system-ui, sans-serif;
+
+  --color-surface-0: var(--surface-0);
+  --color-surface-1: var(--surface-1);
+  --color-surface-2: var(--surface-2);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-fg: var(--fg);
+  --color-fg-muted: var(--fg-muted);
+  --color-fg-subtle: var(--fg-subtle);
+  --color-accent: var(--accent);
+  --color-accent-fg: var(--accent-fg);
+  --color-glow: var(--glow);
+
+  --shadow-soft: var(--shadow-soft);
+  --shadow-glow: var(--shadow-glow);
+
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+}
+
+:root {
+  color-scheme: light;
+  --surface-0: #fafafa;
+  --surface-1: #ffffff;
+  --surface-2: #f4f4f5;
+  --border: rgba(9, 9, 11, 0.08);
+  --border-strong: rgba(9, 9, 11, 0.14);
+  --fg: #09090b;
+  --fg-muted: rgba(9, 9, 11, 0.72);
+  --fg-subtle: rgba(9, 9, 11, 0.48);
+  --accent: #2563eb;
+  --accent-fg: #ffffff;
+  --glow: rgba(37, 99, 235, 0.22);
+  --shadow-soft: 0 1px 0 rgba(9, 9, 11, 0.04), 0 24px 48px -24px rgba(9, 9, 11, 0.12);
+  --shadow-glow: 0 0 80px -20px var(--glow);
+}
+
+.dark {
+  color-scheme: dark;
+  --surface-0: #030306;
+  --surface-1: #0a0a0c;
+  --surface-2: #111114;
+  --border: rgba(255, 255, 255, 0.06);
+  --border-strong: rgba(255, 255, 255, 0.1);
+  --fg: #fafafa;
+  --fg-muted: rgba(250, 250, 250, 0.72);
+  --fg-subtle: rgba(250, 250, 250, 0.45);
+  --accent: #60a5fa;
+  --accent-fg: #030306;
+  --glow: rgba(96, 165, 250, 0.18);
+  --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 64px -32px rgba(0, 0, 0, 0.75);
+  --shadow-glow: 0 0 100px -30px var(--glow);
+}
+
+@layer base {
+  html {
+    scroll-behavior: auto;
+  }
+
+  body {
+    @apply bg-surface-0 text-fg antialiased font-sans;
+    font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+    transition:
+      background-color 0.45s ease,
+      color 0.35s ease;
+  }
+
+  ::selection {
+    @apply bg-accent/20 text-fg;
+  }
+
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-accent;
+  }
+}
+
+@utility text-balance {
+  text-wrap: balance;
+}
+
+@utility bg-grid {
+  background-image: linear-gradient(
+      to right,
+      var(--border) 1px,
+      transparent 1px
+    ),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 64px 64px;
+}
+
+@utility bg-noise {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+}
+
+@utility font-display {
+  font-family: var(--font-display);
+}
+
+@layer components {
+  .skip-link {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .skip-link:focus {
+    position: fixed;
+    left: 1rem;
+    top: 1rem;
+    z-index: 100;
+    margin: 0;
+    width: auto;
+    height: auto;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+    border-width: 1px;
+    @apply rounded-lg border-border-strong bg-surface-1 px-4 py-2 text-sm text-fg shadow-soft outline-none ring-2 ring-accent ring-offset-2 ring-offset-surface-0;
+  }
+}
