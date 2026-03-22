@@ -30,20 +30,33 @@ export const graphTreeItems: NavItem[] = scrollTreeItems.filter(
 );
 
 /**
- * Git-rail branch strokes: tonal range around the site primary (blue / --accent).
- * Skips near-black and near-white blues so lines stay visible in light and dark UI.
- * In dark mode the array order is reversed in `ScrollGitTree` (lighter rails first).
+ * Git-rail branch strokes: two ramps tuned to each theme’s surfaces (see `index.css`
+ * `--surface-*`). Light = pale blue-gray (high luminance, close to `#fafafa` / cards)
+ * so the rail whispers against the page. Dark mode ramp unchanged below. Wide steps
+ * so branches stay distinguishable.
  */
-export const scrollBranchColors: string[] = [
-  "#1e40af", // blue-800
-  "#1d4ed8", // blue-700
-  "#2563eb", // blue-600 — light theme accent
-  "#2f6feb", // between 600–500
-  "#3b82f6", // blue-500
-  "#4f8df8", // between 500–400
-  "#60a5fa", // blue-400 — dark theme accent
-  "#7eb8fc", // softer mid tint
-  "#93c5fd", // blue-300
+export const scrollBranchColorsLight: string[] = [
+  "#a5afbe",
+  "#acb5c4",
+  "#b3bbca",
+  "#bac1d0",
+  "#c1c7d6",
+  "#c8cddc",
+  "#cfd3e2",
+  "#d6d9e8",
+  "#dde0ee",
+];
+
+export const scrollBranchColorsDark: string[] = [
+  "#7d92ab",
+  "#70859e",
+  "#637891",
+  "#566b84",
+  "#495e77",
+  "#3c516a",
+  "#2f445d",
+  "#243650",
+  "#192843",
 ];
 
 export const hero = {
@@ -96,21 +109,24 @@ export type Project = {
 export const projects: Project[] = [
   {
     name: "Northline Commerce",
-    summary: "Composable retail stack with a Flutter client and event-driven services.",
+    summary:
+      "Composable retail stack with a Flutter client and event-driven services.",
     role: "Lead engineer",
     outcome: "Cut checkout latency 38% and unified catalog across channels.",
     tags: ["Flutter", "Go", "PostgreSQL", "Kafka"],
   },
   {
     name: "Pulse Health Companion",
-    summary: "HIPAA-aware companion app with offline-first sync and clinician dashboards.",
+    summary:
+      "HIPAA-aware companion app with offline-first sync and clinician dashboards.",
     role: "Full-stack contractor",
     outcome: "Shipped MVP in 11 weeks with 4.8★ pilot cohort rating.",
     tags: ["Flutter", "Node", "Redis", "AWS"],
   },
   {
     name: "Atlas Field Ops",
-    summary: "Operations platform for distributed teams—mobile capture, web command center.",
+    summary:
+      "Operations platform for distributed teams—mobile capture, web command center.",
     role: "Product engineer",
     outcome: "Replaced three tools; ~120h/month saved in reporting workflows.",
     tags: ["React", "Dart", "gRPC", "Terraform"],
@@ -165,7 +181,13 @@ export type SkillGroup = { title: string; items: string[] };
 export const skillGroups: SkillGroup[] = [
   {
     title: "Mobile",
-    items: ["Flutter", "Dart", "iOS awareness", "Android tooling", "App Store flow"],
+    items: [
+      "Flutter",
+      "Dart",
+      "iOS awareness",
+      "Android tooling",
+      "App Store flow",
+    ],
   },
   {
     title: "Frontend",
@@ -222,6 +244,9 @@ export const contact = {
   socials: [
     { label: "GitHub", href: "https://github.com/placeholder" },
     { label: "LinkedIn", href: "https://linkedin.com/in/placeholder" },
-    { label: "Upwork", href: "https://www.upwork.com/freelancers/~placeholder" },
+    {
+      label: "Upwork",
+      href: "https://www.upwork.com/freelancers/~placeholder",
+    },
   ],
 };

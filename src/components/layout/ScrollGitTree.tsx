@@ -17,7 +17,8 @@ import {
 } from "react";
 import {
   graphTreeItems,
-  scrollBranchColors,
+  scrollBranchColorsDark,
+  scrollBranchColorsLight,
 } from "../../data/site";
 import { useActiveSection } from "../../hooks/useActiveSection";
 import { useLenisRef } from "../../hooks/useLenisRef";
@@ -36,170 +37,49 @@ type Layout = {
   trunkBottom: number;
   trackW: number;
   trackH: number;
+  viewportHeight: number;
 };
 
 function railX(i: number) {
   return EDGE_PAD + i * COLUMN_STEP;
 }
 
-function forkPathD(
-  xPrev: number,
-  yPrev: number,
-  xCur: number,
-  yCur: number,
-): string {
+/** Horizontal connector + arc only — no vertical drop. */
+function forkPathD(xPrev: number, yPrev: number, xCur: number): string {
   const dx = xCur - xPrev;
-  const dy = yCur - yPrev;
-  if (dx > 0 && dy > 1) {
-    const r = Math.min(FORK_CORNER_R, dx * 0.48, dy * 0.48);
-    if (r < 1.25) {
-      return `M ${xPrev} ${yPrev} L ${xCur} ${yPrev} L ${xCur} ${yCur}`;
-    }
-    return `M ${xPrev} ${yPrev} L ${xCur - r} ${yPrev} A ${r} ${r} 0 0 1 ${xCur} ${yPrev + r} L ${xCur} ${yCur}`;
-  }
-  return `M ${xPrev} ${yPrev} L ${xCur} ${yPrev} L ${xCur} ${yCur}`;
+  if (dx <= 0) return `M ${xPrev} ${yPrev}`;
+  const r = Math.min(FORK_CORNER_R, dx * 0.48);
+  if (r < 1.25) return `M ${xPrev} ${yPrev} L ${xCur} ${yPrev}`;
+  return `M ${xPrev} ${yPrev} L ${xCur - r} ${yPrev} A ${r} ${r} 0 0 1 ${xCur} ${yPrev + r}`;
 }
 
-/** Cumulative scroll windows [0–1] for stem → fork → parallel tails → … */
-function buildPhaseRanges(tops: number[], H: number): { start: number; end: number }[] {
-  const n = tops.length;
-  if (n === 0 || H <= 0) return [];
-
-  const raw: number[] = [];
-
-  if (n === 1) {
-    raw.push(Math.max(0.08, tops[0]! / H));
-    raw.push(Math.max(0.08, (H - tops[0]!) / H));
-  } else {
-    raw.push(Math.max(0.08, tops[0]! / H));
-    for (let k = 1; k < n; k++) {
-      raw.push(0.055);
-      if (k === 1) {
-        raw.push(
-          Math.max(
-            0.1,
-            Math.max(H - tops[0]!, H - tops[1]!) / H,
-          ),
-        );
-      } else {
-        raw.push(Math.max(0.08, (H - tops[k]!) / H));
-      }
-    }
-  }
-
-  const sum = raw.reduce((a, b) => a + b, 0);
-  const ranges: { start: number; end: number }[] = [];
-  let acc = 0;
-  for (const w of raw) {
-    const start = acc / sum;
-    acc += w;
-    const end = acc / sum;
-    ranges.push({ start, end });
-  }
-  return ranges;
-}
-
-/** Vertical segments as paths — `pathLength` stroke drawing is inconsistent on `<line>` in some browsers. */
-function PhaseVertical({
-  scrollP,
-  phaseStart,
-  phaseEnd,
-  x,
-  y1,
-  y2,
-  stroke,
-  strokeWidth,
-  strokeLinecap,
-  opacity,
-}: {
-  scrollP: MotionValue<number>;
-  phaseStart: number;
-  phaseEnd: number;
-  x: number;
-  y1: number;
-  y2: number;
-  stroke: string;
-  strokeWidth: number;
-  strokeLinecap: "round" | "butt" | "square";
-  opacity: number;
-}) {
-  const reduce = useReducedMotion();
-  const pathLen = useTransform(
-    scrollP,
-    [phaseStart, phaseEnd],
-    [0, 1],
-    { clamp: true },
-  );
-  const d = `M ${x} ${y1} L ${x} ${y2}`;
-
-  if (reduce) {
-    return (
-      <path
-        d={d}
-        fill="none"
-        stroke={stroke}
-        strokeWidth={strokeWidth}
-        strokeLinecap={strokeLinecap}
-        opacity={opacity}
-      />
-    );
-  }
-
-  return (
-    <motion.path
-      d={d}
-      fill="none"
-      stroke={stroke}
-      strokeWidth={strokeWidth}
-      strokeLinecap={strokeLinecap}
-      opacity={opacity}
-      vectorEffect="non-scaling-stroke"
-      pathLength={pathLen}
-      initial={false}
-    />
-  );
-}
-
-function PhasePath({
-  scrollP,
-  phaseStart,
-  phaseEnd,
+/** Horizontal fork connector, animated via pathLength over a short frontier range. */
+function ForkPath({
+  frontierY,
+  triggerY,
   d,
   stroke,
   strokeWidth,
-  strokeLinecap,
-  strokeLinejoin,
   opacity,
 }: {
-  scrollP: MotionValue<number>;
-  phaseStart: number;
-  phaseEnd: number;
+  frontierY: MotionValue<number>;
+  triggerY: number;
   d: string;
   stroke: string;
   strokeWidth: number;
-  strokeLinecap: "round" | "butt" | "square";
-  strokeLinejoin: "round" | "miter" | "bevel";
   opacity: number;
 }) {
   const reduce = useReducedMotion();
   const pathLen = useTransform(
-    scrollP,
-    [phaseStart, phaseEnd],
+    frontierY,
+    [triggerY, triggerY + COLUMN_STEP],
     [0, 1],
     { clamp: true },
   );
 
   if (reduce) {
     return (
-      <path
-        d={d}
-        fill="none"
-        stroke={stroke}
-        strokeWidth={strokeWidth}
-        strokeLinecap={strokeLinecap}
-        strokeLinejoin={strokeLinejoin}
-        opacity={opacity}
-      />
+      <path d={d} fill="none" stroke={stroke} strokeWidth={strokeWidth} opacity={opacity} />
     );
   }
 
@@ -209,8 +89,6 @@ function PhasePath({
       fill="none"
       stroke={stroke}
       strokeWidth={strokeWidth}
-      strokeLinecap={strokeLinecap}
-      strokeLinejoin={strokeLinejoin}
       opacity={opacity}
       vectorEffect="non-scaling-stroke"
       pathLength={pathLen}
@@ -220,8 +98,118 @@ function PhasePath({
 }
 
 /**
- * Scroll story: main stem grows to first node → fork draws → both rails grow
- * down together → next fork → new rail grows (previous rails already complete).
+ * Vertical line whose tip tracks a shared frontierY MotionValue.
+ *
+ * Instead of pathLength (which normalises 0→1 over each segment's own length,
+ * causing short and long segments to animate at different pixel rates), we
+ * animate y2 directly so every tip moves at the same pixels-per-scroll rate.
+ */
+function FrontierLine({
+  frontierY,
+  x,
+  y1,
+  y2,
+  stroke,
+  strokeWidth,
+  strokeLinecap,
+  opacity,
+}: {
+  frontierY: MotionValue<number>;
+  x: number;
+  y1: number;
+  y2: number;
+  stroke: string;
+  strokeWidth: number;
+  strokeLinecap: "round" | "butt" | "square";
+  opacity: number;
+}) {
+  const reduce = useReducedMotion();
+  // Clamp: only draw from y1 once frontier passes y1; stop at y2.
+  const animY2 = useTransform(frontierY, (v) =>
+    Math.min(Math.max(v, y1), y2),
+  );
+
+  if (reduce) {
+    return (
+      <line
+        x1={x}
+        y1={y1}
+        x2={x}
+        y2={y2}
+        stroke={stroke}
+        strokeWidth={strokeWidth}
+        strokeLinecap={strokeLinecap}
+        opacity={opacity}
+      />
+    );
+  }
+
+  return (
+    <motion.line
+      x1={x}
+      y1={y1}
+      x2={x}
+      y2={animY2}
+      stroke={stroke}
+      strokeWidth={strokeWidth}
+      strokeLinecap={strokeLinecap}
+      opacity={opacity}
+      vectorEffect="non-scaling-stroke"
+    />
+  );
+}
+
+const NODE_APPEAR_PAD = 24;
+
+function FrontierNode({
+  frontierY,
+  x,
+  y,
+  color,
+  isActive,
+}: {
+  frontierY: MotionValue<number>;
+  x: number;
+  y: number;
+  color: string;
+  isActive: boolean;
+}) {
+  const opacity = useTransform(frontierY, [y - NODE_APPEAR_PAD, y], [0, 1], {
+    clamp: true,
+  });
+
+  return (
+    <motion.g style={{ opacity }}>
+      {isActive && (
+        <circle
+          cx={x}
+          cy={y}
+          r={NODE_R + 5}
+          fill="none"
+          stroke="var(--accent)"
+          strokeWidth={1.5}
+          opacity={0.4}
+        />
+      )}
+      <circle
+        cx={x}
+        cy={y}
+        r={NODE_R}
+        fill={isActive ? "#fafafa" : color}
+        stroke={color}
+        strokeWidth={isActive ? 2.5 : 1.35}
+        opacity={isActive ? 1 : 0.78}
+      />
+    </motion.g>
+  );
+}
+
+/**
+ * Scroll story: a single frontierY MotionValue advances from 0 → H as the
+ * user scrolls. Every vertical segment draws from its start y to wherever the
+ * frontier currently sits, so all tips move at exactly the same pixel rate.
+ * Fork paths trigger (via pathLength) the moment the frontier passes their
+ * branch point.
  */
 function MetroBranchSvg({
   layout,
@@ -238,7 +226,10 @@ function MetroBranchSvg({
   const n = tops.length;
   const H = trunkBottom;
 
-  const phaseRanges = useMemo(() => buildPhaseRanges(tops, H), [tops, H]);
+  // Single frontier value shared by all segments → identical pixel draw rate.
+  const frontierY = useTransform(scrollProgress, [0, 1], [0, H], {
+    clamp: true,
+  });
 
   const c = (i: number) => colors[i % colors.length]!;
   const lines: ReactNode[] = [];
@@ -247,136 +238,124 @@ function MetroBranchSvg({
 
   if (n === 0 || trackW <= 0 || trackH <= 0) return null;
 
-  let pi = 0;
-
   if (n === 1) {
     const y0 = tops[0]!;
     const x0 = railX(0);
-    if (phaseRanges.length >= 2) {
-      lines.push(
-        <PhaseVertical
-          key="stem-0"
-          scrollP={scrollProgress}
-          phaseStart={phaseRanges[0]!.start}
-          phaseEnd={phaseRanges[0]!.end}
-          x={x0}
-          y1={0}
-          y2={y0}
-          stroke={c(0)}
-          strokeWidth={STROKE_W}
-          strokeLinecap="round"
-          opacity={0.9}
-        />,
-      );
-      lines.push(
-        <PhaseVertical
-          key="tail-0"
-          scrollP={scrollProgress}
-          phaseStart={phaseRanges[1]!.start}
-          phaseEnd={phaseRanges[1]!.end}
-          x={x0}
-          y1={y0}
-          y2={H}
-          stroke={c(0)}
-          strokeWidth={STROKE_W}
-          strokeLinecap="round"
-          opacity={0.88}
-        />,
-      );
-    }
+    lines.push(
+      <FrontierLine
+        key="stem-0"
+        frontierY={frontierY}
+        x={x0}
+        y1={0}
+        y2={y0}
+        stroke={c(0)}
+        strokeWidth={STROKE_W}
+        strokeLinecap="butt"
+        opacity={0.68}
+      />,
+      <FrontierLine
+        key="tail-0"
+        frontierY={frontierY}
+        x={x0}
+        y1={y0}
+        y2={H}
+        stroke={c(0)}
+        strokeWidth={STROKE_W}
+        strokeLinecap="butt"
+        opacity={0.62}
+      />,
+    );
   } else {
     const x0 = railX(0);
     const y0 = tops[0]!;
 
-    if (phaseRanges[pi]) {
-      lines.push(
-        <PhaseVertical
-          key="stem-main"
-          scrollP={scrollProgress}
-          phaseStart={phaseRanges[pi]!.start}
-          phaseEnd={phaseRanges[pi]!.end}
-          x={x0}
-          y1={0}
-          y2={y0}
-          stroke={c(0)}
-          strokeWidth={STROKE_W}
-          strokeLinecap="round"
-          opacity={0.9}
-        />,
-      );
-      pi++;
-    }
+    // Main stem: grows from scope top to first node.
+    lines.push(
+      <FrontierLine
+        key="stem-main"
+        frontierY={frontierY}
+        x={x0}
+        y1={0}
+        y2={y0}
+        stroke={c(0)}
+        strokeWidth={STROKE_W}
+        strokeLinecap="butt"
+        opacity={0.68}
+      />,
+    );
 
     for (let k = 1; k < n; k++) {
-      const forkR = phaseRanges[pi];
-      const parR = phaseRanges[pi + 1];
-      pi += 2;
-
-      if (!forkR || !parR) break;
-
       const xPrev = railX(k - 1);
       const xCur = railX(k);
       const yPrev = tops[k - 1]!;
       const yCur = tops[k]!;
 
+      // Horizontal connector snaps in quickly as the frontier hits yPrev.
       forks.push(
-        <PhasePath
+        <ForkPath
           key={`fork-${k}`}
-          scrollP={scrollProgress}
-          phaseStart={forkR.start}
-          phaseEnd={forkR.end}
-          d={forkPathD(xPrev, yPrev, xCur, yCur)}
+          frontierY={frontierY}
+          triggerY={yPrev}
+          d={forkPathD(xPrev, yPrev, xCur)}
           stroke={c(k)}
           strokeWidth={STROKE_W}
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          opacity={0.97}
+          opacity={0.72}
+        />,
+      );
+
+      // Vertical drop from arc endpoint to node — starts where the arc ends
+      // so there's no overlap with the ForkPath at the junction.
+      lines.push(
+        <FrontierLine
+          key={`connector-${k}`}
+          frontierY={frontierY}
+          x={xCur}
+          y1={yPrev + FORK_CORNER_R}
+          y2={yCur}
+          stroke={c(k)}
+          strokeWidth={STROKE_W}
+          strokeLinecap="butt"
+          opacity={0.72}
         />,
       );
 
       if (k === 1) {
         lines.push(
-          <PhaseVertical
-            key="tail-0-joint"
-            scrollP={scrollProgress}
-            phaseStart={parR.start}
-            phaseEnd={parR.end}
+          <FrontierLine
+            key="tail-0"
+            frontierY={frontierY}
             x={railX(0)}
             y1={y0}
             y2={H}
             stroke={c(0)}
             strokeWidth={STROKE_W}
-            strokeLinecap="round"
-            opacity={0.88}
+            strokeLinecap="butt"
+            opacity={0.62}
           />,
-          <PhaseVertical
-            key="tail-1-joint"
-            scrollP={scrollProgress}
-            phaseStart={parR.start}
-            phaseEnd={parR.end}
+          <FrontierLine
+            key="tail-1"
+            frontierY={frontierY}
             x={railX(1)}
-            y1={tops[1]!}
+            y1={yCur}
             y2={H}
             stroke={c(1)}
             strokeWidth={STROKE_W}
-            strokeLinecap="round"
-            opacity={0.88}
+            strokeLinecap="butt"
+            opacity={0.62}
           />,
         );
       } else {
         lines.push(
-          <PhaseVertical
+          <FrontierLine
             key={`tail-${k}`}
-            scrollP={scrollProgress}
-            phaseStart={parR.start}
-            phaseEnd={parR.end}
+            frontierY={frontierY}
             x={xCur}
             y1={yCur}
             y2={H}
             stroke={c(k)}
             strokeWidth={STROKE_W}
-            strokeLinecap="round"
-            opacity={0.88}
+            strokeLinecap="butt"
+            opacity={0.62}
           />,
         );
       }
@@ -386,31 +365,16 @@ function MetroBranchSvg({
   for (let i = 0; i < n; i++) {
     const x = railX(i);
     const y = tops[i]!;
-    const isActive = activeIndex === i;
 
     nodes.push(
-      <g key={`node-${i}`}>
-        {isActive && (
-          <circle
-            cx={x}
-            cy={y}
-            r={NODE_R + 5}
-            fill="none"
-            stroke="var(--accent)"
-            strokeWidth={1.5}
-            opacity={0.4}
-          />
-        )}
-        <circle
-          cx={x}
-          cy={y}
-          r={NODE_R}
-          fill={isActive ? "#fafafa" : c(i)}
-          stroke={c(i)}
-          strokeWidth={isActive ? 2.5 : 1.35}
-          opacity={isActive ? 1 : 0.95}
-        />
-      </g>,
+      <FrontierNode
+        key={`node-${i}`}
+        frontierY={frontierY}
+        x={x}
+        y={y}
+        color={c(i)}
+        isActive={activeIndex === i}
+      />,
     );
   }
 
@@ -438,9 +402,7 @@ export function ScrollGitTree({
   const { theme } = useTheme();
   const branchColors = useMemo(
     () =>
-      theme === "dark"
-        ? [...scrollBranchColors].reverse()
-        : scrollBranchColors,
+      theme === "dark" ? scrollBranchColorsDark : scrollBranchColorsLight,
     [theme],
   );
 
@@ -487,21 +449,23 @@ export function ScrollGitTree({
     const tops = graphTreeItems.map(({ id }) => {
       const el = document.getElementById(id);
       if (!el) return 0;
-      const r = el.getBoundingClientRect();
+      // Prefer the section's heading so the node aligns with the title.
+      const heading = el.querySelector("h1, h2, h3");
+      const target = heading ?? el;
+      const r = target.getBoundingClientRect();
       const cy = r.top + window.scrollY + r.height / 2;
       return cy - scopeTopDoc;
     });
 
     if (tops.length === 0) return;
 
-    const trunkBottom = th;
-
     startTransition(() => {
       setLayout({
         tops,
-        trunkBottom,
+        trunkBottom: th,
         trackW: tw,
         trackH: th,
+        viewportHeight: window.innerHeight,
       });
     });
   }, []);
@@ -512,6 +476,7 @@ export function ScrollGitTree({
     const t2 = window.setTimeout(measure, 480);
     const onResize = () => measure();
     window.addEventListener("resize", onResize);
+    window.addEventListener("orientationchange", onResize);
     const ro = new ResizeObserver(measure);
     const scope = document.getElementById(GRAPH_SCOPE_ID);
     if (scope) ro.observe(scope);
@@ -525,6 +490,7 @@ export function ScrollGitTree({
       window.clearTimeout(t);
       window.clearTimeout(t2);
       window.removeEventListener("resize", onResize);
+      window.removeEventListener("orientationchange", onResize);
       ro.disconnect();
     };
   }, [measure]);
