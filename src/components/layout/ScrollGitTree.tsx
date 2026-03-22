@@ -1,5 +1,6 @@
 import {
   motion,
+  useMotionValue,
   useReducedMotion,
   useScroll,
   useSpring,
@@ -11,9 +12,9 @@ import {
   useCallback,
   useLayoutEffect,
   useMemo,
+  useRef,
   useState,
   type ReactNode,
-  type RefObject,
 } from "react";
 import {
   graphTreeItems,
@@ -25,6 +26,11 @@ import { useLenisRef } from "../../hooks/useLenisRef";
 import { useTheme } from "../../hooks/useTheme";
 
 const GRAPH_SCOPE_ID = "graph-scope";
+
+/** Snap “page bottom” a few px early so Lenis / subpixel still counts as complete. */
+const SCROLL_END_EPS = 8;
+/** Viewport fraction for the live draw cap (horizontal midline). */
+const VIEWPORT_MID_Y_FRAC = 0.5;
 
 const EDGE_PAD = 10;
 const COLUMN_STEP = 15;
@@ -205,31 +211,23 @@ function FrontierNode({
 }
 
 /**
- * Scroll story: a single frontierY MotionValue advances from 0 → H as the
- * user scrolls. Every vertical segment draws from its start y to wherever the
- * frontier currently sits, so all tips move at exactly the same pixel rate.
- * Fork paths trigger (via pathLength) the moment the frontier passes their
- * branch point.
+ * Scroll story: `frontierY` (scope-local px) drives how far stems are drawn.
+ * Fork paths trigger (via pathLength) when the frontier passes their branch point.
  */
 function MetroBranchSvg({
   layout,
   colors,
   activeIndex,
-  scrollProgress,
+  frontierY,
 }: {
   layout: Layout;
   colors: string[];
   activeIndex: number;
-  scrollProgress: MotionValue<number>;
+  frontierY: MotionValue<number>;
 }) {
   const { tops, trunkBottom, trackW, trackH } = layout;
   const n = tops.length;
   const H = trunkBottom;
-
-  // Single frontier value shared by all segments → identical pixel draw rate.
-  const frontierY = useTransform(scrollProgress, [0, 1], [0, H], {
-    clamp: true,
-  });
 
   const c = (i: number) => colors[i % colors.length]!;
   const lines: ReactNode[] = [];
@@ -394,11 +392,28 @@ function MetroBranchSvg({
   );
 }
 
-export function ScrollGitTree({
-  scopeRef,
-}: {
-  scopeRef: RefObject<HTMLDivElement | null>;
-}) {
+function computeGitFrontierY(scrollY: number, H: number): number {
+  if (H <= 0) return 0;
+  const root = document.scrollingElement;
+  if (!root) return 0;
+  const maxScroll = Math.max(0, root.scrollHeight - window.innerHeight);
+  const atBottom =
+    maxScroll <= SCROLL_END_EPS || scrollY >= maxScroll - SCROLL_END_EPS;
+  if (atBottom) return H;
+
+  const scope = document.getElementById(GRAPH_SCOPE_ID);
+  if (!scope) return 0;
+  const scopeTop = scope.getBoundingClientRect().top;
+  const vh = window.innerHeight;
+  /** Don’t draw past the viewport midline while scrolling. */
+  const midFrontier = Math.max(0, Math.min(vh * VIEWPORT_MID_Y_FRAC - scopeTop, H));
+  /** Don’t reach the footer line until the document is actually scrolled out. */
+  const scrollFrontier =
+    maxScroll > SCROLL_END_EPS ? Math.min(H, (scrollY / maxScroll) * H) : H;
+  return Math.min(midFrontier, scrollFrontier);
+}
+
+export function ScrollGitTree() {
   const { theme } = useTheme();
   const branchColors = useMemo(
     () =>
@@ -406,11 +421,16 @@ export function ScrollGitTree({
     [theme],
   );
 
-  const { scrollYProgress } = useScroll({
-    target: scopeRef,
-    offset: ["start 0.92", "end 0.08"],
+  const { scrollY } = useScroll();
+  const layoutRef = useRef<Layout | null>(null);
+  const layoutEpoch = useMotionValue(0);
+
+  const rawFrontierY = useTransform([scrollY, layoutEpoch], (latest: number[]) => {
+    const y = latest[0] ?? 0;
+    const H = layoutRef.current?.trackH ?? 0;
+    return computeGitFrontierY(y, H);
   });
-  const graphDrawProgress = useSpring(scrollYProgress, {
+  const frontierY = useSpring(rawFrontierY, {
     stiffness: 72,
     damping: 28,
     mass: 0.12,
@@ -442,7 +462,17 @@ export function ScrollGitTree({
     const scopeRect = scope.getBoundingClientRect();
     const scopeTopDoc = scopeRect.top + window.scrollY;
     const tw = rail.clientWidth;
-    const th = scope.offsetHeight;
+    const scopeFlowH = scope.offsetHeight;
+
+    const footer = document.querySelector("footer");
+    const footerTopDoc = footer
+      ? footer.getBoundingClientRect().top + window.scrollY
+      : null;
+    /** Include main→footer margin gap (not inside #graph-scope) so trunks reach the footer. */
+    const th =
+      footerTopDoc != null
+        ? Math.max(scopeFlowH, footerTopDoc - scopeTopDoc)
+        : scopeFlowH;
 
     if (th <= 0 || tw <= 0) return;
 
@@ -459,16 +489,19 @@ export function ScrollGitTree({
 
     if (tops.length === 0) return;
 
+    const next: Layout = {
+      tops,
+      trunkBottom: th,
+      trackW: tw,
+      trackH: th,
+      viewportHeight: window.innerHeight,
+    };
+    layoutRef.current = next;
+    layoutEpoch.set(layoutEpoch.get() + 1);
     startTransition(() => {
-      setLayout({
-        tops,
-        trunkBottom: th,
-        trackW: tw,
-        trackH: th,
-        viewportHeight: window.innerHeight,
-      });
+      setLayout(next);
     });
-  }, []);
+  }, [layoutEpoch]);
 
   useLayoutEffect(() => {
     measure();
@@ -484,6 +517,8 @@ export function ScrollGitTree({
       const el = document.getElementById(id);
       if (el) ro.observe(el);
     }
+    const footerEl = document.querySelector("footer");
+    if (footerEl) ro.observe(footerEl);
     ro.observe(document.documentElement);
 
     return () => {
@@ -513,7 +548,9 @@ export function ScrollGitTree({
     <div
       id="scroll-git-rail"
       className="pointer-events-none absolute left-0 top-0 z-30 isolate hidden w-[var(--graph-rail-width)] overflow-visible lg:block"
-      style={{ height: "100%" }}
+      style={{
+        height: layout?.trackH ? `${layout.trackH}px` : "100%",
+      }}
     >
       <div className="relative h-full w-full" aria-label="Section branches">
         {layout && layout.trackH > 0 ? (
@@ -521,7 +558,7 @@ export function ScrollGitTree({
             layout={layout}
             colors={branchColors}
             activeIndex={activeIndex}
-            scrollProgress={graphDrawProgress}
+            frontierY={frontierY}
           />
         ) : null}
 

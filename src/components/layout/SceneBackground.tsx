@@ -19,10 +19,10 @@ const STAGE_COUNT = 5;
 /** Uniform scale for all scroll stages (world units). */
 const SCENE_SCALE = 1.58;
 
-/** Stage-0 PCB sits screen-right at load so it clears hero copy; bus + board move together. */
+/** Stage-0 terminal sits screen-right at load so it clears hero copy. */
 const PCB_WORLD_OFFSET: [number, number, number] = [1.52, 0, 0.34];
 
-/** Normalized weights peaking at t = 0, 0.25, …, 1 — order: PCB → phone → browser → server → database. */
+/** Normalized weights peaking at t = 0, 0.25, …, 1 — order: terminal → phone → browser → 1U → database. */
 function scrollStageWeights(t: number, count: number): number[] {
   if (count <= 1) return [1];
   const raw = Array.from({ length: count }, (_, k) => {
@@ -98,28 +98,46 @@ function ScrollMorphScene({
   const browser = useRef<THREE.Group>(null);
   const server = useRef<THREE.Group>(null);
   const database = useRef<THREE.Group>(null);
-  const pcb = useRef<THREE.Group>(null);
+  const terminal = useRef<THREE.Group>(null);
 
-  const bus = useMemo(
-    () =>
-      [
-        { to: [1.55, 0.45, -0.42] as const },
-        { to: [-1.48, 0.15, 0.38] as const },
-        { to: [0.42, 1.28, -0.22] as const },
-        { to: [-0.28, -0.92, 0.28] as const },
-      ] as const,
-    [],
-  );
+  const terminalScreenTexture = useMemo(() => {
+    const canvas = document.createElement("canvas");
+    const tw = 768;
+    const th = 512;
+    canvas.width = tw;
+    canvas.height = th;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return null;
+    ctx.fillStyle = "#06080c";
+    ctx.fillRect(0, 0, tw, th);
+    ctx.fillStyle = primary;
+    ctx.font =
+      '500 38px ui-monospace, SFMono-Regular, "Cascadia Code", Menlo, monospace';
+    ctx.textBaseline = "top";
+    ctx.fillText("$ hello world", 44, 96);
+    const tex = new THREE.CanvasTexture(canvas);
+    tex.colorSpace = THREE.SRGBColorSpace;
+    return tex;
+  }, [primary]);
 
-  const codeLineLengths = useMemo(() => [1.35, 0.82, 1.05, 0.68, 1.12], []);
+  useEffect(() => {
+    return () => {
+      terminalScreenTexture?.dispose();
+    };
+  }, [terminalScreenTexture]);
 
   const camTargets = useMemo(
     () => [
-      new THREE.Vector3(2.62, 2.88, 5.12),
-      new THREE.Vector3(2.65, 1.55, 5.2),
-      new THREE.Vector3(0.05, 0.15, 6.35),
-      new THREE.Vector3(3.45, 1.85, 4.35),
-      new THREE.Vector3(3.85, 0.95, 3.65),
+      /** Hero: lower Y than legacy PCB shot so the terminal reads more head-on, less “looking down”. */
+      new THREE.Vector3(2.58, 1.38, 5.32),
+      /** Slightly left / in vs hero so 0→1 gets camera travel as well as look-at pan. */
+      new THREE.Vector3(2.38, 1.5, 5.12),
+      /** Head-on browser with a touch of height + depth for a clear arc from phone. */
+      new THREE.Vector3(0.02, 0.24, 6.42),
+      /** Rack shot from front-right. */
+      new THREE.Vector3(3.38, 1.88, 4.38),
+      /** Lower, closer for schema read. */
+      new THREE.Vector3(3.72, 1.08, 3.58),
     ],
     [],
   );
@@ -127,14 +145,15 @@ function ScrollMorphScene({
   const lookTargets = useMemo(
     () => [
       new THREE.Vector3(
-        PCB_WORLD_OFFSET[0] - 0.04,
-        -0.08,
+        PCB_WORLD_OFFSET[0],
+        0.04,
         PCB_WORLD_OFFSET[2] + 0.02,
       ),
-      new THREE.Vector3(0, 0.05, 0),
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(0, -0.08, 0),
-      new THREE.Vector3(0, -0.28, 0),
+      /** Spread look points so each blend pans the frame (hero was strong because look moved a lot). */
+      new THREE.Vector3(0.12, 0.11, 0.04),
+      new THREE.Vector3(-0.1, -0.02, 0.05),
+      new THREE.Vector3(0.14, 0.04, -0.05),
+      new THREE.Vector3(-0.07, -0.26, 0.07),
     ],
     [],
   );
@@ -144,8 +163,6 @@ function ScrollMorphScene({
   const camSm = useRef(new THREE.Vector3());
   const lookSm = useRef(new THREE.Vector3());
   const camInit = useRef(false);
-
-  const hub: [number, number, number] = [0, 0.22, 0];
 
   useFrame((_, delta) => {
     const t = scrollYProgress.get();
@@ -160,6 +177,16 @@ function ScrollMorphScene({
       lookAcc.current.addScaledVector(lookTargets[i]!, wCam[i]!);
     }
 
+    /** Light orbit on top of keyframes: subtle pan + parallax on every segment (like the hero handoff). */
+    const orbit = t * Math.PI * 2 * 1.12;
+    const amp = 0.12;
+    camAcc.current.x += Math.sin(orbit) * amp;
+    camAcc.current.y += Math.sin(orbit * 0.52 + 0.9) * amp * 0.42;
+    camAcc.current.z += Math.cos(orbit * 0.48 + 0.35) * amp * 0.28;
+    lookAcc.current.x += Math.sin(orbit + 1.05) * amp * 0.62;
+    lookAcc.current.y += Math.sin(orbit * 0.55 + 0.25) * amp * 0.48;
+    lookAcc.current.z += Math.cos(orbit * 0.5 + 0.7) * amp * 0.35;
+
     if (!camInit.current) {
       camSm.current.copy(camAcc.current);
       lookSm.current.copy(lookAcc.current);
@@ -171,101 +198,59 @@ function ScrollMorphScene({
     camera.position.copy(camSm.current);
     camera.lookAt(lookSm.current);
 
-    applyStageMorph(pcb.current, wMorph[0]!);
+    applyStageMorph(terminal.current, wMorph[0]!);
     applyStageMorph(phone.current, wMorph[1]!);
     applyStageMorph(browser.current, wMorph[2]!);
     applyStageMorph(server.current, wMorph[3]!);
     applyStageMorph(database.current, wMorph[4]!);
 
-    fadeLineMaterials(pcb.current, wMorph[0]!, 0.14);
     fadeLineMaterials(database.current, wMorph[4]!, 0.11);
 
     if (root.current) {
-      root.current.rotation.y = t * 0.52 + Math.sin(performance.now() * 0.00035) * 0.04;
-      root.current.rotation.x = t * 0.08;
+      const drift = performance.now() * 0.00032;
+      root.current.rotation.y =
+        t * 0.56 +
+        Math.sin(drift) * 0.045 +
+        0.05 * Math.sin(t * Math.PI * 4.2);
+      root.current.rotation.x = t * 0.095 + 0.032 * Math.cos(t * Math.PI * 3.1);
+      root.current.rotation.z = Math.sin(drift * 0.85) * 0.022;
     }
   });
 
   return (
     <group ref={root} scale={SCENE_SCALE}>
-      {/* 0 — board + package + bus */}
-      <group ref={pcb} position={PCB_WORLD_OFFSET}>
-        <group>
-          <mesh
-            userData={{ baseOpacity: 0.07 }}
-            rotation={[-Math.PI / 2, 0, 0]}
-            position={[0, -0.62, 0]}
-          >
-            <planeGeometry args={[3.4, 3.4, 14, 14]} />
-            <meshBasicMaterial color={primary} {...wf} opacity={0.07} />
-          </mesh>
-          <mesh userData={{ baseOpacity: 0.13 }} position={[0, -0.08, 0]}>
-            <boxGeometry args={[1.05, 0.14, 1.05]} />
+      {/* 0 — terminal + hello world */}
+      <group ref={terminal} position={PCB_WORLD_OFFSET}>
+        <mesh userData={{ baseOpacity: 0.11 }} position={[0, 0, 0]}>
+          <boxGeometry args={[1.68, 1.14, 0.085]} />
+          <meshBasicMaterial color={primary} {...wf} opacity={0.11} />
+        </mesh>
+        <mesh userData={{ baseOpacity: 0.12 }} position={[0, 0.485, 0.046]}>
+          <boxGeometry args={[1.64, 0.13, 0.055]} />
+          <meshBasicMaterial color={secondary} {...wf} opacity={0.12} />
+        </mesh>
+        {[-0.62, -0.48, -0.34].map((x, i) => (
+          <mesh key={i} userData={{ baseOpacity: 0.13 }} position={[x, 0.485, 0.074]}>
+            <sphereGeometry args={[0.036, 10, 10]} />
             <meshBasicMaterial color={primary} {...wf} opacity={0.13} />
           </mesh>
-          <mesh userData={{ baseOpacity: 0.15 }} position={[0, 0.02, 0]}>
-            <boxGeometry args={[0.42, 0.08, 0.42]} />
-            <meshBasicMaterial color={secondary} {...wf} opacity={0.15} />
-          </mesh>
-          {[-0.38, 0, 0.38].flatMap((x) =>
-            [-0.38, 0, 0.38].map((z) => (
-              <mesh key={`${x}-${z}`} userData={{ baseOpacity: 0.09 }} position={[x, -0.14, z]}>
-                <boxGeometry args={[0.06, 0.1, 0.06]} />
-                <meshBasicMaterial color={secondary} {...wf} opacity={0.09} />
-              </mesh>
-            )),
-          )}
-          {codeLineLengths.map((len, i) => (
-            <mesh
-              key={i}
-              userData={{ baseOpacity: 0.06 }}
-              position={[-1.72, 0.35 - i * 0.11, 0.55]}
-              rotation={[0, -0.35, 0]}
-            >
-              <boxGeometry args={[len, 0.035, 0.035]} />
-              <meshBasicMaterial color={secondary} transparent opacity={0.06} />
-            </mesh>
-          ))}
-          <group position={[-1.05, 0.2, 0.75]} rotation={[0, 0.4, 0]}>
-            <mesh userData={{ baseOpacity: 0.1 }} position={[0, 0.14, 0]} rotation={[0, 0, 0.55]}>
-              <boxGeometry args={[0.04, 0.32, 0.04]} />
-              <meshBasicMaterial color={primary} {...wf} opacity={0.1} />
-            </mesh>
-            <mesh userData={{ baseOpacity: 0.1 }} position={[0, -0.14, 0]} rotation={[0, 0, -0.55]}>
-              <boxGeometry args={[0.04, 0.32, 0.04]} />
-              <meshBasicMaterial color={primary} {...wf} opacity={0.1} />
-            </mesh>
-          </group>
-          <group position={[1.05, 0.2, 0.75]} rotation={[0, -0.4, 0]}>
-            <mesh userData={{ baseOpacity: 0.1 }} position={[0, 0.14, 0]} rotation={[0, 0, -0.55]}>
-              <boxGeometry args={[0.04, 0.32, 0.04]} />
-              <meshBasicMaterial color={primary} {...wf} opacity={0.1} />
-            </mesh>
-            <mesh userData={{ baseOpacity: 0.1 }} position={[0, -0.14, 0]} rotation={[0, 0, 0.55]}>
-              <boxGeometry args={[0.04, 0.32, 0.04]} />
-              <meshBasicMaterial color={primary} {...wf} opacity={0.1} />
-            </mesh>
-          </group>
-        </group>
-
-        {bus.map(({ to }, i) => (
-          <group key={i}>
-            <Line
-              points={[hub, to]}
-              color={primary}
-              lineWidth={1}
-              transparent
-              opacity={0.14}
-              dashed
-              dashSize={0.12}
-              gapSize={0.08}
-            />
-            <mesh userData={{ baseOpacity: 0.11 }} position={to}>
-              <boxGeometry args={[0.22, 0.22, 0.22]} />
-              <meshBasicMaterial color={secondary} {...wf} opacity={0.11} />
-            </mesh>
-          </group>
         ))}
+        <mesh userData={{ baseOpacity: 0.08 }} position={[0, -0.055, 0.052]}>
+          <boxGeometry args={[1.4, 0.86, 0.018]} />
+          <meshBasicMaterial color={secondary} {...wf} opacity={0.08} />
+        </mesh>
+        {terminalScreenTexture ? (
+          <mesh userData={{ baseOpacity: 0.52 }} position={[0, -0.055, 0.065]}>
+            <planeGeometry args={[1.3, 0.8]} />
+            <meshBasicMaterial
+              map={terminalScreenTexture}
+              color="#ffffff"
+              transparent
+              toneMapped={false}
+              opacity={0.52}
+            />
+          </mesh>
+        ) : null}
       </group>
 
       {/* 1 — handset */}
@@ -314,43 +299,41 @@ function ScrollMorphScene({
         </mesh>
       </group>
 
-      {/* 3 — blade chassis (vertical blades + I/O + rails) */}
+      {/* 3 — 1U pizza-box: flat chassis, front bays, port strip, rack ears */}
       <group ref={server}>
         <mesh userData={{ baseOpacity: 0.1 }} position={[0, 0, 0]}>
-          <boxGeometry args={[1.68, 1.88, 0.48]} />
+          <boxGeometry args={[1.74, 0.34, 1.02]} />
           <meshBasicMaterial color={primary} {...wf} opacity={0.1} />
         </mesh>
-        {[-0.54, -0.36, -0.18, 0, 0.18, 0.36, 0.54].map((x) => (
-          <mesh key={x} userData={{ baseOpacity: 0.085 }} position={[x, 0.04, -0.035]}>
-            <boxGeometry args={[0.028, 1.58, 0.36]} />
-            <meshBasicMaterial color={secondary} {...wf} opacity={0.085} />
-          </mesh>
-        ))}
-        <mesh userData={{ baseOpacity: 0.065 }} position={[0, 0, 0.255]}>
-          <planeGeometry args={[1.38, 1.62, 10, 12]} />
-          <meshBasicMaterial color={primary} {...wf} opacity={0.065} />
+        <mesh userData={{ baseOpacity: 0.068 }} position={[0, 0, 0.513]}>
+          <planeGeometry args={[1.52, 0.26, 10, 4]} />
+          <meshBasicMaterial color={secondary} {...wf} opacity={0.068} />
         </mesh>
-        <mesh userData={{ baseOpacity: 0.09 }} position={[0, 0.98, 0.02]}>
-          <boxGeometry args={[1.55, 0.12, 0.42]} />
-          <meshBasicMaterial color={secondary} {...wf} opacity={0.09} />
+        <mesh userData={{ baseOpacity: 0.085 }} position={[0, 0.07, 0.518]}>
+          <boxGeometry args={[1.38, 0.095, 0.028]} />
+          <meshBasicMaterial color={primary} {...wf} opacity={0.085} />
         </mesh>
-        {Array.from({ length: 10 }, (_, i) => (
+        <mesh userData={{ baseOpacity: 0.085 }} position={[0, -0.05, 0.518]}>
+          <boxGeometry args={[1.38, 0.095, 0.028]} />
+          <meshBasicMaterial color={primary} {...wf} opacity={0.085} />
+        </mesh>
+        {Array.from({ length: 9 }, (_, i) => (
           <mesh
             key={i}
-            userData={{ baseOpacity: 0.1 }}
-            position={[-0.68 + i * 0.152, -0.86, 0.248]}
+            userData={{ baseOpacity: 0.11 }}
+            position={[-0.64 + i * 0.16, -0.12, 0.525]}
           >
-            <boxGeometry args={[0.055, 0.035, 0.025]} />
-            <meshBasicMaterial color={primary} transparent opacity={0.1} />
+            <boxGeometry args={[0.055, 0.045, 0.032]} />
+            <meshBasicMaterial color={secondary} transparent opacity={0.11} />
           </mesh>
         ))}
-        <mesh userData={{ baseOpacity: 0.07 }} position={[-0.83, 0, 0]}>
-          <boxGeometry args={[0.04, 1.7, 0.42]} />
-          <meshBasicMaterial color={secondary} {...wf} opacity={0.07} />
+        <mesh userData={{ baseOpacity: 0.075 }} position={[-0.91, 0, 0]}>
+          <boxGeometry args={[0.055, 0.36, 0.98]} />
+          <meshBasicMaterial color={secondary} {...wf} opacity={0.075} />
         </mesh>
-        <mesh userData={{ baseOpacity: 0.07 }} position={[0.83, 0, 0]}>
-          <boxGeometry args={[0.04, 1.7, 0.42]} />
-          <meshBasicMaterial color={secondary} {...wf} opacity={0.07} />
+        <mesh userData={{ baseOpacity: 0.075 }} position={[0.91, 0, 0]}>
+          <boxGeometry args={[0.055, 0.36, 0.98]} />
+          <meshBasicMaterial color={secondary} {...wf} opacity={0.075} />
         </mesh>
       </group>
 
@@ -471,7 +454,7 @@ export function SceneBackground() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,var(--glow),transparent)] opacity-50 dark:opacity-[0.85]" />
         <Canvas
           className="!absolute inset-0 h-full w-full"
-          camera={{ position: [2.62, 2.88, 5.12], fov: 42 }}
+          camera={{ position: [2.58, 1.38, 5.32], fov: 42 }}
           gl={{
             alpha: true,
             antialias: true,

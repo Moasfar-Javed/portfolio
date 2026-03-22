@@ -1,8 +1,8 @@
 export type NavItem = { id: string; label: string; href: string };
 
 export const siteMeta = {
-  name: "Alex Chen",
-  shortTitle: "Alex Chen",
+  name: "Moasfar J.",
+  shortTitle: "Moasfar J.",
   tagline: "Full-stack · Flutter-forward",
 };
 

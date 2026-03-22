@@ -1,4 +1,4 @@
-import { lazy, Suspense, useRef } from "react";
+import { lazy, Suspense } from "react";
 import { ThemeProvider } from "./context/ThemeProvider";
 import { LenisProvider } from "./context/LenisProvider";
 import { CustomCursor } from "./components/layout/CustomCursor";
@@ -25,8 +25,6 @@ import { TestimonialsSection } from "./components/sections/TestimonialsSection";
 import { ContactSection } from "./components/sections/ContactSection";
 
 export default function App() {
-  const graphScopeRef = useRef<HTMLDivElement>(null);
-
   return (
     <ThemeProvider>
       <LenisProvider>
@@ -41,12 +39,12 @@ export default function App() {
         <BackToTop />
         <main id="main" className="relative z-10">
           <HeroSection />
-          <div id="graph-scope" ref={graphScopeRef} className="relative">
+          <div id="graph-scope" className="relative">
             <div
               className="post-hero-scrim-bridge pointer-events-none absolute inset-x-0 top-0 z-[1]"
               aria-hidden
             />
-            <ScrollGitTree scopeRef={graphScopeRef} />
+            <ScrollGitTree />
             <div className="relative z-10 min-w-0 lg:pl-[var(--graph-rail-width)]">
               <HeroSectionDivider />
               <ImpactSection />
