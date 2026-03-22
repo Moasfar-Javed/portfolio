@@ -27,7 +27,40 @@
   --radius-xl: 1.25rem;
 }
 
+/* Animated spotlight fill (see `.spotlight-surface__glow-*`); percentages are interpolable for slow drift. */
+@property --spotlight-g1x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 48%;
+}
+@property --spotlight-g1y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 46%;
+}
+@property --spotlight-g2x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 58%;
+}
+@property --spotlight-g2y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 52%;
+}
+@property --spotlight-spot-rx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --spotlight-spot-ry {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 86%;
+}
+
 :root {
+  --graph-rail-width: 132px;
   color-scheme: light;
   --surface-0: #fafafa;
   --surface-1: #ffffff;
@@ -42,6 +75,10 @@
   --glow: rgba(37, 99, 235, 0.22);
   --shadow-soft: 0 1px 0 rgba(9, 9, 11, 0.04), 0 24px 48px -24px rgba(9, 9, 11, 0.12);
   --shadow-glow: 0 0 80px -20px var(--glow);
+  /* Frosted panels — keep fill faint so blur + canvas read as glass, not a solid tile */
+  --glass-surface: rgba(255, 255, 255, 0.07);
+  --glass-surface-muted: rgba(255, 255, 255, 0.04);
+  --glass-blur: 20px;
 }
 
 .dark {
@@ -59,6 +96,38 @@
   --glow: rgba(96, 165, 250, 0.18);
   --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 64px -32px rgba(0, 0, 0, 0.75);
   --shadow-glow: 0 0 100px -30px var(--glow);
+  /* Dark: heavier tint — blur + WebGL often read as sharp lines on #030306 with a faint fill. */
+  --glass-surface: rgba(18, 18, 26, 0.82);
+  --glass-surface-muted: rgba(22, 22, 32, 0.72);
+  --glass-blur: 26px;
+}
+
+@media (pointer: fine) {
+  html.custom-cursor-active,
+  html.custom-cursor-active * {
+    cursor: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-card,
+  .glass-card-muted,
+  .glass-pill {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .glass-card {
+    background-color: color-mix(in srgb, var(--surface-1) 40%, transparent);
+  }
+
+  .glass-card-muted {
+    background-color: color-mix(in srgb, var(--surface-2) 32%, transparent);
+  }
+
+  .glass-pill {
+    background-color: color-mix(in srgb, var(--surface-2) 28%, transparent);
+  }
 }
 
 @layer base {
@@ -106,6 +175,329 @@
 }
 
 @layer components {
+  /**
+   * Glassmorphism for cards: blur samples the 3D canvas + page behind.
+   * Compose with border-border-strong + rounded-* + shadow-* in markup.
+   */
+  .glass-card {
+    background-color: var(--glass-surface);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.28)
+      brightness(1.04);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.28) brightness(1.04);
+  }
+
+  .glass-card-muted {
+    background-color: var(--glass-surface-muted);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.92)) saturate(1.2)
+      brightness(1.03);
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.92)) saturate(1.2)
+      brightness(1.03);
+  }
+
+  /* Dark: avoid backdrop brightness() (barely lifts near-black) + slightly stronger blur/sat for readability */
+  .dark .glass-card {
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.42);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.42);
+  }
+
+  .dark .glass-card-muted {
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.92)) saturate(1.32);
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.92)) saturate(1.32);
+  }
+
+  .glass-pill {
+    background-color: color-mix(in srgb, var(--surface-2) 32%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    backdrop-filter: blur(14px) saturate(1.15);
+  }
+
+  .dark .glass-pill {
+    background-color: color-mix(in srgb, var(--surface-2) 26%, transparent);
+  }
+
+  /**
+   * Hero: darken / wash the page background on the left so copy stays readable over the 3D scene.
+   * Uses --surface-0 so light + dark themes both get an appropriate tint.
+   */
+  .hero-readability-scrim {
+    background: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--surface-0) 96%, transparent) 0%,
+      color-mix(in srgb, var(--surface-0) 70%, transparent) 26%,
+      color-mix(in srgb, var(--surface-0) 38%, transparent) 48%,
+      transparent 76%
+    );
+  }
+
+  /**
+   * Masks stacked hero overlays so they ease out toward the section bottom instead of a sharp
+   * horizontal edge against the fixed scene.
+   */
+  .hero-backdrop-vanish {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.5) 70%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.5) 70%,
+      transparent 100%
+    );
+  }
+
+  /**
+   * Masks the fixed WebGL + radial glow stack toward the lower viewport. Where the camera leaves
+   * mostly empty frame (alpha → base color), this blends geometry into the page instead of a hard band.
+   */
+  .scene-stack-fade {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.5) 72%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.5) 72%,
+      transparent 100%
+    );
+  }
+
+  /**
+   * Continues the hero readability scrim into #graph-scope (painted above the hero in DOM) so the
+   * diagonal wash does not end in a horizontal seam at the section edge.
+   */
+  .post-hero-scrim-bridge {
+    height: min(42vh, 28rem);
+    background: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--surface-0) 96%, transparent) 0%,
+      color-mix(in srgb, var(--surface-0) 70%, transparent) 26%,
+      color-mix(in srgb, var(--surface-0) 38%, transparent) 48%,
+      transparent 76%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.32) 50%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.32) 50%,
+      transparent 100%
+    );
+  }
+
+  /**
+   * Hero → content: sequential relay — chevron 0 lights up first, hands off to 1, then 2.
+   * Each row is active for the first ~35% of the shared period, then stays dark.
+   * Delay formula (i - N) * dur/N pre-offsets each row so they fire in order 0→1→2.
+   */
+  @keyframes hero-chevron-opacity-wave {
+    0% {
+      opacity: 0.10;
+    }
+    9% {
+      opacity: 0.72;
+    }
+    22% {
+      opacity: 0.72;
+    }
+    46% {
+      opacity: 0.10;
+    }
+    100% {
+      opacity: 0.10;
+    }
+  }
+
+  .hero-chevron-stack {
+    --hero-chevron-dur: 4.5s;
+    --hero-chevron-n: 3; /* overridable from markup */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-chevron-stack > .hero-chevron-row + .hero-chevron-row {
+    margin-top: -0.45rem;
+  }
+
+  @media (min-width: 640px) {
+    .hero-chevron-stack > .hero-chevron-row + .hero-chevron-row {
+      margin-top: -0.5rem;
+    }
+  }
+
+  .hero-chevron-row {
+    display: flex;
+    justify-content: center;
+    animation: hero-chevron-opacity-wave var(--hero-chevron-dur) linear infinite;
+    animation-delay: calc(
+      (var(--hero-chevron-i) - var(--hero-chevron-n)) * var(--hero-chevron-dur) /
+        var(--hero-chevron-n)
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-chevron-row {
+      animation: none;
+    }
+
+    .hero-chevron-row:nth-child(1) {
+      opacity: 0.22;
+    }
+
+    .hero-chevron-row:nth-child(2) {
+      opacity: 0.38;
+    }
+
+    .hero-chevron-row:nth-child(3) {
+      opacity: 0.52;
+    }
+  }
+
+  /**
+   * Spotlight cards (`SpotlightSurface`): muted fill + rim everywhere on hover, stronger at cursor.
+   * --spot-x / --spot-y are % from JS (sprung).
+   */
+  .spotlight-surface {
+    --spot-x: 50%;
+    --spot-y: 50%;
+  }
+
+  .spotlight-surface__glow-base {
+    background:
+      radial-gradient(
+        92% 78% at var(--spotlight-g2x) var(--spotlight-g2y),
+        color-mix(in srgb, var(--accent) 3.4%, transparent) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        126% 116% at var(--spotlight-g1x) var(--spotlight-g1y),
+        color-mix(in srgb, var(--accent) 5%, transparent) 0%,
+        color-mix(in srgb, var(--accent) 2.2%, transparent) 52%,
+        transparent 78%
+      );
+    animation: spotlight-glow-base-fluid 15s ease-in-out infinite;
+  }
+
+  .spotlight-surface__glow-spot {
+    background:
+      /* Edge-bleed: faint wash so the cursor read stays atmospheric, not a paint blob */
+      radial-gradient(
+        ellipse 160% 140% at var(--spot-x) var(--spot-y),
+        color-mix(in srgb, var(--accent) 2.2%, transparent) 0%,
+        transparent 66%
+      ),
+      /* Core: tint into the card surface — accent is a bias, not a solid core */
+      radial-gradient(
+        ellipse var(--spotlight-spot-rx) var(--spotlight-spot-ry) at var(--spot-x) var(--spot-y),
+        color-mix(in srgb, var(--surface-1) 90%, var(--accent) 10%) 0%,
+        color-mix(in srgb, var(--surface-1) 94%, var(--accent) 6%) 32%,
+        color-mix(in srgb, var(--accent) 3.6%, transparent) 54%,
+        transparent 74%
+      );
+    animation: spotlight-glow-spot-breathe 4.8s ease-in-out infinite;
+  }
+
+  /* Moving grain over the fill so the hotspot feels less like a static circle */
+  .spotlight-surface__glow-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    background-repeat: repeat;
+    animation: spotlight-noise-swim 20s linear infinite;
+  }
+
+  @keyframes spotlight-glow-base-fluid {
+    0%,
+    100% {
+      --spotlight-g1x: 44%;
+      --spotlight-g1y: 42%;
+      --spotlight-g2x: 62%;
+      --spotlight-g2y: 56%;
+    }
+    33% {
+      --spotlight-g1x: 56%;
+      --spotlight-g1y: 48%;
+      --spotlight-g2x: 44%;
+      --spotlight-g2y: 44%;
+    }
+    66% {
+      --spotlight-g1x: 48%;
+      --spotlight-g1y: 56%;
+      --spotlight-g2x: 54%;
+      --spotlight-g2y: 50%;
+    }
+  }
+
+  @keyframes spotlight-glow-spot-breathe {
+    0%,
+    100% {
+      --spotlight-spot-rx: 72%;
+      --spotlight-spot-ry: 58%;
+    }
+    50% {
+      --spotlight-spot-rx: 98%;
+      --spotlight-spot-ry: 82%;
+    }
+  }
+
+  @keyframes spotlight-noise-swim {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 220px 180px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spotlight-surface__glow-base,
+    .spotlight-surface__glow-spot,
+    .spotlight-surface__glow-noise {
+      animation: none;
+    }
+  }
+
+  .spotlight-surface__ring-base,
+  .spotlight-surface__ring-spot {
+    padding: 1px;
+    box-sizing: border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
+
+  .spotlight-surface__ring-base {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .spotlight-surface__ring-spot {
+    background: radial-gradient(
+      130% 130% at var(--spot-x) var(--spot-y),
+      color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 9%, transparent) 26%,
+      color-mix(in srgb, var(--accent) 4.5%, transparent) 48%,
+      transparent 62%
+    );
+  }
+
   .skip-link {
     position: absolute;
     width: 1px;

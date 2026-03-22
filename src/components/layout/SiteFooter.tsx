@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { contact, siteMeta } from "../../data/site";
+import { LINK_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
 
@@ -8,7 +9,7 @@ export function SiteFooter() {
   const reduce = useReducedMotion();
 
   return (
-    <footer className="border-t border-border bg-surface-1 py-16">
+    <footer className="relative z-20 border-t border-border bg-surface-1 py-16">
       <Container>
         <div className="flex flex-col gap-10 md:flex-row md:items-end md:justify-between">
           <div>
@@ -31,7 +32,7 @@ export function SiteFooter() {
               <li key={s.label}>
                 <a
                   href={s.href}
-                  className="transition-colors hover:text-fg"
+                  className={LINK_HOVER}
                   target="_blank"
                   rel="noreferrer"
                 >

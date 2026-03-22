@@ -1,7 +1,10 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { contact } from "../../data/site";
+import portrait from "../../assets/hero.png";
+import { contact, siteMeta } from "../../data/site";
+import { GLASS_CARD_HOVER, LINK_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
+import { SpotlightSurface } from "../ui/SpotlightSurface";
 import { ButtonLink } from "../ui/ButtonLink";
 import { SectionShell } from "./SectionShell";
 
@@ -12,16 +15,35 @@ export function ContactSection() {
   return (
     <SectionShell id="contact" className="py-24 md:py-32" ariaLabel="Contact">
       <Container>
-        <div className="relative overflow-hidden rounded-3xl border border-border-strong bg-surface-1 px-8 py-14 shadow-glow md:px-14 md:py-16">
+        <SpotlightSurface
+          className={`glass-card overflow-hidden rounded-3xl border border-border-strong px-8 py-14 shadow-glow md:px-14 md:py-16 ${GLASS_CARD_HOVER}`}
+          innerClassName="relative"
+        >
           <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.2]" />
           <div className="pointer-events-none absolute -right-24 top-0 h-64 w-64 rounded-full bg-accent/15 blur-[100px] dark:bg-accent/12" />
-          <div className="relative mx-auto max-w-2xl text-center">
+          <div className="relative z-10 mx-auto max-w-2xl text-center">
+            <motion.div
+              className="mx-auto mb-8 flex justify-center"
+              initial={reduce ? false : { opacity: 0, y: 8 }}
+              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, ease: easing }}
+            >
+              <img
+                src={portrait}
+                alt={`${siteMeta.name}, portrait`}
+                className="h-24 w-24 rounded-full border border-border-strong object-cover shadow-soft sm:h-28 sm:w-28"
+                width={112}
+                height={112}
+                decoding="async"
+              />
+            </motion.div>
             <motion.p
               className="text-xs font-medium uppercase tracking-[0.24em] text-fg-subtle"
               initial={reduce ? false : { opacity: 0, y: 8 }}
               whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.45, ease: easing }}
+              transition={{ duration: 0.45, ease: easing, delay: 0.04 }}
             >
               Contact
             </motion.p>
@@ -54,7 +76,9 @@ export function ContactSection() {
                 Email me
               </ButtonLink>
               <ButtonLink
-                href={contact.socials.find((s) => s.label === "Upwork")?.href ?? "#"}
+                href={
+                  contact.socials.find((s) => s.label === "Upwork")?.href ?? "#"
+                }
                 variant="secondary"
                 external
               >
@@ -72,7 +96,7 @@ export function ContactSection() {
                 <li key={s.label}>
                   <a
                     href={s.href}
-                    className="transition-colors hover:text-fg"
+                    className={LINK_HOVER}
                     target="_blank"
                     rel="noreferrer"
                   >
@@ -81,9 +105,14 @@ export function ContactSection() {
                 </li>
               ))}
             </motion.ul>
-            <p className="mt-8 text-xs text-fg-subtle">{contact.email}</p>
+            <a
+              href={mailHref}
+              className={`mt-8 inline-block text-xs text-fg-subtle ${LINK_HOVER}`}
+            >
+              {contact.email}
+            </a>
           </div>
-        </div>
+        </SpotlightSurface>
       </Container>
     </SectionShell>
   );

@@ -14,12 +14,15 @@ export function HeroSection() {
       className="relative overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28"
       ariaLabel="Introduction"
     >
-      <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.35] dark:opacity-[0.2]" />
-      <div className="pointer-events-none absolute inset-0 bg-noise opacity-60" />
+      <div className="hero-backdrop-vanish pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-grid opacity-[0.35] dark:opacity-[0.2]" />
+        <div className="absolute inset-0 bg-noise opacity-60" />
+        <div className="hero-readability-scrim absolute inset-0" aria-hidden />
+      </div>
       <div className="pointer-events-none absolute -left-32 top-24 h-72 w-72 rounded-full bg-accent/15 blur-[100px] dark:bg-accent/12" />
       <div className="pointer-events-none absolute -right-24 bottom-10 h-80 w-80 rounded-full bg-accent/10 blur-[110px] dark:bg-accent/8" />
 
-      <Container className="relative">
+      <Container className="relative z-10">
         <motion.div
           variants={reduce ? undefined : staggerContainer}
           initial={reduce ? false : "hidden"}
@@ -39,7 +42,7 @@ export function HeroSection() {
                     },
                   }
             }
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-border-strong bg-surface-1/80 px-3 py-1 text-xs font-medium text-fg-muted shadow-soft backdrop-blur-md"
+            className="glass-card mb-8 inline-flex items-center gap-2 rounded-full border border-border-strong px-3 py-1 text-xs font-medium text-fg-muted shadow-soft"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/50 opacity-60" />
@@ -121,7 +124,13 @@ export function HeroSection() {
               <ButtonLink
                 key={c.label}
                 href={c.href}
-                variant={c.variant === "primary" ? "primary" : c.variant === "secondary" ? "secondary" : "ghost"}
+                variant={
+                  c.variant === "primary"
+                    ? "primary"
+                    : c.variant === "secondary"
+                      ? "secondary"
+                      : "ghost"
+                }
                 external={"external" in c ? Boolean(c.external) : false}
                 magnetic={c.variant === "primary"}
                 className={i === 0 ? "min-w-[8.5rem]" : ""}

@@ -17,6 +17,48 @@ export const navItems: NavItem[] = [
   { id: "contact", label: "Contact", href: "#contact" },
 ];
 
+/** Full page order for the side git-scroll rail (includes sections not in main nav). */
+export const scrollTreeItems: NavItem[] = [
+  ...navItems.slice(0, -1),
+  { id: "testimonials", label: "Proof", href: "#testimonials" },
+  navItems[navItems.length - 1]!,
+];
+
+/** Sections drawn on the left git graph (starts below hero). */
+export const graphTreeItems: NavItem[] = scrollTreeItems.filter(
+  (item) => item.id !== "hero",
+);
+
+/**
+ * Git-rail branch strokes: two ramps tuned to each theme’s surfaces (see `index.css`
+ * `--surface-*`). Light = pale blue-gray (high luminance, close to `#fafafa` / cards)
+ * so the rail whispers against the page. Dark mode ramp unchanged below. Wide steps
+ * so branches stay distinguishable.
+ */
+export const scrollBranchColorsLight: string[] = [
+  "#a5afbe",
+  "#acb5c4",
+  "#b3bbca",
+  "#bac1d0",
+  "#c1c7d6",
+  "#c8cddc",
+  "#cfd3e2",
+  "#d6d9e8",
+  "#dde0ee",
+];
+
+export const scrollBranchColorsDark: string[] = [
+  "#7d92ab",
+  "#70859e",
+  "#637891",
+  "#566b84",
+  "#495e77",
+  "#3c516a",
+  "#2f445d",
+  "#243650",
+  "#192843",
+];
+
 export const hero = {
   badge: "Available for freelance · Open to senior roles",
   headline: "Product-minded engineer building mobile-first experiences.",
@@ -67,21 +109,24 @@ export type Project = {
 export const projects: Project[] = [
   {
     name: "Northline Commerce",
-    summary: "Composable retail stack with a Flutter client and event-driven services.",
+    summary:
+      "Composable retail stack with a Flutter client and event-driven services.",
     role: "Lead engineer",
     outcome: "Cut checkout latency 38% and unified catalog across channels.",
     tags: ["Flutter", "Go", "PostgreSQL", "Kafka"],
   },
   {
     name: "Pulse Health Companion",
-    summary: "HIPAA-aware companion app with offline-first sync and clinician dashboards.",
+    summary:
+      "HIPAA-aware companion app with offline-first sync and clinician dashboards.",
     role: "Full-stack contractor",
     outcome: "Shipped MVP in 11 weeks with 4.8★ pilot cohort rating.",
     tags: ["Flutter", "Node", "Redis", "AWS"],
   },
   {
     name: "Atlas Field Ops",
-    summary: "Operations platform for distributed teams—mobile capture, web command center.",
+    summary:
+      "Operations platform for distributed teams—mobile capture, web command center.",
     role: "Product engineer",
     outcome: "Replaced three tools; ~120h/month saved in reporting workflows.",
     tags: ["React", "Dart", "gRPC", "Terraform"],
@@ -136,7 +181,13 @@ export type SkillGroup = { title: string; items: string[] };
 export const skillGroups: SkillGroup[] = [
   {
     title: "Mobile",
-    items: ["Flutter", "Dart", "iOS awareness", "Android tooling", "App Store flow"],
+    items: [
+      "Flutter",
+      "Dart",
+      "iOS awareness",
+      "Android tooling",
+      "App Store flow",
+    ],
   },
   {
     title: "Frontend",
@@ -193,6 +244,9 @@ export const contact = {
   socials: [
     { label: "GitHub", href: "https://github.com/placeholder" },
     { label: "LinkedIn", href: "https://linkedin.com/in/placeholder" },
-    { label: "Upwork", href: "https://www.upwork.com/freelancers/~placeholder" },
+    {
+      label: "Upwork",
+      href: "https://www.upwork.com/freelancers/~placeholder",
+    },
   ],
 };
