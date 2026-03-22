@@ -43,7 +43,7 @@ export function ProjectsSection() {
                 }
                 className={`group relative ${span}`}
               >
-                <div className="relative h-full overflow-hidden rounded-2xl border border-border-strong bg-surface-1 shadow-soft transition-[transform,border-color,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:border-accent/30 hover:shadow-glow">
+                <div className="glass-card relative h-full overflow-hidden rounded-2xl border border-border-strong shadow-soft transition-[transform,border-color,box-shadow] duration-500 ease-out hover:-translate-y-1 hover:border-accent/30 hover:shadow-glow">
                   <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-accent/[0.07] via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100 dark:from-accent/[0.05]" />
                   <div className="pointer-events-none absolute -right-20 -top-20 h-56 w-56 rounded-full bg-accent/10 blur-3xl opacity-40 transition-opacity duration-500 group-hover:opacity-70" />
 
@@ -67,7 +67,7 @@ export function ProjectsSection() {
                     <ul className="flex flex-wrap gap-2 md:max-w-xs md:justify-end">
                       {p.tags.map((t) => (
                         <li key={t}>
-                          <span className="inline-flex rounded-full border border-border bg-surface-2 px-3 py-1 text-xs font-medium text-fg-muted transition-colors duration-300 group-hover:border-accent/25 group-hover:text-fg">
+                          <span className="glass-pill inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-fg-muted transition-colors duration-300 group-hover:border-accent/25 group-hover:text-fg">
                             {t}
                           </span>
                         </li>

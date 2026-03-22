@@ -17,7 +17,7 @@ export function FreelanceSection() {
       ariaLabel="Freelance and clients"
     >
       <Container>
-        <div className="grid gap-12 overflow-hidden rounded-3xl border border-border-strong bg-surface-1 p-8 shadow-soft md:grid-cols-[1.1fr_0.9fr] md:p-12 lg:p-14">
+        <div className="glass-card grid gap-12 overflow-hidden rounded-3xl border border-border-strong p-8 shadow-soft md:grid-cols-[1.1fr_0.9fr] md:p-12 lg:p-14">
           <div className="relative">
             <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-accent/12 blur-3xl dark:bg-accent/10" />
             <SectionHeader
@@ -42,7 +42,7 @@ export function FreelanceSection() {
               ))}
             </motion.ul>
           </div>
-          <div className="flex flex-col justify-between gap-8 rounded-2xl border border-dashed border-border-strong bg-surface-2/50 p-8 dark:bg-surface-2/30">
+          <div className="glass-card-muted flex flex-col justify-between gap-8 rounded-2xl border border-dashed border-border-strong p-8">
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.22em] text-fg-subtle">
                 Upwork

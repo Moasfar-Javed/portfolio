@@ -38,7 +38,7 @@ export function SkillsSection() {
                       },
                     }
               }
-              className="rounded-2xl border border-border-strong bg-surface-1 p-6 shadow-soft"
+              className="glass-card rounded-2xl border border-border-strong p-6 shadow-soft"
             >
               <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-fg-subtle">
                 {g.title}
@@ -46,7 +46,7 @@ export function SkillsSection() {
               <ul className="mt-5 flex flex-wrap gap-2">
                 {g.items.map((item) => (
                   <li key={item}>
-                    <span className="inline-flex rounded-full border border-border bg-surface-2 px-3 py-1.5 text-xs font-medium text-fg-muted">
+                    <span className="glass-pill inline-flex rounded-full border border-border px-3 py-1.5 text-xs font-medium text-fg-muted">
                       {item}
                     </span>
                   </li>

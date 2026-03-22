@@ -28,7 +28,7 @@ export function TestimonialsSection() {
               whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true, margin: "-10%" }}
               transition={{ duration: 0.5, ease: easing, delay: i * 0.08 }}
-              className="flex h-full flex-col justify-between rounded-2xl border border-border-strong bg-surface-1 p-7 shadow-soft"
+              className="glass-card flex h-full flex-col justify-between rounded-2xl border border-border-strong p-7 shadow-soft"
             >
               <blockquote className="text-base leading-relaxed text-fg-muted">
                 “{t.quote}”

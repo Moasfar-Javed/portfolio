@@ -43,6 +43,10 @@
   --glow: rgba(37, 99, 235, 0.22);
   --shadow-soft: 0 1px 0 rgba(9, 9, 11, 0.04), 0 24px 48px -24px rgba(9, 9, 11, 0.12);
   --shadow-glow: 0 0 80px -20px var(--glow);
+  /* Frosted panels — keep fill faint so blur + canvas read as glass, not a solid tile */
+  --glass-surface: rgba(255, 255, 255, 0.16);
+  --glass-surface-muted: rgba(255, 255, 255, 0.1);
+  --glass-blur: 28px;
 }
 
 .dark {
@@ -60,12 +64,36 @@
   --glow: rgba(96, 165, 250, 0.18);
   --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 64px -32px rgba(0, 0, 0, 0.75);
   --shadow-glow: 0 0 100px -30px var(--glow);
+  --glass-surface: rgba(6, 6, 10, 0.22);
+  --glass-surface-muted: rgba(10, 10, 14, 0.14);
+  --glass-blur: 36px;
 }
 
 @media (pointer: fine) {
   html.custom-cursor-active,
   html.custom-cursor-active * {
     cursor: none !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .glass-card,
+  .glass-card-muted,
+  .glass-pill {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+
+  .glass-card {
+    background-color: color-mix(in srgb, var(--surface-1) 78%, transparent);
+  }
+
+  .glass-card-muted {
+    background-color: color-mix(in srgb, var(--surface-2) 70%, transparent);
+  }
+
+  .glass-pill {
+    background-color: color-mix(in srgb, var(--surface-2) 65%, transparent);
   }
 }
 
@@ -114,6 +142,35 @@
 }
 
 @layer components {
+  /**
+   * Glassmorphism for cards: blur samples the 3D canvas + page behind.
+   * Compose with border-border-strong + rounded-* + shadow-* in markup.
+   */
+  .glass-card {
+    background-color: var(--glass-surface);
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.28)
+      brightness(1.04);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.28) brightness(1.04);
+  }
+
+  .glass-card-muted {
+    background-color: var(--glass-surface-muted);
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.92)) saturate(1.2)
+      brightness(1.03);
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.92)) saturate(1.2)
+      brightness(1.03);
+  }
+
+  .glass-pill {
+    background-color: color-mix(in srgb, var(--surface-2) 32%, transparent);
+    -webkit-backdrop-filter: blur(14px) saturate(1.15);
+    backdrop-filter: blur(14px) saturate(1.15);
+  }
+
+  .dark .glass-pill {
+    background-color: color-mix(in srgb, var(--surface-2) 26%, transparent);
+  }
+
   .skip-link {
     position: absolute;
     width: 1px;

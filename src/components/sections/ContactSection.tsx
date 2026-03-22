@@ -12,7 +12,7 @@ export function ContactSection() {
   return (
     <SectionShell id="contact" className="py-24 md:py-32" ariaLabel="Contact">
       <Container>
-        <div className="relative overflow-hidden rounded-3xl border border-border-strong bg-surface-1 px-8 py-14 shadow-glow md:px-14 md:py-16">
+        <div className="glass-card relative overflow-hidden rounded-3xl border border-border-strong px-8 py-14 shadow-glow md:px-14 md:py-16">
           <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.2]" />
           <div className="pointer-events-none absolute -right-24 top-0 h-64 w-64 rounded-full bg-accent/15 blur-[100px] dark:bg-accent/12" />
           <div className="relative mx-auto max-w-2xl text-center">

@@ -35,7 +35,7 @@ export function ExperienceSection() {
               <span className="absolute left-0 top-2 flex h-5 w-5 items-center justify-center rounded-full border border-border-strong bg-surface-1 shadow-soft md:left-1">
                 <span className="h-2 w-2 rounded-full bg-accent/80" />
               </span>
-              <div className="flex flex-col gap-3 rounded-2xl border border-border-strong bg-surface-1 p-6 shadow-soft transition-[border-color,box-shadow] duration-500 hover:border-accent/25 md:flex-row md:items-start md:justify-between md:p-7">
+              <div className="glass-card flex flex-col gap-3 rounded-2xl border border-border-strong p-6 shadow-soft transition-[border-color,box-shadow] duration-500 hover:border-accent/25 md:flex-row md:items-start md:justify-between md:p-7">
                 <div>
                   <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-fg-subtle">
                     <span>{kindLabel[item.kind]}</span>

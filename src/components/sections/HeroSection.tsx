@@ -39,7 +39,7 @@ export function HeroSection() {
                     },
                   }
             }
-            className="mb-8 inline-flex items-center gap-2 rounded-full border border-border-strong bg-surface-1/80 px-3 py-1 text-xs font-medium text-fg-muted shadow-soft backdrop-blur-md"
+            className="glass-card mb-8 inline-flex items-center gap-2 rounded-full border border-border-strong px-3 py-1 text-xs font-medium text-fg-muted shadow-soft"
           >
             <span className="relative flex h-2 w-2">
               <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/50 opacity-60" />

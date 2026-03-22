@@ -38,7 +38,7 @@ export default function App() {
         <SiteHeader />
         <main id="main" className="relative z-10">
           <HeroSection />
-          <div id="graph-scope" ref={graphScopeRef} className="relative isolate">
+          <div id="graph-scope" ref={graphScopeRef} className="relative">
             <ScrollGitTree scopeRef={graphScopeRef} />
             <div className="relative z-10 min-w-0 lg:pl-[var(--graph-rail-width)]">
               <SectionDivider />

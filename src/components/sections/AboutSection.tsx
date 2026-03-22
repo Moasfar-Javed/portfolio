@@ -36,7 +36,7 @@ export function AboutSection() {
             {about.highlights.map((h) => (
               <li
                 key={h}
-                className="flex items-start gap-3 rounded-xl border border-border-strong bg-surface-1 px-4 py-3 text-sm text-fg shadow-soft"
+                className="glass-card flex items-start gap-3 rounded-xl border border-border-strong px-4 py-3 text-sm text-fg shadow-soft"
               >
                 <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
                 <span className="leading-snug text-fg-muted">{h}</span>

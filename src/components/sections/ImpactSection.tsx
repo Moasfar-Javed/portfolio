@@ -39,7 +39,7 @@ export function ImpactSection() {
                     }
               }
             >
-              <div className="group relative h-full overflow-hidden rounded-2xl border border-border-strong bg-surface-1 p-6 shadow-soft transition-[border-color,box-shadow] duration-500 hover:border-accent/25 hover:shadow-glow">
+              <div className="glass-card group relative h-full overflow-hidden rounded-2xl border border-border-strong p-6 shadow-soft transition-[border-color,box-shadow] duration-500 hover:border-accent/25 hover:shadow-glow">
                 <div className="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-accent/5 blur-2xl transition-opacity duration-500 group-hover:opacity-100" />
                 <p className="font-display text-3xl font-medium tracking-tight text-fg sm:text-4xl">
                   {m.value}

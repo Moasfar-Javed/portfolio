@@ -512,7 +512,7 @@ export function ScrollGitTree({
   return (
     <div
       id="scroll-git-rail"
-      className="pointer-events-none absolute left-0 top-0 z-30 hidden w-[var(--graph-rail-width)] overflow-visible lg:block"
+      className="pointer-events-none absolute left-0 top-0 z-30 isolate hidden w-[var(--graph-rail-width)] overflow-visible lg:block"
       style={{ height: "100%" }}
     >
       <div className="relative h-full w-full" aria-label="Section branches">
