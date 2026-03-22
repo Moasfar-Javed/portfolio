@@ -28,26 +28,34 @@ export function ImpactSection() {
           {metrics.map((m, i) => (
             <motion.li
               key={m.label}
-              variants={
-                reduce
-                  ? undefined
-                  : {
-                      hidden: { opacity: 0, y: 16 },
-                      show: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.5, ease: easing, delay: i * 0.06 },
-                      },
-                    }
-              }
+              variants={reduce ? undefined : { hidden: {}, show: {} }}
             >
               <SpotlightSurface
                 className={`glass-card h-full overflow-hidden rounded-2xl border border-border-strong p-6 shadow-soft ${GLASS_CARD_HOVER}`}
               >
-                <p className="font-display text-3xl font-medium tracking-tight text-fg sm:text-4xl">
-                  {m.value}
-                </p>
-                <p className="mt-3 text-sm leading-snug text-fg-muted">{m.label}</p>
+                <motion.div
+                  variants={
+                    reduce
+                      ? undefined
+                      : {
+                          hidden: { opacity: 0, y: 16 },
+                          show: {
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                              duration: 0.5,
+                              ease: easing,
+                              delay: i * 0.06,
+                            },
+                          },
+                        }
+                  }
+                >
+                  <p className="font-display text-3xl font-medium tracking-tight text-fg sm:text-4xl">
+                    {m.value}
+                  </p>
+                  <p className="mt-3 text-sm leading-snug text-fg-muted">{m.label}</p>
+                </motion.div>
               </SpotlightSurface>
             </motion.li>
           ))}

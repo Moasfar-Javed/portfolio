@@ -24,27 +24,28 @@ export function TestimonialsSection() {
         />
         <div className="grid gap-5 md:grid-cols-2">
           {testimonials.map((t, i) => (
-            <motion.figure
-              key={t.name}
-              initial={reduce ? false : { opacity: 0, y: 16 }}
-              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: "-10%" }}
-              transition={{ duration: 0.5, ease: easing, delay: i * 0.08 }}
-              className="m-0 h-full"
-            >
+            <figure key={t.name} className="m-0 h-full">
               <SpotlightSurface
                 className={`glass-card h-full overflow-hidden rounded-2xl border border-border-strong p-7 shadow-soft ${GLASS_CARD_HOVER}`}
-                innerClassName="flex h-full flex-col justify-between"
+                innerClassName="min-h-0 p-0"
               >
-                <blockquote className="text-base leading-relaxed text-fg-muted">
-                  “{t.quote}”
-                </blockquote>
-                <figcaption className="mt-8 text-sm">
-                  <span className="font-medium text-fg">{t.name}</span>
-                  <span className="mt-1 block text-fg-subtle">{t.role}</span>
-                </figcaption>
+                <motion.div
+                  className="relative z-[1] flex h-full min-h-0 flex-col justify-between"
+                  initial={reduce ? false : { opacity: 0, y: 16 }}
+                  whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10%" }}
+                  transition={{ duration: 0.5, ease: easing, delay: i * 0.08 }}
+                >
+                  <blockquote className="text-base leading-relaxed text-fg-muted">
+                    “{t.quote}”
+                  </blockquote>
+                  <figcaption className="mt-8 text-sm">
+                    <span className="font-medium text-fg">{t.name}</span>
+                    <span className="mt-1 block text-fg-subtle">{t.role}</span>
+                  </figcaption>
+                </motion.div>
               </SpotlightSurface>
-            </motion.figure>
+            </figure>
           ))}
         </div>
       </Container>

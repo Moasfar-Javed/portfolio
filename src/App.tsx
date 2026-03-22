@@ -14,6 +14,7 @@ import { SiteHeader } from "./components/layout/SiteHeader";
 import { SiteFooter } from "./components/layout/SiteFooter";
 import { HeroSection } from "./components/sections/HeroSection";
 import { ImpactSection } from "./components/sections/ImpactSection";
+import { HeroSectionDivider } from "./components/sections/HeroSectionDivider";
 import { SectionDivider } from "./components/sections/SectionDivider";
 import { AboutSection } from "./components/sections/AboutSection";
 import { ProjectsSection } from "./components/sections/ProjectsSection";
@@ -41,9 +42,13 @@ export default function App() {
         <main id="main" className="relative z-10">
           <HeroSection />
           <div id="graph-scope" ref={graphScopeRef} className="relative">
+            <div
+              className="post-hero-scrim-bridge pointer-events-none absolute inset-x-0 top-0 z-[1]"
+              aria-hidden
+            />
             <ScrollGitTree scopeRef={graphScopeRef} />
             <div className="relative z-10 min-w-0 lg:pl-[var(--graph-rail-width)]">
-              <SectionDivider />
+              <HeroSectionDivider />
               <ImpactSection />
               <SectionDivider />
               <AboutSection />

@@ -25,25 +25,27 @@ export function AboutSection() {
               ))}
             </div>
           </div>
-          <motion.ul
-            className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1"
-            initial={reduce ? false : { opacity: 0, y: 12 }}
-            whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-            viewport={{ once: true, margin: "-10%" }}
-            transition={{ duration: 0.55, ease: easing }}
-          >
-            {about.highlights.map((h) => (
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-1">
+            {about.highlights.map((h, i) => (
               <li key={h}>
                 <SpotlightSurface
                   className={`glass-card overflow-hidden rounded-xl border border-border-strong px-4 py-3 text-sm text-fg shadow-soft ${GLASS_CARD_HOVER}`}
-                  innerClassName="flex items-start gap-3"
+                  innerClassName="min-h-0 p-0"
                 >
-                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                  <span className="leading-snug text-fg-muted">{h}</span>
+                  <motion.div
+                    className="relative z-[1] flex min-h-0 items-start gap-3"
+                    initial={reduce ? false : { opacity: 0, y: 12 }}
+                    whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-10%" }}
+                    transition={{ duration: 0.55, ease: easing, delay: 0.05 * i }}
+                  >
+                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                    <span className="leading-snug text-fg-muted">{h}</span>
+                  </motion.div>
                 </SpotlightSurface>
               </li>
             ))}
-          </motion.ul>
+          </ul>
         </div>
       </Container>
     </SectionShell>

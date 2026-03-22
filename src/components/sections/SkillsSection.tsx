@@ -28,36 +28,46 @@ export function SkillsSection() {
           {skillGroups.map((g, gi) => (
             <motion.div
               key={g.title}
-              variants={
-                reduce
-                  ? undefined
-                  : {
-                      hidden: { opacity: 0, y: 18 },
-                      show: {
-                        opacity: 1,
-                        y: 0,
-                        transition: { duration: 0.5, ease: easing, delay: gi * 0.05 },
-                      },
-                    }
-              }
+              variants={reduce ? undefined : { hidden: {}, show: {} }}
             >
               <SpotlightSurface
                 className={`glass-card overflow-hidden rounded-2xl border border-border-strong p-6 shadow-soft ${GLASS_CARD_HOVER}`}
+                innerClassName="min-h-0 p-0"
               >
-                <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-fg-subtle">
-                  {g.title}
-                </h3>
-                <ul className="mt-5 flex flex-wrap gap-2">
-                {g.items.map((item) => (
-                  <li key={item}>
-                    <span
-                      className={`glass-pill inline-flex rounded-full border border-border px-3 py-1.5 text-xs font-medium text-fg-muted ${PILL_CHIP_HOVER}`}
-                    >
-                      {item}
-                    </span>
-                  </li>
-                ))}
-              </ul>
+                <motion.div
+                  className="relative z-[1] h-full min-h-0"
+                  variants={
+                    reduce
+                      ? undefined
+                      : {
+                          hidden: { opacity: 0, y: 18 },
+                          show: {
+                            opacity: 1,
+                            y: 0,
+                            transition: {
+                              duration: 0.5,
+                              ease: easing,
+                              delay: gi * 0.05,
+                            },
+                          },
+                        }
+                  }
+                >
+                  <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-fg-subtle">
+                    {g.title}
+                  </h3>
+                  <ul className="mt-5 flex flex-wrap gap-2">
+                    {g.items.map((item) => (
+                      <li key={item}>
+                        <span
+                          className={`glass-pill inline-flex rounded-full border border-border px-3 py-1.5 text-xs font-medium text-fg-muted ${PILL_CHIP_HOVER}`}
+                        >
+                          {item}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
               </SpotlightSurface>
             </motion.div>
           ))}

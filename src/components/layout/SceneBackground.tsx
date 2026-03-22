@@ -446,34 +446,38 @@ export function SceneBackground() {
   if (reduce || !fine) {
     return (
       <div
-        className="pointer-events-none fixed inset-0 -z-10 bg-surface-0"
+        className="pointer-events-none fixed inset-0 z-0 bg-surface-0"
         aria-hidden
       >
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,var(--glow),transparent)] opacity-70 dark:opacity-100" />
+        <div className="scene-stack-fade absolute inset-0">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_50%_at_50%_-20%,var(--glow),transparent)] opacity-70 dark:opacity-100" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 bg-surface-0" aria-hidden>
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,var(--glow),transparent)] opacity-50 dark:opacity-[0.85]" />
-      <Canvas
-        className="!absolute inset-0 h-full w-full"
-        camera={{ position: [2.35, 3.25, 4.85], fov: 42 }}
-        gl={{
-          alpha: true,
-          antialias: true,
-          powerPreference: "high-performance",
-        }}
-        dpr={[1, 1.6]}
-      >
-        <ScrollMorphScene
-          key={theme}
-          scrollYProgress={scrollYProgress}
-          primary={primary}
-          secondary={secondary}
-        />
-      </Canvas>
+    <div className="pointer-events-none fixed inset-0 z-0 bg-surface-0" aria-hidden>
+      <div className="scene-stack-fade absolute inset-0">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,var(--glow),transparent)] opacity-50 dark:opacity-[0.85]" />
+        <Canvas
+          className="!absolute inset-0 h-full w-full"
+          camera={{ position: [2.35, 3.25, 4.85], fov: 42 }}
+          gl={{
+            alpha: true,
+            antialias: true,
+            powerPreference: "high-performance",
+          }}
+          dpr={[1, 1.6]}
+        >
+          <ScrollMorphScene
+            key={theme}
+            scrollYProgress={scrollYProgress}
+            primary={primary}
+            secondary={secondary}
+          />
+        </Canvas>
+      </div>
     </div>
   );
 }

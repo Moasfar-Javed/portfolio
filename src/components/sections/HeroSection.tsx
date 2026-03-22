@@ -14,14 +14,13 @@ export function HeroSection() {
       className="relative overflow-hidden pt-28 pb-20 md:pt-36 md:pb-28"
       ariaLabel="Introduction"
     >
-      <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.35] dark:opacity-[0.2]" />
-      <div className="pointer-events-none absolute inset-0 bg-noise opacity-60" />
+      <div className="hero-backdrop-vanish pointer-events-none absolute inset-0">
+        <div className="absolute inset-0 bg-grid opacity-[0.35] dark:opacity-[0.2]" />
+        <div className="absolute inset-0 bg-noise opacity-60" />
+        <div className="hero-readability-scrim absolute inset-0" aria-hidden />
+      </div>
       <div className="pointer-events-none absolute -left-32 top-24 h-72 w-72 rounded-full bg-accent/15 blur-[100px] dark:bg-accent/12" />
       <div className="pointer-events-none absolute -right-24 bottom-10 h-80 w-80 rounded-full bg-accent/10 blur-[110px] dark:bg-accent/8" />
-      <div
-        className="hero-readability-scrim pointer-events-none absolute inset-0"
-        aria-hidden
-      />
 
       <Container className="relative z-10">
         <motion.div

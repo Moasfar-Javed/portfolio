@@ -31,24 +31,32 @@ export function ProjectsSection() {
             return (
               <motion.article
                 key={p.name}
-                variants={
-                  reduce
-                    ? undefined
-                    : {
-                        hidden: { opacity: 0, y: 22 },
-                        show: {
-                          opacity: 1,
-                          y: 0,
-                          transition: { duration: 0.55, ease: easing, delay: i * 0.08 },
-                        },
-                      }
-                }
+                variants={reduce ? undefined : { hidden: {}, show: {} }}
                 className={`relative ${span}`}
               >
                 <SpotlightSurface
                   className={`glass-card h-full overflow-hidden rounded-2xl border border-border-strong shadow-soft ${GLASS_CARD_HOVER}`}
-                  innerClassName="flex flex-col gap-6 p-7 md:flex-row md:items-start md:justify-between md:p-8"
+                  innerClassName="min-h-0 p-0"
                 >
+                  <motion.div
+                    className="relative z-[1] flex h-full min-h-0 flex-col gap-6 p-7 md:flex-row md:items-start md:justify-between md:p-8"
+                    variants={
+                      reduce
+                        ? undefined
+                        : {
+                            hidden: { opacity: 0, y: 22 },
+                            show: {
+                              opacity: 1,
+                              y: 0,
+                              transition: {
+                                duration: 0.55,
+                                ease: easing,
+                                delay: i * 0.08,
+                              },
+                            },
+                          }
+                    }
+                  >
                     <div className="max-w-xl">
                       <div className="flex flex-wrap items-center gap-2">
                         <span className="text-xs font-medium uppercase tracking-[0.2em] text-fg-subtle">
@@ -76,6 +84,7 @@ export function ProjectsSection() {
                         </li>
                       ))}
                     </ul>
+                  </motion.div>
                 </SpotlightSurface>
               </motion.article>
             );

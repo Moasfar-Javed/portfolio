@@ -96,9 +96,10 @@
   --glow: rgba(96, 165, 250, 0.18);
   --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 64px -32px rgba(0, 0, 0, 0.75);
   --shadow-glow: 0 0 100px -30px var(--glow);
-  --glass-surface: rgba(6, 6, 10, 0.10);
-  --glass-surface-muted: rgba(10, 10, 14, 0.06);
-  --glass-blur: 24px;
+  /* Dark: heavier tint — blur + WebGL often read as sharp lines on #030306 with a faint fill. */
+  --glass-surface: rgba(18, 18, 26, 0.82);
+  --glass-surface-muted: rgba(22, 22, 32, 0.72);
+  --glass-blur: 26px;
 }
 
 @media (pointer: fine) {
@@ -193,6 +194,17 @@
       brightness(1.03);
   }
 
+  /* Dark: avoid backdrop brightness() (barely lifts near-black) + slightly stronger blur/sat for readability */
+  .dark .glass-card {
+    -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(1.42);
+    backdrop-filter: blur(var(--glass-blur)) saturate(1.42);
+  }
+
+  .dark .glass-card-muted {
+    -webkit-backdrop-filter: blur(calc(var(--glass-blur) * 0.92)) saturate(1.32);
+    backdrop-filter: blur(calc(var(--glass-blur) * 0.92)) saturate(1.32);
+  }
+
   .glass-pill {
     background-color: color-mix(in srgb, var(--surface-2) 32%, transparent);
     -webkit-backdrop-filter: blur(14px) saturate(1.15);
@@ -215,6 +227,144 @@
       color-mix(in srgb, var(--surface-0) 38%, transparent) 48%,
       transparent 76%
     );
+  }
+
+  /**
+   * Masks stacked hero overlays so they ease out toward the section bottom instead of a sharp
+   * horizontal edge against the fixed scene.
+   */
+  .hero-backdrop-vanish {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.5) 70%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.5) 70%,
+      transparent 100%
+    );
+  }
+
+  /**
+   * Masks the fixed WebGL + radial glow stack toward the lower viewport. Where the camera leaves
+   * mostly empty frame (alpha → base color), this blends geometry into the page instead of a hard band.
+   */
+  .scene-stack-fade {
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.5) 72%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      #000 0%,
+      #000 50%,
+      rgba(0, 0, 0, 0.5) 72%,
+      transparent 100%
+    );
+  }
+
+  /**
+   * Continues the hero readability scrim into #graph-scope (painted above the hero in DOM) so the
+   * diagonal wash does not end in a horizontal seam at the section edge.
+   */
+  .post-hero-scrim-bridge {
+    height: min(42vh, 28rem);
+    background: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--surface-0) 96%, transparent) 0%,
+      color-mix(in srgb, var(--surface-0) 70%, transparent) 26%,
+      color-mix(in srgb, var(--surface-0) 38%, transparent) 48%,
+      transparent 76%
+    );
+    -webkit-mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.32) 50%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.32) 50%,
+      transparent 100%
+    );
+  }
+
+  /**
+   * Hero → content: sequential relay — chevron 0 lights up first, hands off to 1, then 2.
+   * Each row is active for the first ~35% of the shared period, then stays dark.
+   * Delay formula (i - N) * dur/N pre-offsets each row so they fire in order 0→1→2.
+   */
+  @keyframes hero-chevron-opacity-wave {
+    0% {
+      opacity: 0.10;
+    }
+    9% {
+      opacity: 0.72;
+    }
+    22% {
+      opacity: 0.72;
+    }
+    46% {
+      opacity: 0.10;
+    }
+    100% {
+      opacity: 0.10;
+    }
+  }
+
+  .hero-chevron-stack {
+    --hero-chevron-dur: 4.5s;
+    --hero-chevron-n: 3; /* overridable from markup */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-chevron-stack > .hero-chevron-row + .hero-chevron-row {
+    margin-top: -0.45rem;
+  }
+
+  @media (min-width: 640px) {
+    .hero-chevron-stack > .hero-chevron-row + .hero-chevron-row {
+      margin-top: -0.5rem;
+    }
+  }
+
+  .hero-chevron-row {
+    display: flex;
+    justify-content: center;
+    animation: hero-chevron-opacity-wave var(--hero-chevron-dur) linear infinite;
+    animation-delay: calc(
+      (var(--hero-chevron-i) - var(--hero-chevron-n)) * var(--hero-chevron-dur) /
+        var(--hero-chevron-n)
+    );
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero-chevron-row {
+      animation: none;
+    }
+
+    .hero-chevron-row:nth-child(1) {
+      opacity: 0.22;
+    }
+
+    .hero-chevron-row:nth-child(2) {
+      opacity: 0.38;
+    }
+
+    .hero-chevron-row:nth-child(3) {
+      opacity: 0.52;
+    }
   }
 
   /**
