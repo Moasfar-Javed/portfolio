@@ -1,7 +1,9 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { experience } from "../../data/site";
+import { GLASS_CARD_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
+import { SpotlightSurface } from "../ui/SpotlightSurface";
 import { SectionHeader } from "../ui/SectionHeader";
 import { SectionShell } from "./SectionShell";
 
@@ -35,7 +37,10 @@ export function ExperienceSection() {
               <span className="absolute left-0 top-2 flex h-5 w-5 items-center justify-center rounded-full border border-border-strong bg-surface-1 shadow-soft md:left-1">
                 <span className="h-2 w-2 rounded-full bg-accent/80" />
               </span>
-              <div className="glass-card flex flex-col gap-3 rounded-2xl border border-border-strong p-6 shadow-soft transition-[border-color,box-shadow] duration-500 hover:border-accent/25 md:flex-row md:items-start md:justify-between md:p-7">
+              <SpotlightSurface
+                className={`glass-card overflow-hidden rounded-2xl border border-border-strong p-6 shadow-soft md:p-7 ${GLASS_CARD_HOVER}`}
+                innerClassName="flex flex-col gap-3 md:flex-row md:items-start md:justify-between"
+              >
                 <div>
                   <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-fg-subtle">
                     <span>{kindLabel[item.kind]}</span>
@@ -50,7 +55,7 @@ export function ExperienceSection() {
                 <p className="max-w-xl text-sm leading-relaxed text-fg-muted md:text-right md:text-base">
                   {item.description}
                 </p>
-              </div>
+              </SpotlightSurface>
             </motion.li>
           ))}
         </ol>

@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { contact, siteMeta } from "../../data/site";
+import { LINK_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
 
@@ -31,7 +32,7 @@ export function SiteFooter() {
               <li key={s.label}>
                 <a
                   href={s.href}
-                  className="transition-colors hover:text-fg"
+                  className={LINK_HOVER}
                   target="_blank"
                   rel="noreferrer"
                 >

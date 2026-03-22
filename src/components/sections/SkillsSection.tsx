@@ -1,7 +1,9 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { skillGroups } from "../../data/site";
+import { GLASS_CARD_HOVER, PILL_CHIP_HOVER } from "../../lib/interactive";
 import { easing, staggerContainer } from "../../lib/motion";
 import { Container } from "../ui/Container";
+import { SpotlightSurface } from "../ui/SpotlightSurface";
 import { SectionHeader } from "../ui/SectionHeader";
 import { SectionShell } from "./SectionShell";
 
@@ -38,20 +40,25 @@ export function SkillsSection() {
                       },
                     }
               }
-              className="glass-card rounded-2xl border border-border-strong p-6 shadow-soft"
             >
-              <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-fg-subtle">
-                {g.title}
-              </h3>
-              <ul className="mt-5 flex flex-wrap gap-2">
+              <SpotlightSurface
+                className={`glass-card overflow-hidden rounded-2xl border border-border-strong p-6 shadow-soft ${GLASS_CARD_HOVER}`}
+              >
+                <h3 className="text-sm font-medium uppercase tracking-[0.2em] text-fg-subtle">
+                  {g.title}
+                </h3>
+                <ul className="mt-5 flex flex-wrap gap-2">
                 {g.items.map((item) => (
                   <li key={item}>
-                    <span className="glass-pill inline-flex rounded-full border border-border px-3 py-1.5 text-xs font-medium text-fg-muted">
+                    <span
+                      className={`glass-pill inline-flex rounded-full border border-border px-3 py-1.5 text-xs font-medium text-fg-muted ${PILL_CHIP_HOVER}`}
+                    >
                       {item}
                     </span>
                   </li>
                 ))}
               </ul>
+              </SpotlightSurface>
             </motion.div>
           ))}
         </motion.div>

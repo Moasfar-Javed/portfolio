@@ -116,12 +116,12 @@ export function SiteHeader() {
             <button
               type="button"
               onClick={toggleTheme}
-              className="flex h-10 w-10 items-center justify-center rounded-full border border-border-strong bg-surface-1 text-fg shadow-soft transition-colors hover:border-accent/35 hover:bg-surface-2"
+              className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border-strong bg-surface-1 text-fg shadow-soft transition-colors hover:border-accent/35 hover:bg-surface-2"
               aria-label={
                 theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
               }
             >
-              {theme === "dark" ? <SunIcon /> : <MoonIcon />}
+              <ThemeToggleGlyph theme={theme} reduceMotion={Boolean(reduce)} />
             </button>
 
             <button
@@ -218,33 +218,71 @@ export function SiteHeader() {
   );
 }
 
-function SunIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-      />
-      <path
-        d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinecap="round"
-      />
-    </svg>
-  );
-}
+/** Shown in header: sun when dark (switch to light), moon when light (switch to dark). */
+function ThemeToggleGlyph({
+  theme,
+  reduceMotion,
+}: {
+  theme: "light" | "dark";
+  reduceMotion: boolean;
+}) {
+  const t = reduceMotion ? { duration: 0 } : { duration: 0.32, ease: easing };
 
-function MoonIcon() {
+  /* Match mobile menu: w-5 column + h-0.5 (2px) bars → stroke ≈ 2.35 in 24px viewBox at 20px size */
+  const sw = 2.35;
+
   return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path
-        d="M21 14.5A8.5 8.5 0 0 1 9.5 3 6.5 6.5 0 1 0 21 14.5Z"
-        stroke="currentColor"
-        strokeWidth="1.5"
-        strokeLinejoin="round"
-      />
-    </svg>
+    <span className="relative flex h-5 w-5 items-center justify-center">
+      <AnimatePresence mode="wait" initial={false}>
+        {theme === "dark" ? (
+          <motion.span
+            key="to-light"
+            aria-hidden
+            className="absolute inset-0 flex items-center justify-center"
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.45, rotate: -100 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.55, rotate: 80 }}
+            transition={t}
+          >
+            <svg
+              className="h-full w-full"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={sw}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <circle cx="12" cy="12" r="3.65" />
+              <path d="M12 2v1.65M12 20.35V22M4.22 4.22l1.24 1.24M18.54 18.54l1.24 1.24M2 12h1.65M20.35 12H22M4.22 19.78l1.24-1.24M18.54 5.46l1.24-1.24" />
+            </svg>
+          </motion.span>
+        ) : (
+          <motion.span
+            key="to-dark"
+            aria-hidden
+            className="absolute inset-0 flex items-center justify-center"
+            initial={reduceMotion ? false : { opacity: 0, scale: 0.45, rotate: 100 }}
+            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.55, rotate: -80 }}
+            transition={t}
+          >
+            <svg
+              className="h-full w-full"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth={sw}
+              strokeLinecap="round"
+              strokeLinejoin="round"
+            >
+              <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+              <circle cx="17.25" cy="7.35" r="0.72" fill="currentColor" stroke="none" />
+              <circle cx="19.35" cy="10.15" r="0.55" fill="currentColor" stroke="none" />
+            </svg>
+          </motion.span>
+        )}
+      </AnimatePresence>
+    </span>
   );
 }

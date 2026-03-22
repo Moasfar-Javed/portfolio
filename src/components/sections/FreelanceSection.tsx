@@ -1,7 +1,9 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { freelance } from "../../data/site";
+import { GLASS_CARD_HOVER, INSET_PANEL_HOVER, ROW_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
+import { SpotlightSurface } from "../ui/SpotlightSurface";
 import { ButtonLink } from "../ui/ButtonLink";
 import { Reveal } from "../ui/Reveal";
 import { SectionHeader } from "../ui/SectionHeader";
@@ -17,8 +19,11 @@ export function FreelanceSection() {
       ariaLabel="Freelance and clients"
     >
       <Container>
-        <div className="glass-card grid gap-12 overflow-hidden rounded-3xl border border-border-strong p-8 shadow-soft md:grid-cols-[1.1fr_0.9fr] md:p-12 lg:p-14">
-          <div className="relative">
+        <SpotlightSurface
+          className={`glass-card overflow-hidden rounded-3xl border border-border-strong p-8 shadow-soft md:p-12 lg:p-14 ${GLASS_CARD_HOVER}`}
+          innerClassName="grid gap-12 md:grid-cols-[1.1fr_0.9fr]"
+        >
+          <div className="relative min-w-0">
             <div className="pointer-events-none absolute -left-10 -top-10 h-40 w-40 rounded-full bg-accent/12 blur-3xl dark:bg-accent/10" />
             <SectionHeader
               eyebrow="Clients"
@@ -34,7 +39,7 @@ export function FreelanceSection() {
             >
               {freelance.bullets.map((b, i) => (
                 <Reveal key={b} delay={0.05 * i}>
-                  <li className="flex gap-3">
+                  <li className={`flex gap-3 ${ROW_HOVER}`}>
                     <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
                     <span className="leading-relaxed">{b}</span>
                   </li>
@@ -42,7 +47,10 @@ export function FreelanceSection() {
               ))}
             </motion.ul>
           </div>
-          <div className="glass-card-muted flex flex-col justify-between gap-8 rounded-2xl border border-dashed border-border-strong p-8">
+          <SpotlightSurface
+            className={`glass-card-muted overflow-hidden rounded-2xl border border-dashed border-border-strong ${INSET_PANEL_HOVER}`}
+            innerClassName="flex flex-col justify-between gap-8 p-8"
+          >
             <div>
               <p className="text-xs font-medium uppercase tracking-[0.22em] text-fg-subtle">
                 Upwork
@@ -65,8 +73,8 @@ export function FreelanceSection() {
               {freelance.cta.label}
               <ArrowIcon />
             </ButtonLink>
-          </div>
-        </div>
+          </SpotlightSurface>
+        </SpotlightSurface>
       </Container>
     </SectionShell>
   );

@@ -9,6 +9,7 @@ const SceneBackground = lazy(() =>
   })),
 );
 import { ScrollGitTree } from "./components/layout/ScrollGitTree";
+import { BackToTop } from "./components/layout/BackToTop";
 import { SiteHeader } from "./components/layout/SiteHeader";
 import { SiteFooter } from "./components/layout/SiteFooter";
 import { HeroSection } from "./components/sections/HeroSection";
@@ -36,6 +37,7 @@ export default function App() {
           Skip to content
         </a>
         <SiteHeader />
+        <BackToTop />
         <main id="main" className="relative z-10">
           <HeroSection />
           <div id="graph-scope" ref={graphScopeRef} className="relative">

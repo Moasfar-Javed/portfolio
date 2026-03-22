@@ -1,7 +1,9 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { about } from "../../data/site";
+import { GLASS_CARD_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
+import { SpotlightSurface } from "../ui/SpotlightSurface";
 import { Reveal } from "../ui/Reveal";
 import { SectionHeader } from "../ui/SectionHeader";
 import { SectionShell } from "./SectionShell";
@@ -34,12 +36,14 @@ export function AboutSection() {
             transition={{ duration: 0.55, ease: easing }}
           >
             {about.highlights.map((h) => (
-              <li
-                key={h}
-                className="glass-card flex items-start gap-3 rounded-xl border border-border-strong px-4 py-3 text-sm text-fg shadow-soft"
-              >
-                <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
-                <span className="leading-snug text-fg-muted">{h}</span>
+              <li key={h}>
+                <SpotlightSurface
+                  className={`glass-card overflow-hidden rounded-xl border border-border-strong px-4 py-3 text-sm text-fg shadow-soft ${GLASS_CARD_HOVER}`}
+                  innerClassName="flex items-start gap-3"
+                >
+                  <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-accent" />
+                  <span className="leading-snug text-fg-muted">{h}</span>
+                </SpotlightSurface>
               </li>
             ))}
           </motion.ul>

@@ -27,6 +27,38 @@
   --radius-xl: 1.25rem;
 }
 
+/* Animated spotlight fill (see `.spotlight-surface__glow-*`); percentages are interpolable for slow drift. */
+@property --spotlight-g1x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 48%;
+}
+@property --spotlight-g1y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 46%;
+}
+@property --spotlight-g2x {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 58%;
+}
+@property --spotlight-g2y {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 52%;
+}
+@property --spotlight-spot-rx {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 100%;
+}
+@property --spotlight-spot-ry {
+  syntax: "<percentage>";
+  inherits: false;
+  initial-value: 86%;
+}
+
 :root {
   --graph-rail-width: 132px;
   color-scheme: light;
@@ -182,6 +214,127 @@
       color-mix(in srgb, var(--surface-0) 70%, transparent) 26%,
       color-mix(in srgb, var(--surface-0) 38%, transparent) 48%,
       transparent 76%
+    );
+  }
+
+  /**
+   * Spotlight cards (`SpotlightSurface`): muted fill + rim everywhere on hover, stronger at cursor.
+   * --spot-x / --spot-y are % from JS (sprung).
+   */
+  .spotlight-surface {
+    --spot-x: 50%;
+    --spot-y: 50%;
+  }
+
+  .spotlight-surface__glow-base {
+    background:
+      radial-gradient(
+        92% 78% at var(--spotlight-g2x) var(--spotlight-g2y),
+        color-mix(in srgb, var(--accent) 2.8%, transparent) 0%,
+        transparent 58%
+      ),
+      radial-gradient(
+        126% 116% at var(--spotlight-g1x) var(--spotlight-g1y),
+        color-mix(in srgb, var(--accent) 4%, transparent) 0%,
+        color-mix(in srgb, var(--accent) 1.6%, transparent) 52%,
+        transparent 78%
+      );
+    animation: spotlight-glow-base-fluid 15s ease-in-out infinite;
+  }
+
+  .spotlight-surface__glow-spot {
+    background: radial-gradient(
+      ellipse var(--spotlight-spot-rx) var(--spotlight-spot-ry) at var(--spot-x) var(--spot-y),
+      color-mix(in srgb, var(--accent) 16%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 5%, transparent) 30%,
+      transparent 46%
+    );
+    animation: spotlight-glow-spot-breathe 4.8s ease-in-out infinite;
+  }
+
+  /* Moving grain over the fill so the hotspot feels less like a static circle */
+  .spotlight-surface__glow-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+    background-size: 220px 220px;
+    background-repeat: repeat;
+    animation: spotlight-noise-swim 20s linear infinite;
+  }
+
+  @keyframes spotlight-glow-base-fluid {
+    0%,
+    100% {
+      --spotlight-g1x: 44%;
+      --spotlight-g1y: 42%;
+      --spotlight-g2x: 62%;
+      --spotlight-g2y: 56%;
+    }
+    33% {
+      --spotlight-g1x: 56%;
+      --spotlight-g1y: 48%;
+      --spotlight-g2x: 44%;
+      --spotlight-g2y: 44%;
+    }
+    66% {
+      --spotlight-g1x: 48%;
+      --spotlight-g1y: 56%;
+      --spotlight-g2x: 54%;
+      --spotlight-g2y: 50%;
+    }
+  }
+
+  @keyframes spotlight-glow-spot-breathe {
+    0%,
+    100% {
+      --spotlight-spot-rx: 90%;
+      --spotlight-spot-ry: 76%;
+    }
+    50% {
+      --spotlight-spot-rx: 112%;
+      --spotlight-spot-ry: 96%;
+    }
+  }
+
+  @keyframes spotlight-noise-swim {
+    0% {
+      background-position: 0 0;
+    }
+    100% {
+      background-position: 220px 180px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .spotlight-surface__glow-base,
+    .spotlight-surface__glow-spot,
+    .spotlight-surface__glow-noise {
+      animation: none;
+    }
+  }
+
+  .spotlight-surface__ring-base,
+  .spotlight-surface__ring-spot {
+    padding: 1px;
+    box-sizing: border-box;
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+  }
+
+  .spotlight-surface__ring-base {
+    background: color-mix(in srgb, var(--accent) 10%, transparent);
+  }
+
+  .spotlight-surface__ring-spot {
+    background: radial-gradient(
+      95% 95% at var(--spot-x) var(--spot-y),
+      color-mix(in srgb, var(--accent) 48%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 16%, transparent) 32%,
+      transparent 50%
     );
   }
 
