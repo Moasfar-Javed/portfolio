@@ -19,6 +19,9 @@ const STAGE_COUNT = 5;
 /** Uniform scale for all scroll stages (world units). */
 const SCENE_SCALE = 1.58;
 
+/** Stage-0 PCB sits screen-right at load so it clears hero copy; bus + board move together. */
+const PCB_WORLD_OFFSET: [number, number, number] = [1.52, 0, 0.34];
+
 /** Normalized weights peaking at t = 0, 0.25, …, 1 — order: PCB → phone → browser → server → database. */
 function scrollStageWeights(t: number, count: number): number[] {
   if (count <= 1) return [1];
@@ -112,7 +115,7 @@ function ScrollMorphScene({
 
   const camTargets = useMemo(
     () => [
-      new THREE.Vector3(2.35, 3.25, 4.85),
+      new THREE.Vector3(2.62, 2.88, 5.12),
       new THREE.Vector3(2.65, 1.55, 5.2),
       new THREE.Vector3(0.05, 0.15, 6.35),
       new THREE.Vector3(3.45, 1.85, 4.35),
@@ -123,7 +126,11 @@ function ScrollMorphScene({
 
   const lookTargets = useMemo(
     () => [
-      new THREE.Vector3(0, -0.12, 0),
+      new THREE.Vector3(
+        PCB_WORLD_OFFSET[0] - 0.04,
+        -0.08,
+        PCB_WORLD_OFFSET[2] + 0.02,
+      ),
       new THREE.Vector3(0, 0.05, 0),
       new THREE.Vector3(0, 0, 0),
       new THREE.Vector3(0, -0.08, 0),
@@ -142,13 +149,15 @@ function ScrollMorphScene({
 
   useFrame((_, delta) => {
     const t = scrollYProgress.get();
-    const w = scrollStageWeights(t, STAGE_COUNT);
+    const wMorph = scrollStageWeights(t, STAGE_COUNT);
+    /** Camera reaches the frontal “middle” framing sooner than morph weights (hero → centered). */
+    const wCam = scrollStageWeights(Math.min(1, t * 1.72), STAGE_COUNT);
 
     camAcc.current.set(0, 0, 0);
     lookAcc.current.set(0, 0, 0);
     for (let i = 0; i < STAGE_COUNT; i++) {
-      camAcc.current.addScaledVector(camTargets[i]!, w[i]!);
-      lookAcc.current.addScaledVector(lookTargets[i]!, w[i]!);
+      camAcc.current.addScaledVector(camTargets[i]!, wCam[i]!);
+      lookAcc.current.addScaledVector(lookTargets[i]!, wCam[i]!);
     }
 
     if (!camInit.current) {
@@ -162,14 +171,14 @@ function ScrollMorphScene({
     camera.position.copy(camSm.current);
     camera.lookAt(lookSm.current);
 
-    applyStageMorph(pcb.current, w[0]!);
-    applyStageMorph(phone.current, w[1]!);
-    applyStageMorph(browser.current, w[2]!);
-    applyStageMorph(server.current, w[3]!);
-    applyStageMorph(database.current, w[4]!);
+    applyStageMorph(pcb.current, wMorph[0]!);
+    applyStageMorph(phone.current, wMorph[1]!);
+    applyStageMorph(browser.current, wMorph[2]!);
+    applyStageMorph(server.current, wMorph[3]!);
+    applyStageMorph(database.current, wMorph[4]!);
 
-    fadeLineMaterials(pcb.current, w[0]!, 0.14);
-    fadeLineMaterials(database.current, w[4]!, 0.11);
+    fadeLineMaterials(pcb.current, wMorph[0]!, 0.14);
+    fadeLineMaterials(database.current, wMorph[4]!, 0.11);
 
     if (root.current) {
       root.current.rotation.y = t * 0.52 + Math.sin(performance.now() * 0.00035) * 0.04;
@@ -180,7 +189,7 @@ function ScrollMorphScene({
   return (
     <group ref={root} scale={SCENE_SCALE}>
       {/* 0 — board + package + bus */}
-      <group ref={pcb}>
+      <group ref={pcb} position={PCB_WORLD_OFFSET}>
         <group>
           <mesh
             userData={{ baseOpacity: 0.07 }}
@@ -462,7 +471,7 @@ export function SceneBackground() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,var(--glow),transparent)] opacity-50 dark:opacity-[0.85]" />
         <Canvas
           className="!absolute inset-0 h-full w-full"
-          camera={{ position: [2.35, 3.25, 4.85], fov: 42 }}
+          camera={{ position: [2.62, 2.88, 5.12], fov: 42 }}
           gl={{
             alpha: true,
             antialias: true,

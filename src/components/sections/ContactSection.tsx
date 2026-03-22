@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
-import portrait from "../../assets/hero.png";
+import portrait from "../../assets/pic.png";
 import { contact, siteMeta } from "../../data/site";
 import { GLASS_CARD_HOVER, LINK_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
@@ -29,14 +29,16 @@ export function ContactSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.45, ease: easing }}
             >
-              <img
-                src={portrait}
-                alt={`${siteMeta.name}, portrait`}
-                className="h-24 w-24 rounded-full border border-border-strong object-cover shadow-soft sm:h-28 sm:w-28"
-                width={112}
-                height={112}
-                decoding="async"
-              />
+              <div className="h-32 w-32 overflow-hidden rounded-full border border-border-strong bg-[#3B4046] shadow-soft ring-1 ring-border sm:h-40 sm:w-40">
+                <img
+                  src={portrait}
+                  alt={`${siteMeta.name}, portrait`}
+                  className="h-full w-full object-cover object-center"
+                  width={160}
+                  height={160}
+                  decoding="async"
+                />
+              </div>
             </motion.div>
             <motion.p
               className="text-xs font-medium uppercase tracking-[0.24em] text-fg-subtle"

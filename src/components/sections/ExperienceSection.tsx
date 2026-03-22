@@ -3,7 +3,7 @@ import { experience } from "../../data/site";
 import { GLASS_CARD_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
-import { SpotlightSurface } from "../ui/SpotlightSurface";
+import { TiltCard } from "../ui/TiltCard";
 import { SectionHeader } from "../ui/SectionHeader";
 import { SectionShell } from "./SectionShell";
 
@@ -33,33 +33,34 @@ export function ExperienceSection() {
               <span className="absolute left-0 top-2 flex h-5 w-5 items-center justify-center rounded-full border border-border-strong bg-surface-1 shadow-soft md:left-1">
                 <span className="h-2 w-2 rounded-full bg-accent/80" />
               </span>
-              <SpotlightSurface
-                className={`glass-card overflow-hidden rounded-2xl border border-border-strong p-6 shadow-soft md:p-7 ${GLASS_CARD_HOVER}`}
-                innerClassName="min-h-0 p-0"
-              >
-                <motion.div
-                  className="relative z-[1] flex min-h-0 flex-col gap-3 md:flex-row md:items-start md:justify-between"
-                  initial={reduce ? false : { opacity: 0, y: 18 }}
-                  whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
-                  viewport={{ once: true, margin: "-12%" }}
-                  transition={{ duration: 0.5, ease: easing, delay: i * 0.06 }}
+              <TiltCard>
+                <div
+                  className={`glass-card overflow-hidden rounded-2xl border border-border-strong p-6 shadow-soft md:p-7 ${GLASS_CARD_HOVER}`}
                 >
-                  <div>
-                    <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-fg-subtle">
-                      <span>{kindLabel[item.kind]}</span>
-                      <span className="text-border-strong">·</span>
-                      <span>{item.period}</span>
+                  <motion.div
+                    className="relative z-[1] flex min-h-0 flex-col gap-3 md:flex-row md:items-start md:justify-between"
+                    initial={reduce ? false : { opacity: 0, y: 18 }}
+                    whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-12%" }}
+                    transition={{ duration: 0.5, ease: easing, delay: i * 0.06 }}
+                  >
+                    <div>
+                      <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-[0.18em] text-fg-subtle">
+                        <span>{kindLabel[item.kind]}</span>
+                        <span className="text-border-strong">·</span>
+                        <span>{item.period}</span>
+                      </div>
+                      <h3 className="mt-3 font-display text-xl font-medium tracking-tight text-fg">
+                        {item.title}
+                      </h3>
+                      <p className="mt-1 text-sm text-fg-muted">{item.org}</p>
                     </div>
-                    <h3 className="mt-3 font-display text-xl font-medium tracking-tight text-fg">
-                      {item.title}
-                    </h3>
-                    <p className="mt-1 text-sm text-fg-muted">{item.org}</p>
-                  </div>
-                  <p className="max-w-xl text-sm leading-relaxed text-fg-muted md:text-right md:text-base">
-                    {item.description}
-                  </p>
-                </motion.div>
-              </SpotlightSurface>
+                    <p className="max-w-xl text-sm leading-relaxed text-fg-muted md:text-right md:text-base">
+                      {item.description}
+                    </p>
+                  </motion.div>
+                </div>
+              </TiltCard>
             </li>
           ))}
         </ol>

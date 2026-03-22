@@ -58,22 +58,17 @@ export function SiteHeader() {
         <Container className="flex h-16 items-center justify-between gap-4 md:h-[4.5rem]">
           <a
             href="#hero"
-            className="group flex items-center gap-2 rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="group flex flex-col rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             onClick={(e) => {
               e.preventDefault();
               scrollTo("#hero");
             }}
           >
-            <span className="flex h-8 w-8 items-center justify-center rounded-lg border border-border-strong bg-surface-1 text-xs font-semibold tracking-tight text-fg shadow-soft">
-              AC
+            <span className="text-sm font-medium tracking-tight text-fg">
+              {siteMeta.shortTitle}
             </span>
-            <span className="hidden flex-col sm:flex">
-              <span className="text-sm font-medium tracking-tight text-fg">
-                {siteMeta.shortTitle}
-              </span>
-              <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-fg-subtle">
-                {siteMeta.tagline}
-              </span>
+            <span className="text-[11px] font-medium uppercase tracking-[0.18em] text-fg-subtle">
+              {siteMeta.tagline}
             </span>
           </a>
 
@@ -88,9 +83,7 @@ export function SiteHeader() {
                   key={item.id}
                   href={item.href}
                   className={`relative rounded-full px-3 py-1.5 text-sm transition-colors ${
-                    active
-                      ? "text-fg"
-                      : "text-fg-muted hover:text-fg"
+                    active ? "text-fg" : "text-fg-muted hover:text-fg"
                   }`}
                   onClick={(e) => {
                     e.preventDefault();
@@ -101,7 +94,11 @@ export function SiteHeader() {
                     <motion.span
                       layoutId="nav-pill"
                       className="absolute inset-0 -z-10 rounded-full border border-border-strong bg-surface-1 shadow-soft"
-                      transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                      transition={{
+                        type: "spring",
+                        stiffness: 380,
+                        damping: 32,
+                      }}
                     />
                   ) : active ? (
                     <span className="absolute inset-0 -z-10 rounded-full border border-border-strong bg-surface-1 shadow-soft" />
@@ -118,7 +115,9 @@ export function SiteHeader() {
               onClick={toggleTheme}
               className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border-strong bg-surface-1 text-fg shadow-soft transition-colors hover:border-accent/35 hover:bg-surface-2"
               aria-label={
-                theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+                theme === "dark"
+                  ? "Switch to light mode"
+                  : "Switch to dark mode"
               }
             >
               <ThemeToggleGlyph theme={theme} reduceMotion={Boolean(reduce)} />
@@ -239,9 +238,13 @@ function ThemeToggleGlyph({
             key="to-light"
             aria-hidden
             className="absolute inset-0 flex items-center justify-center"
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.45, rotate: -100 }}
+            initial={
+              reduceMotion ? false : { opacity: 0, scale: 0.45, rotate: -100 }
+            }
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.55, rotate: 80 }}
+            exit={
+              reduceMotion ? undefined : { opacity: 0, scale: 0.55, rotate: 80 }
+            }
             transition={t}
           >
             <svg
@@ -262,9 +265,15 @@ function ThemeToggleGlyph({
             key="to-dark"
             aria-hidden
             className="absolute inset-0 flex items-center justify-center"
-            initial={reduceMotion ? false : { opacity: 0, scale: 0.45, rotate: 100 }}
+            initial={
+              reduceMotion ? false : { opacity: 0, scale: 0.45, rotate: 100 }
+            }
             animate={{ opacity: 1, scale: 1, rotate: 0 }}
-            exit={reduceMotion ? undefined : { opacity: 0, scale: 0.55, rotate: -80 }}
+            exit={
+              reduceMotion
+                ? undefined
+                : { opacity: 0, scale: 0.55, rotate: -80 }
+            }
             transition={t}
           >
             <svg
@@ -277,8 +286,20 @@ function ThemeToggleGlyph({
               strokeLinejoin="round"
             >
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-              <circle cx="17.25" cy="7.35" r="0.72" fill="currentColor" stroke="none" />
-              <circle cx="19.35" cy="10.15" r="0.55" fill="currentColor" stroke="none" />
+              <circle
+                cx="17.25"
+                cy="7.35"
+                r="0.72"
+                fill="currentColor"
+                stroke="none"
+              />
+              <circle
+                cx="19.35"
+                cy="10.15"
+                r="0.55"
+                fill="currentColor"
+                stroke="none"
+              />
             </svg>
           </motion.span>
         )}

@@ -3,7 +3,7 @@ import { projects } from "../../data/site";
 import { GLASS_CARD_HOVER, PILL_CHIP_HOVER } from "../../lib/interactive";
 import { easing, staggerContainer } from "../../lib/motion";
 import { Container } from "../ui/Container";
-import { SpotlightSurface } from "../ui/SpotlightSurface";
+import { TiltCard } from "../ui/TiltCard";
 import { SectionHeader } from "../ui/SectionHeader";
 import { SectionShell } from "./SectionShell";
 
@@ -34,58 +34,59 @@ export function ProjectsSection() {
                 variants={reduce ? undefined : { hidden: {}, show: {} }}
                 className={`relative ${span}`}
               >
-                <SpotlightSurface
-                  className={`glass-card h-full overflow-hidden rounded-2xl border border-border-strong shadow-soft ${GLASS_CARD_HOVER}`}
-                  innerClassName="min-h-0 p-0"
-                >
-                  <motion.div
-                    className="relative z-[1] flex h-full min-h-0 flex-col gap-6 p-7 md:flex-row md:items-start md:justify-between md:p-8"
-                    variants={
-                      reduce
-                        ? undefined
-                        : {
-                            hidden: { opacity: 0, y: 22 },
-                            show: {
-                              opacity: 1,
-                              y: 0,
-                              transition: {
-                                duration: 0.55,
-                                ease: easing,
-                                delay: i * 0.08,
-                              },
-                            },
-                          }
-                    }
+                <TiltCard className="h-full">
+                  <div
+                    className={`glass-card h-full overflow-hidden rounded-2xl border border-border-strong shadow-soft ${GLASS_CARD_HOVER}`}
                   >
-                    <div className="max-w-xl">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="text-xs font-medium uppercase tracking-[0.2em] text-fg-subtle">
-                          {p.role}
-                        </span>
-                        <span className="h-1 w-1 rounded-full bg-border-strong" aria-hidden />
-                        <span className="text-xs text-fg-subtle">Featured build</span>
-                      </div>
-                      <h3 className="mt-4 font-display text-2xl font-medium tracking-tight text-fg md:text-3xl">
-                        {p.name}
-                      </h3>
-                      <p className="mt-3 text-sm leading-relaxed text-fg-muted md:text-base">
-                        {p.summary}
-                      </p>
-                      <p className="mt-4 text-sm font-medium text-fg">{p.outcome}</p>
-                    </div>
-                    <ul className="flex flex-wrap gap-2 md:max-w-xs md:justify-end">
-                      {p.tags.map((t) => (
-                        <li key={t}>
-                          <span
-                            className={`glass-pill inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-fg-muted ${PILL_CHIP_HOVER}`}
-                          >
-                            {t}
+                    <motion.div
+                      className="relative z-[1] flex h-full min-h-0 flex-col gap-6 p-7 md:flex-row md:items-start md:justify-between md:p-8"
+                      variants={
+                        reduce
+                          ? undefined
+                          : {
+                              hidden: { opacity: 0, y: 22 },
+                              show: {
+                                opacity: 1,
+                                y: 0,
+                                transition: {
+                                  duration: 0.55,
+                                  ease: easing,
+                                  delay: i * 0.08,
+                                },
+                              },
+                            }
+                      }
+                    >
+                      <div className="max-w-xl">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="text-xs font-medium uppercase tracking-[0.2em] text-fg-subtle">
+                            {p.role}
                           </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </motion.div>
-                </SpotlightSurface>
+                          <span className="h-1 w-1 rounded-full bg-border-strong" aria-hidden />
+                          <span className="text-xs text-fg-subtle">Featured build</span>
+                        </div>
+                        <h3 className="mt-4 font-display text-2xl font-medium tracking-tight text-fg md:text-3xl">
+                          {p.name}
+                        </h3>
+                        <p className="mt-3 text-sm leading-relaxed text-fg-muted md:text-base">
+                          {p.summary}
+                        </p>
+                        <p className="mt-4 text-sm font-medium text-fg">{p.outcome}</p>
+                      </div>
+                      <ul className="flex flex-wrap gap-2 md:max-w-xs md:justify-end">
+                        {p.tags.map((t) => (
+                          <li key={t}>
+                            <span
+                              className={`glass-pill inline-flex rounded-full border border-border px-3 py-1 text-xs font-medium text-fg-muted ${PILL_CHIP_HOVER}`}
+                            >
+                              {t}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
+                    </motion.div>
+                  </div>
+                </TiltCard>
               </motion.article>
             );
           })}

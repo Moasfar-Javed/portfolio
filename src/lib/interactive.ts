@@ -2,9 +2,9 @@
 export const GLASS_CARD_HOVER =
   "transition-[box-shadow] duration-500 ease-out hover:shadow-soft";
 
-/** Tags / chips: respond to pointer or parent `group` hover */
+/** Tags / chips: pointer or parent `group` hover. */
 export const PILL_CHIP_HOVER =
-  "transition-[border-color,color] duration-300 hover:border-accent/25 hover:text-fg group-hover:border-accent/25 group-hover:text-fg";
+  "transition-[border-color,border-width,color] duration-300 hover:border-2 hover:border-accent/50 hover:text-fg group-hover:border-2 group-hover:border-accent/50 group-hover:text-fg";
 
 /** Muted inset panels (dashed card, etc.) */
 export const INSET_PANEL_HOVER =
