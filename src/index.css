@@ -44,9 +44,9 @@
   --shadow-soft: 0 1px 0 rgba(9, 9, 11, 0.04), 0 24px 48px -24px rgba(9, 9, 11, 0.12);
   --shadow-glow: 0 0 80px -20px var(--glow);
   /* Frosted panels — keep fill faint so blur + canvas read as glass, not a solid tile */
-  --glass-surface: rgba(255, 255, 255, 0.16);
-  --glass-surface-muted: rgba(255, 255, 255, 0.1);
-  --glass-blur: 28px;
+  --glass-surface: rgba(255, 255, 255, 0.07);
+  --glass-surface-muted: rgba(255, 255, 255, 0.04);
+  --glass-blur: 20px;
 }
 
 .dark {
@@ -64,9 +64,9 @@
   --glow: rgba(96, 165, 250, 0.18);
   --shadow-soft: 0 1px 0 rgba(255, 255, 255, 0.04) inset, 0 24px 64px -32px rgba(0, 0, 0, 0.75);
   --shadow-glow: 0 0 100px -30px var(--glow);
-  --glass-surface: rgba(6, 6, 10, 0.22);
-  --glass-surface-muted: rgba(10, 10, 14, 0.14);
-  --glass-blur: 36px;
+  --glass-surface: rgba(6, 6, 10, 0.10);
+  --glass-surface-muted: rgba(10, 10, 14, 0.06);
+  --glass-blur: 24px;
 }
 
 @media (pointer: fine) {
@@ -85,15 +85,15 @@
   }
 
   .glass-card {
-    background-color: color-mix(in srgb, var(--surface-1) 78%, transparent);
+    background-color: color-mix(in srgb, var(--surface-1) 40%, transparent);
   }
 
   .glass-card-muted {
-    background-color: color-mix(in srgb, var(--surface-2) 70%, transparent);
+    background-color: color-mix(in srgb, var(--surface-2) 32%, transparent);
   }
 
   .glass-pill {
-    background-color: color-mix(in srgb, var(--surface-2) 65%, transparent);
+    background-color: color-mix(in srgb, var(--surface-2) 28%, transparent);
   }
 }
 
@@ -169,6 +169,20 @@
 
   .dark .glass-pill {
     background-color: color-mix(in srgb, var(--surface-2) 26%, transparent);
+  }
+
+  /**
+   * Hero: darken / wash the page background on the left so copy stays readable over the 3D scene.
+   * Uses --surface-0 so light + dark themes both get an appropriate tint.
+   */
+  .hero-readability-scrim {
+    background: linear-gradient(
+      100deg,
+      color-mix(in srgb, var(--surface-0) 96%, transparent) 0%,
+      color-mix(in srgb, var(--surface-0) 70%, transparent) 26%,
+      color-mix(in srgb, var(--surface-0) 38%, transparent) 48%,
+      transparent 76%
+    );
   }
 
   .skip-link {

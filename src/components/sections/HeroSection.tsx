@@ -18,8 +18,12 @@ export function HeroSection() {
       <div className="pointer-events-none absolute inset-0 bg-noise opacity-60" />
       <div className="pointer-events-none absolute -left-32 top-24 h-72 w-72 rounded-full bg-accent/15 blur-[100px] dark:bg-accent/12" />
       <div className="pointer-events-none absolute -right-24 bottom-10 h-80 w-80 rounded-full bg-accent/10 blur-[110px] dark:bg-accent/8" />
+      <div
+        className="hero-readability-scrim pointer-events-none absolute inset-0"
+        aria-hidden
+      />
 
-      <Container className="relative">
+      <Container className="relative z-10">
         <motion.div
           variants={reduce ? undefined : staggerContainer}
           initial={reduce ? false : "hidden"}
