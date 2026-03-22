@@ -230,25 +230,34 @@
     background:
       radial-gradient(
         92% 78% at var(--spotlight-g2x) var(--spotlight-g2y),
-        color-mix(in srgb, var(--accent) 2.8%, transparent) 0%,
+        color-mix(in srgb, var(--accent) 3.4%, transparent) 0%,
         transparent 58%
       ),
       radial-gradient(
         126% 116% at var(--spotlight-g1x) var(--spotlight-g1y),
-        color-mix(in srgb, var(--accent) 4%, transparent) 0%,
-        color-mix(in srgb, var(--accent) 1.6%, transparent) 52%,
+        color-mix(in srgb, var(--accent) 5%, transparent) 0%,
+        color-mix(in srgb, var(--accent) 2.2%, transparent) 52%,
         transparent 78%
       );
     animation: spotlight-glow-base-fluid 15s ease-in-out infinite;
   }
 
   .spotlight-surface__glow-spot {
-    background: radial-gradient(
-      ellipse var(--spotlight-spot-rx) var(--spotlight-spot-ry) at var(--spot-x) var(--spot-y),
-      color-mix(in srgb, var(--accent) 16%, transparent) 0%,
-      color-mix(in srgb, var(--accent) 5%, transparent) 30%,
-      transparent 46%
-    );
+    background:
+      /* Edge-bleed: faint wash so the cursor read stays atmospheric, not a paint blob */
+      radial-gradient(
+        ellipse 160% 140% at var(--spot-x) var(--spot-y),
+        color-mix(in srgb, var(--accent) 2.2%, transparent) 0%,
+        transparent 66%
+      ),
+      /* Core: tint into the card surface — accent is a bias, not a solid core */
+      radial-gradient(
+        ellipse var(--spotlight-spot-rx) var(--spotlight-spot-ry) at var(--spot-x) var(--spot-y),
+        color-mix(in srgb, var(--surface-1) 90%, var(--accent) 10%) 0%,
+        color-mix(in srgb, var(--surface-1) 94%, var(--accent) 6%) 32%,
+        color-mix(in srgb, var(--accent) 3.6%, transparent) 54%,
+        transparent 74%
+      );
     animation: spotlight-glow-spot-breathe 4.8s ease-in-out infinite;
   }
 
@@ -285,12 +294,12 @@
   @keyframes spotlight-glow-spot-breathe {
     0%,
     100% {
-      --spotlight-spot-rx: 90%;
-      --spotlight-spot-ry: 76%;
+      --spotlight-spot-rx: 72%;
+      --spotlight-spot-ry: 58%;
     }
     50% {
-      --spotlight-spot-rx: 112%;
-      --spotlight-spot-ry: 96%;
+      --spotlight-spot-rx: 98%;
+      --spotlight-spot-ry: 82%;
     }
   }
 
@@ -331,10 +340,11 @@
 
   .spotlight-surface__ring-spot {
     background: radial-gradient(
-      95% 95% at var(--spot-x) var(--spot-y),
-      color-mix(in srgb, var(--accent) 48%, transparent) 0%,
-      color-mix(in srgb, var(--accent) 16%, transparent) 32%,
-      transparent 50%
+      130% 130% at var(--spot-x) var(--spot-y),
+      color-mix(in srgb, var(--accent) 18%, transparent) 0%,
+      color-mix(in srgb, var(--accent) 9%, transparent) 26%,
+      color-mix(in srgb, var(--accent) 4.5%, transparent) 48%,
+      transparent 62%
     );
   }
 

@@ -135,23 +135,23 @@ export function SpotlightSurface({
       {...rest}
     >
       <div
-        className="spotlight-surface__glow-base pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 transition-opacity duration-[480ms] ease-out group-hover:opacity-100"
+        className="spotlight-surface__glow-base pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 transition-opacity duration-[480ms] ease-out group-hover:opacity-[0.72]"
         aria-hidden
       />
       <div
-        className="spotlight-surface__glow-spot pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 transition-opacity duration-[480ms] ease-out group-hover:opacity-[0.88]"
+        className="spotlight-surface__glow-spot pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 transition-opacity duration-[480ms] ease-out group-hover:opacity-[0.68]"
         aria-hidden
       />
       <div
-        className="spotlight-surface__glow-noise pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 mix-blend-soft-light transition-opacity duration-[480ms] ease-out group-hover:opacity-[0.5] dark:mix-blend-overlay"
+        className="spotlight-surface__glow-noise pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 mix-blend-soft-light transition-opacity duration-[480ms] ease-out group-hover:opacity-[0.42] dark:mix-blend-overlay"
         aria-hidden
       />
       <div
-        className="spotlight-surface__ring-base pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-100"
+        className="spotlight-surface__ring-base pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-[0.88]"
         aria-hidden
       />
       <div
-        className="spotlight-surface__ring-spot pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-[0.92]"
+        className="spotlight-surface__ring-spot pointer-events-none absolute inset-0 z-0 rounded-[inherit] opacity-0 transition-opacity duration-300 ease-out group-hover:opacity-[0.72]"
         aria-hidden
       />
       <div

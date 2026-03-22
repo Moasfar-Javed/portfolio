@@ -1,6 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { freelance } from "../../data/site";
-import { GLASS_CARD_HOVER, INSET_PANEL_HOVER, ROW_HOVER } from "../../lib/interactive";
+import { GLASS_CARD_HOVER, ROW_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
 import { SpotlightSurface } from "../ui/SpotlightSurface";
@@ -47,18 +47,15 @@ export function FreelanceSection() {
               ))}
             </motion.ul>
           </div>
-          <SpotlightSurface
-            className={`glass-card-muted overflow-hidden rounded-2xl border border-dashed border-border-strong ${INSET_PANEL_HOVER}`}
-            innerClassName="flex flex-col justify-between gap-8 p-8"
-          >
+          <div className="flex flex-col justify-between gap-8 overflow-hidden rounded-2xl border border-dashed border-border-strong bg-surface-1 p-8 transition-[background-color,border-color] duration-500 ease-out group-hover:border-border group-hover:bg-fg dark:bg-surface-2/70 dark:group-hover:border-border-strong dark:group-hover:bg-fg">
             <div>
-              <p className="text-xs font-medium uppercase tracking-[0.22em] text-fg-subtle">
+              <p className="text-xs font-medium uppercase tracking-[0.22em] text-fg-subtle transition-colors duration-500 group-hover:text-surface-0/55">
                 Upwork
               </p>
-              <p className="mt-4 font-display text-2xl font-medium tracking-tight text-fg">
+              <p className="mt-4 font-display text-2xl font-medium tracking-tight text-fg transition-colors duration-500 group-hover:text-surface-0">
                 Long-term partners, not one-off tickets.
               </p>
-              <p className="mt-3 text-sm leading-relaxed text-fg-muted">
+              <p className="mt-3 text-sm leading-relaxed text-fg-muted transition-colors duration-500 group-hover:text-surface-0/78">
                 Public profile placeholder—swap the URL when you are ready to route
                 real traffic.
               </p>
@@ -67,13 +64,13 @@ export function FreelanceSection() {
               href={freelance.cta.href}
               variant="primary"
               external
-              className="self-start"
+              className="self-start transition-colors duration-500 group-hover:border-transparent group-hover:bg-surface-0 group-hover:text-fg group-hover:hover:bg-surface-0/92 dark:group-hover:bg-surface-0 dark:group-hover:text-fg dark:group-hover:hover:bg-surface-0/88"
               magnetic
             >
               {freelance.cta.label}
               <ArrowIcon />
             </ButtonLink>
-          </SpotlightSurface>
+          </div>
         </SpotlightSurface>
       </Container>
     </SectionShell>
