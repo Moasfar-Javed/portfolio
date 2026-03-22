@@ -16,10 +16,7 @@ export function AboutSection() {
       <Container>
         <div className="grid gap-14 lg:grid-cols-[1.1fr_0.9fr] lg:items-start">
           <div>
-            <SectionHeader
-              eyebrow="Positioning"
-              title={about.title}
-            />
+            <SectionHeader eyebrow="Positioning" title={about.title} />
             <div className="space-y-5 text-base leading-relaxed text-fg-muted">
               {about.paragraphs.map((p, i) => (
                 <Reveal key={i} delay={0.06 * i}>

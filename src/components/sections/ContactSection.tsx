@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { contact } from "../../data/site";
+import portrait from "../../assets/hero.png";
+import { contact, siteMeta } from "../../data/site";
 import { GLASS_CARD_HOVER, LINK_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
@@ -21,12 +22,28 @@ export function ContactSection() {
           <div className="pointer-events-none absolute inset-0 bg-grid opacity-[0.2]" />
           <div className="pointer-events-none absolute -right-24 top-0 h-64 w-64 rounded-full bg-accent/15 blur-[100px] dark:bg-accent/12" />
           <div className="relative z-10 mx-auto max-w-2xl text-center">
+            <motion.div
+              className="mx-auto mb-8 flex justify-center"
+              initial={reduce ? false : { opacity: 0, y: 8 }}
+              whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, ease: easing }}
+            >
+              <img
+                src={portrait}
+                alt={`${siteMeta.name}, portrait`}
+                className="h-24 w-24 rounded-full border border-border-strong object-cover shadow-soft sm:h-28 sm:w-28"
+                width={112}
+                height={112}
+                decoding="async"
+              />
+            </motion.div>
             <motion.p
               className="text-xs font-medium uppercase tracking-[0.24em] text-fg-subtle"
               initial={reduce ? false : { opacity: 0, y: 8 }}
               whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              transition={{ duration: 0.45, ease: easing }}
+              transition={{ duration: 0.45, ease: easing, delay: 0.04 }}
             >
               Contact
             </motion.p>
@@ -59,7 +76,9 @@ export function ContactSection() {
                 Email me
               </ButtonLink>
               <ButtonLink
-                href={contact.socials.find((s) => s.label === "Upwork")?.href ?? "#"}
+                href={
+                  contact.socials.find((s) => s.label === "Upwork")?.href ?? "#"
+                }
                 variant="secondary"
                 external
               >

@@ -125,7 +125,13 @@ export function HeroSection() {
               <ButtonLink
                 key={c.label}
                 href={c.href}
-                variant={c.variant === "primary" ? "primary" : c.variant === "secondary" ? "secondary" : "ghost"}
+                variant={
+                  c.variant === "primary"
+                    ? "primary"
+                    : c.variant === "secondary"
+                      ? "secondary"
+                      : "ghost"
+                }
                 external={"external" in c ? Boolean(c.external) : false}
                 magnetic={c.variant === "primary"}
                 className={i === 0 ? "min-w-[8.5rem]" : ""}
