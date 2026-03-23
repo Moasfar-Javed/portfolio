@@ -1,9 +1,9 @@
 export type NavItem = { id: string; label: string; href: string };
 
 export const siteMeta = {
-  name: "Moasfar J.",
+  name: "Moasfar Javed",
   shortTitle: "Moasfar J.",
-  tagline: "Full-stack · Flutter-forward",
+  tagline: "Full Stack Software Engineer",
 };
 
 export const navItems: NavItem[] = [
@@ -60,41 +60,46 @@ export const scrollBranchColorsDark: string[] = [
 ];
 
 export const hero = {
-  badge: "Available for freelance · Open to senior roles",
-  headline: "Product-minded engineer building mobile-first experiences.",
-  subhead:
-    "Full-stack developer with a mobile tilt—Flutter, resilient backends, and interfaces that feel inevitable.",
-  body: "I partner with teams and clients to ship polished software end-to-end: from interaction design and app architecture to APIs, data models, and production operations.",
+  badge: "Open to senior roles and freelance opportunities",
+  headline: "Product-minded engineer building web and mobile experiences",
+  subhead: "A polished experience from idea to launch",
+  body: "Partnering up with teams and clients to ship software end-to-end and taking process ownership: from interaction design and app architecture to APIs, data models and production operations",
   ctas: [
-    { label: "View work", href: "#work", variant: "primary" as const },
-    { label: "Contact", href: "#contact", variant: "secondary" as const },
+    {
+      label: "Connect",
+      href: "#contact",
+      variant: "primary" as const,
+    },
     {
       label: "Upwork",
-      href: "https://www.upwork.com/freelancers/~placeholder",
-      variant: "ghost" as const,
+      href: "https://www.upwork.com/freelancers/~01fa3ea99074e483b6?mp_source=share",
+      variant: "secondary" as const,
       external: true,
     },
+    { label: "View work", href: "#work", variant: "ghost" as const },
   ],
 };
 
 export const metrics = [
-  { value: "8+", label: "Years shipping software" },
-  { value: "24", label: "Products & apps delivered" },
-  { value: "12", label: "Freelance engagements" },
-  { value: "99.2%", label: "Uptime on flagship systems" },
+  { value: "2023", label: "Building since" },
+  { value: "15+", label: "Systems shipped" },
+  { value: "10+", label: "Satisfied clients" },
+  { value: "100%", label: "Job success rate" },
 ];
 
 export const about = {
-  title: "Engineering with product intuition",
+  title: "Full-stack execution with a strong product mindset",
   paragraphs: [
-    "I’m a full-stack developer who spends meaningful time in mobile—especially Flutter—where performance, gestures, and platform fidelity matter. I care as much about how software feels as how it scales.",
-    "On the backend, I design APIs and services that stay boring under load: clear contracts, observability, and pragmatic data modeling. I’ve led features across greenfield builds, legacy modernization, and client engagements.",
+    "I'm a full stack engineer with a focus on mobile development. I build systems that bring value to the business and the user, staying equally comfortable in backend services, web platforms and cloud infrastructure.",
+    "Since engineering is a passion of mine, I enjoy working across different environments. My experience spans startup products, freelance client builds and large cross-functional teams. I've shipped consumer apps, real-time systems, admin platforms, 3D scanning workflows, fintech features and cloud-backed solutions. I am always looking for new challenges and opportunities to grow.",
   ],
   highlights: [
     "Flutter & native-adjacent mobile",
-    "APIs, services, and cloud infra",
+    "APIs, services and cloud infrastructure",
     "Design systems & UI craft",
     "Shipping in agile + async teams",
+    "Code reviews and knowledge sharing",
+    "Team management and mentorship",
   ],
 };
 
@@ -108,28 +113,92 @@ export type Project = {
 
 export const projects: Project[] = [
   {
-    name: "Northline Commerce",
+    name: "Albi",
     summary:
-      "Composable retail stack with a Flutter client and event-driven services.",
-    role: "Lead engineer",
-    outcome: "Cut checkout latency 38% and unified catalog across channels.",
-    tags: ["Flutter", "Go", "PostgreSQL", "Kafka"],
+      "Restoration job management software transforming industry workflows and equipping field technicians with cutting-edge tech",
+    role: "Full-Stack Engineer",
+    outcome:
+      "Helped accelerate mobile launch and built advanced features including floor plan sketching, LiDAR-powered 3D room scanning and check deposit workflows",
+    tags: [
+      "Flutter",
+      "Swift",
+      "Kotlin",
+      "LiDAR",
+      ".NET",
+      "MS SQL",
+      "Product Engineering",
+      "Code Quality",
+    ],
   },
   {
-    name: "Pulse Health Companion",
+    name: "Real",
     summary:
-      "HIPAA-aware companion app with offline-first sync and clinician dashboards.",
-    role: "Full-stack contractor",
-    outcome: "Shipped MVP in 11 weeks with 4.8★ pilot cohort rating.",
-    tags: ["Flutter", "Node", "Redis", "AWS"],
+      "Feature-rich dating app for iOS and Android with subscriptions, secure messaging, verification and admin tooling",
+    role: "Full-stack engineer",
+    outcome:
+      "Delivered and deployed the mobile app, AWS-based backend, ML-assisted verification pipeline and internal CRM/moderation suite",
+    tags: [
+      "Flutter",
+      "Node.js",
+      "AWS",
+      "Lambdas",
+      "OAuth",
+      "ML",
+      "Scalable Live Messaging",
+    ],
   },
   {
-    name: "Atlas Field Ops",
+    name: "PlanetJ",
     summary:
-      "Operations platform for distributed teams—mobile capture, web command center.",
-    role: "Product engineer",
-    outcome: "Replaced three tools; ~120h/month saved in reporting workflows.",
-    tags: ["React", "Dart", "gRPC", "Terraform"],
+      "High concurrency video game betting and live-streaming platform built for real-time interaction and secure transactions",
+    role: "Technical lead",
+    outcome:
+      "Architected a live streaming and betting system with crypto wallet and Unity game build integration. Managed a team of developers and communicated with stakeholders",
+    tags: [
+      "React",
+      ".NET",
+      "PostgreSQL",
+      "AWS",
+      "WebSockets",
+      "IVS Broadcast",
+      "Blockchain",
+      "Crypto",
+    ],
+  },
+  {
+    name: "TrainerJOE",
+    summary:
+      "Multi-platform fitness coaching ecosystem with web, presentation tooling, admin systems and cloud-hosted backend services.",
+    role: "Full-stack engineer",
+    outcome:
+      "Built workout presentation tools, admin analytics and a customizable training instruction presentation platform",
+    tags: [
+      "React",
+      "Flutter Web",
+      ".NET",
+      "MS SQL",
+      "AWS",
+      "Data Sync",
+      "Performance Budgets",
+    ],
+  },
+  {
+    name: "Prints on Pendants",
+    summary:
+      "Cross-platform app for securely capturing and storing images, handwriting and fingerprints for custom jewelry workflows.",
+    role: "Full-stack engineer",
+    outcome:
+      "Built the mobile app, ML-backed scanning pipeline and AWS microservices for secure biometric data processing.",
+    tags: ["Flutter", "Node.js", "Model", "ML"],
+  },
+  {
+    name: "WARRIOR Adventures",
+    summary:
+      "Team-based adventure platform featuring live location, navigation, real-time gameplay and coordinated backend.",
+    role: "Mobile engineer",
+    outcome:
+      "Developed the Flutter app and Node.js backend services for live tracking, leaderboards and team coordination.",
+    tags: ["Flutter", "Node.js", "Real-time", "Maps", "Mobile"],
   },
 ];
 
@@ -143,36 +212,44 @@ export type ExperienceItem = {
 
 export const experience: ExperienceItem[] = [
   {
-    period: "2023 — Present",
-    title: "Senior Product Engineer",
-    org: "Lumen Apps Studio",
+    period: "Sep 2025 — Present",
+    title: "Full Stack Mobile Engineer",
+    org: "Albiware LLC",
     kind: "full-time",
     description:
-      "Own mobile surfaces in Flutter, partner on API design, and mentor on performance budgets and release hygiene.",
+      "Build and scale product features across mobile, backend, and web systems. Contributed to mobile launch velocity, advanced room tooling, LiDAR-based 3D scanning, check deposit workflows, backend architecture, testing, documentation and developer mentorship",
   },
   {
-    period: "2021 — 2023",
-    title: "Full-stack Engineer (Contract)",
-    org: "Northline Labs",
+    period: "Jul 2024 — Jun 2025",
+    title: "Flutter Developer",
+    org: "Tech Hub",
+    kind: "full-time",
+    description:
+      "Led end-to-end development of Rezerve from architecture to production, integrated external services and APIs, and maintained multiple legacy applications while shipping new features",
+  },
+  {
+    period: "Sep 2023 — Jul 2024",
+    title: "Junior Flutter Developer",
+    org: "Tech Hub",
+    kind: "full-time",
+    description:
+      "Delivered production-ready mobile apps including Primecar, Cookease and Silver Coin while collaborating closely with design, QA and stakeholders on large-scale app development",
+  },
+  {
+    period: "Jul 2023 — Sep 2023",
+    title: "Flutter Intern",
+    org: "Tech Hub",
     kind: "contract",
     description:
-      "Built retailer-facing SDKs, hardened payment flows, and introduced tracing across critical services.",
+      "Improved Flutter app stability and performance by resolving bugs, supporting maintenance work and helping scale codebases for better user experience and reliability",
   },
   {
-    period: "2019 — Present",
-    title: "Independent Consultant",
-    org: "Freelance / Upwork",
+    period: "",
+    title: "Independent Freelance Engineer",
+    org: "Upwork & Direct Clients",
     kind: "freelance",
     description:
-      "Embedded with startups and product teams—discovery workshops, scoped MVPs, and long-term retainers.",
-  },
-  {
-    period: "2017 — 2021",
-    title: "Mobile & Backend Engineer",
-    org: "Riverstack",
-    kind: "full-time",
-    description:
-      "Shipped consumer apps end-to-end; established CI/CD, feature flags, and crash analytics baselines.",
+      "Partner with startups and international clients to design, build and launch mobile apps, admin systems, cloud backends, real-time platforms and MVPs across industries including fitness, gaming, ecommerce, health and consumer products",
   },
 ];
 
@@ -183,70 +260,87 @@ export const skillGroups: SkillGroup[] = [
     title: "Mobile",
     items: [
       "Flutter",
-      "Dart",
-      "iOS awareness",
-      "Android tooling",
-      "App Store flow",
+      "Swift",
+      "Kotlin",
+      "Local DB",
+      "Push Notifications",
+      "Camera",
+      "Bluetooth",
+      "SQLite",
     ],
   },
   {
-    title: "Frontend",
-    items: ["React", "TypeScript", "Next.js", "Design tokens", "Motion & a11y"],
-  },
-  {
     title: "Backend",
-    items: ["Node.js", "Go", "REST & gRPC", "AuthN/Z", "Background jobs"],
+    items: [
+      "Node.js",
+      ".NET",
+      "REST APIs",
+      "WebSockets",
+      "Authentication",
+      "Data Sync",
+      "Performance Budgets",
+    ],
   },
   {
     title: "Data & infra",
-    items: ["PostgreSQL", "Redis", "Docker", "AWS & GCP basics", "Terraform"],
+    items: [
+      "Cloudflare",
+      "Docker",
+      "MS Azure",
+      "AWS",
+      "Lambda",
+      "Queues",
+      "PostgreSQL",
+      "MS SQL",
+      "Fire/Supa base",
+    ],
   },
   {
-    title: "Tools",
-    items: ["Git", "GitHub Actions", "Figma", "Linear", "Observability stacks"],
+    title: "Tools & delivery",
+    items: ["GitHub", "Gitlab", "Bitbucket", "Jira", "CI/CD", "AI Code Gen"],
   },
 ];
 
 export const freelance = {
-  title: "Trusted on Upwork and direct engagements",
-  body: "I’ve partnered with founders, agencies, and product leads on scoped builds and ongoing retainers. Expect crisp communication, proactive ownership, and code you can hand off without regret.",
+  title: "Freelance engineering for ambitious product teams",
+  body: "I've partnered with founders, agencies and product leads on systems. Expect crisp communication, proactive ownership and code you can hand off without regret.",
   cta: {
     label: "View Upwork profile",
-    href: "https://www.upwork.com/freelancers/~placeholder",
+    href: "https://www.upwork.com/freelancers/~01fa3ea99074e483b6?mp_source=share",
   },
   bullets: [
-    "Fixed-scope MVPs and phased roadmaps",
-    "Code reviews, audits, and performance passes",
-    "Documentation that survives the handoff",
+    "End-to-end MVPs and production app delivery",
+    "Mobile, backend and admin development",
+    "Scalable systems and handoff-ready code",
   ],
 };
 
 export const testimonials = [
   {
     quote:
-      "Shipped faster than our internal team thought possible—without sacrificing polish. Communication was surgical.",
-    name: "Elena M.",
-    role: "Product lead, B2B SaaS",
+      "I can't recommend Moasfar enough. I required some software built and was able to provide a detailed scope which was quickly disseminated and understood without any further clarity needed.",
+    name: "Dan Wolfe",
+    role: "Founder, CBC",
   },
   {
     quote:
-      "The rare engineer who sketches the UX implication before writing the endpoint. Our Flutter app finally feels native.",
-    name: "Jordan K.",
-    role: "Founder, health startup",
+      "I really enjoyed working with Moasfar. He's a great person friendly, professional and an excellent problem solver. He played an essential role on my team and was a big part of getting the product to where it is today.",
+    name: "Jill McFadden",
+    role: "Founder, Real Dating",
   },
 ];
 
 export const contact = {
-  title: "Let’s build something refined.",
+  title: "Let's build something meaningful",
   subtitle:
-    "Tell me about the product, the constraints, and the timeline. I’ll respond with a clear plan—not a generic pitch.",
-  email: "hello@yourdomain.com",
+    "Tell me about the product, the constraints and the timeline. I'll respond with a clear plan, not a generic pitch",
+  email: "contact@moasfar.com",
   socials: [
-    { label: "GitHub", href: "https://github.com/placeholder" },
-    { label: "LinkedIn", href: "https://linkedin.com/in/placeholder" },
+    { label: "GitHub", href: "https://github.com/Moasfar-Javed" },
+    { label: "LinkedIn", href: "https://www.linkedin.com/in/moasfar-javed/" },
     {
-      label: "Upwork",
-      href: "https://www.upwork.com/freelancers/~placeholder",
+      label: "PDF Resume",
+      href: "https://drive.google.com/file/d/16nTja22B5EdeLdA04x8uV83q4PWj0dZd/view?usp=sharing",
     },
   ],
 };

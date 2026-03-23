@@ -17,8 +17,7 @@ export function SiteFooter() {
               {siteMeta.name}
             </p>
             <p className="mt-2 max-w-sm text-sm text-fg-muted">
-              Full-stack engineering with a mobile-first lens. Built with React,
-              TypeScript, Tailwind, and motion—swap in your story when ready.
+              Full-stack engineering with experience in more than just development.
             </p>
           </div>
           <motion.ul
@@ -43,8 +42,12 @@ export function SiteFooter() {
           </motion.ul>
         </div>
         <div className="mt-12 flex flex-col gap-3 border-t border-border pt-8 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between">
-          <span>© {year} {siteMeta.name}. All rights reserved.</span>
-          <span className="uppercase tracking-[0.2em]">Craft · Ship · Refine</span>
+          <span>
+            © {year} {siteMeta.name}. All rights reserved.
+          </span>
+          <span className="uppercase tracking-[0.2em]">
+            Engineer · Ship · Refine
+          </span>
         </div>
       </Container>
     </footer>

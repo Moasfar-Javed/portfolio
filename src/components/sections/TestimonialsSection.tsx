@@ -19,8 +19,8 @@ export function TestimonialsSection() {
       <Container>
         <SectionHeader
           eyebrow="Proof"
-          title="Quiet social proof—tight quotes, real tone."
-          description="Optional section, kept minimal so it feels credible instead of salesy."
+          title="What it's like to work with me"
+          description="A few words from founders and collaborators on how I communicate, solve problems, and help move products forward"
         />
         <div className="grid gap-5 md:grid-cols-2">
           {testimonials.map((t, i) => (
@@ -34,14 +34,20 @@ export function TestimonialsSection() {
                     initial={reduce ? false : { opacity: 0, y: 16 }}
                     whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
                     viewport={{ once: true, margin: "-10%" }}
-                    transition={{ duration: 0.5, ease: easing, delay: i * 0.08 }}
+                    transition={{
+                      duration: 0.5,
+                      ease: easing,
+                      delay: i * 0.08,
+                    }}
                   >
                     <blockquote className="text-base leading-relaxed text-fg-muted">
                       "{t.quote}"
                     </blockquote>
                     <figcaption className="mt-8 text-sm">
                       <span className="font-medium text-fg">{t.name}</span>
-                      <span className="mt-1 block text-fg-subtle">{t.role}</span>
+                      <span className="mt-1 block text-fg-subtle">
+                        {t.role}
+                      </span>
                     </figcaption>
                   </motion.div>
                 </div>
