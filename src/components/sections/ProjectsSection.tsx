@@ -18,9 +18,9 @@ export function ProjectsSection() {
     >
       <Container>
         <SectionHeader
-          eyebrow="Selected work"
-          title="Case-shaped projects with room for narrative, visuals, and outcomes."
-          description="This grid is intentionally editorial—hover for depth, tap through on mobile. Replace copy and add thumbnails when you have assets."
+          eyebrow="Featured work"
+          title="Selected work, built for real outcomes"
+          description="A curated set of projects across mobile, web and backend. Highlighting product thinking, technical range and hands-on execution"
         />
         <motion.div
           variants={reduce ? undefined : staggerContainer}

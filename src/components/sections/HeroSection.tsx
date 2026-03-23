@@ -141,6 +141,15 @@ export function HeroSection() {
           </motion.div>
         </motion.div>
       </Container>
+      <div
+        className="pointer-events-none absolute inset-x-0 bottom-0 h-40"
+        style={{
+          background: "linear-gradient(to bottom, transparent, var(--surface-0))",
+          WebkitMaskImage: "linear-gradient(to right, #000 0%, transparent 60%)",
+          maskImage: "linear-gradient(to right, #000 0%, transparent 60%)",
+        }}
+        aria-hidden
+      />
     </SectionShell>
   );
 }

@@ -15,8 +15,8 @@ export function ImpactSection() {
       <Container>
         <SectionHeader
           eyebrow="Impact"
-          title="Numbers that frame the work—placeholders for now, direction forever."
-          description="Swap metrics as you calibrate your story. The layout stays composed and scannable."
+          title="Numbers that reflect the work"
+          description="From shipped products to client engagements, these highlight the range and consistency of my work as an engineer"
         />
         <motion.ul
           variants={reduce ? undefined : staggerContainer}
@@ -54,7 +54,9 @@ export function ImpactSection() {
                   <p className="font-display text-3xl font-medium tracking-tight text-fg sm:text-4xl">
                     {m.value}
                   </p>
-                  <p className="mt-3 text-sm leading-snug text-fg-muted">{m.label}</p>
+                  <p className="mt-3 text-sm leading-snug text-fg-muted">
+                    {m.label}
+                  </p>
                 </motion.div>
               </SpotlightSurface>
             </motion.li>

@@ -25,10 +25,7 @@ function ChevronIcon({ className }: { className?: string }) {
 
 export function HeroSectionDivider() {
   return (
-    <div
-      className="relative flex justify-center py-6 md:py-8"
-      aria-hidden
-    >
+    <div className="relative flex justify-center py-6 md:py-8" aria-hidden>
       <div
         className="hero-chevron-stack pointer-events-none text-fg-muted/80 dark:text-fg-muted/75"
         style={{ "--hero-chevron-n": CHEVRON_COUNT } as CSSProperties}

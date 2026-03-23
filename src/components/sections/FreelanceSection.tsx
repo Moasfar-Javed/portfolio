@@ -53,11 +53,11 @@ export function FreelanceSection() {
                 Upwork
               </p>
               <p className="mt-4 font-display text-2xl font-medium tracking-tight text-fg transition-colors duration-500 group-hover:text-surface-0">
-                Long-term partners, not one-off tickets.
+                A profile shaped by delivery, not just promise
               </p>
               <p className="mt-3 text-sm leading-relaxed text-fg-muted transition-colors duration-500 group-hover:text-surface-0/78">
-                Public profile placeholder—swap the URL when you are ready to route
-                real traffic.
+                A look at the work that has made me a top rated engineer with a
+                100% job success rate
               </p>
             </div>
             <ButtonLink

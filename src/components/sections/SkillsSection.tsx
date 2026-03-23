@@ -11,12 +11,16 @@ export function SkillsSection() {
   const reduce = useReducedMotion();
 
   return (
-    <SectionShell id="stack" className="py-20 md:py-24" ariaLabel="Skills and stack">
+    <SectionShell
+      id="stack"
+      className="py-20 md:py-24"
+      ariaLabel="Skills and stack"
+    >
       <Container>
         <SectionHeader
           eyebrow="Stack"
-          title="Tools grouped the way I actually think about them."
-          description="No inflated percentages—just honest clusters you can remix as your toolkit evolves."
+          title="The tools I use to ship real products"
+          description="A practical snapshot of the technologies I use across frontend, backend, cloud and delivery"
         />
         <motion.div
           variants={reduce ? undefined : staggerContainer}

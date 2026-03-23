@@ -81,9 +81,9 @@ export const hero = {
 };
 
 export const metrics = [
-  { value: "2023", label: "Building production software since" },
+  { value: "2023", label: "Building since" },
   { value: "15+", label: "Systems shipped" },
-  { value: "10+", label: "Satisfied employers and clients" },
+  { value: "10+", label: "Satisfied clients" },
   { value: "100%", label: "Job success rate" },
 ];
 
@@ -115,7 +115,7 @@ export const projects: Project[] = [
   {
     name: "Albi",
     summary:
-      "Restoration job management software transforming industry workflows and equipping field technicians with cutting edge tech",
+      "Restoration job management software transforming industry workflows and equipping field technicians with cutting-edge tech",
     role: "Full-Stack Engineer",
     outcome:
       "Helped accelerate mobile launch and built advanced features including floor plan sketching, LiDAR-powered 3D room scanning and check deposit workflows",
@@ -153,7 +153,7 @@ export const projects: Project[] = [
       "High concurrency video game betting and live-streaming platform built for real-time interaction and secure transactions",
     role: "Technical lead",
     outcome:
-      "Architected a live streaming and betting system with crypto wallet and unity game build integration. Managed a team of developers and communicated with stakeholders",
+      "Architected a live streaming and betting system with crypto wallet and Unity game build integration. Managed a team of developers and communicated with stakeholders",
     tags: [
       "React",
       ".NET",
@@ -171,7 +171,7 @@ export const projects: Project[] = [
       "Multi-platform fitness coaching ecosystem with web, presentation tooling, admin systems and cloud-hosted backend services.",
     role: "Full-stack engineer",
     outcome:
-      "Built workout presentation tools, admin analytics and a customizable training instruction presentationplatform",
+      "Built workout presentation tools, admin analytics and a customizable training instruction presentation platform",
     tags: [
       "React",
       "Flutter Web",
@@ -266,7 +266,7 @@ export const skillGroups: SkillGroup[] = [
       "Push Notifications",
       "Camera",
       "Bluetooth",
-      "Background Jobs",
+      "SQLite",
     ],
   },
   {
@@ -331,9 +331,9 @@ export const testimonials = [
 ];
 
 export const contact = {
-  title: "Let’s build something meaningful",
+  title: "Let's build something meaningful",
   subtitle:
-    "Tell me about the product, the constraints, and the timeline. I'll respond with a clear plan, not a generic pitch",
+    "Tell me about the product, the constraints and the timeline. I'll respond with a clear plan, not a generic pitch",
   email: "contact@moasfar.com",
   socials: [
     { label: "GitHub", href: "https://github.com/Moasfar-Javed" },
