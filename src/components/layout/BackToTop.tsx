@@ -1,6 +1,7 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useCallback, useEffect, useState } from "react";
 import { useLenisRef } from "../../hooks/useLenisRef";
+import { trackEvent } from "../../lib/analytics";
 import { easing } from "../../lib/motion";
 
 const SHOW_AFTER = 520;
@@ -18,6 +19,7 @@ export function BackToTop() {
   }, []);
 
   const goTop = useCallback(() => {
+    trackEvent("back_to_top_click");
     const lenis = lenisRef.current;
     if (lenis) {
       lenis.scrollTo(0, {

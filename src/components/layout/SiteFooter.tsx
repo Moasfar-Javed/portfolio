@@ -1,5 +1,6 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { contact, siteMeta } from "../../data/site";
+import { trackExternalLinkClick } from "../../lib/analytics";
 import { LINK_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
@@ -34,6 +35,9 @@ export function SiteFooter() {
                   className={LINK_HOVER}
                   target="_blank"
                   rel="noreferrer"
+                  onClick={() => {
+                    trackExternalLinkClick(s.label, s.href, "footer_social");
+                  }}
                 >
                   {s.label}
                 </a>

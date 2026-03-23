@@ -4,6 +4,11 @@ import { navItems, siteMeta } from "../../data/site";
 import { useActiveSection } from "../../hooks/useActiveSection";
 import { useLenisRef } from "../../hooks/useLenisRef";
 import { useTheme } from "../../hooks/useTheme";
+import {
+  trackEvent,
+  trackNavigationClick,
+  trackSectionView,
+} from "../../lib/analytics";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
 
@@ -61,6 +66,7 @@ export function SiteHeader() {
             className="group flex flex-col rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
             onClick={(e) => {
               e.preventDefault();
+              trackNavigationClick("#hero", "header_logo");
               scrollTo("#hero");
             }}
           >
@@ -87,6 +93,7 @@ export function SiteHeader() {
                   }`}
                   onClick={(e) => {
                     e.preventDefault();
+                    trackNavigationClick(item.href, "header_nav");
                     scrollTo(item.href);
                   }}
                 >
@@ -112,7 +119,10 @@ export function SiteHeader() {
           <div className="flex items-center gap-2">
             <button
               type="button"
-              onClick={toggleTheme}
+              onClick={() => {
+                toggleTheme();
+                trackEvent("theme_toggle", { next_theme: theme === "dark" ? "light" : "dark" });
+              }}
               className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border-strong bg-surface-1 text-fg shadow-soft transition-colors hover:border-accent/35 hover:bg-surface-2"
               aria-label={
                 theme === "dark"
@@ -128,7 +138,13 @@ export function SiteHeader() {
               className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border-strong bg-surface-1 text-fg shadow-soft transition-colors hover:border-accent/35 hover:bg-surface-2 lg:hidden"
               aria-expanded={open}
               aria-controls="mobile-nav"
-              onClick={() => setOpen((v) => !v)}
+              onClick={() =>
+                setOpen((v) => {
+                  const next = !v;
+                  trackEvent("mobile_menu_toggle", { is_open: next });
+                  return next;
+                })
+              }
               aria-label={open ? "Close menu" : "Open menu"}
             >
               <span className="sr-only">Menu</span>
@@ -174,7 +190,10 @@ export function SiteHeader() {
               type="button"
               className="absolute inset-0 bg-surface-0/70 backdrop-blur-md dark:bg-black/60"
               aria-label="Close menu overlay"
-              onClick={() => setOpen(false)}
+              onClick={() => {
+                setOpen(false);
+                trackEvent("mobile_menu_toggle", { is_open: false, source: "overlay" });
+              }}
             />
             <motion.nav
               initial={{ x: "100%" }}
@@ -201,6 +220,8 @@ export function SiteHeader() {
                       }`}
                       onClick={(e) => {
                         e.preventDefault();
+                        trackNavigationClick(item.href, "mobile_nav");
+                        trackSectionView(item.id);
                         scrollTo(item.href);
                       }}
                     >

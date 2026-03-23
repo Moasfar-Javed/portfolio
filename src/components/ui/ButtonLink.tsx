@@ -2,6 +2,7 @@ import { motion, useReducedMotion, useSpring } from "framer-motion";
 import type { MouseEvent, ReactNode } from "react";
 import { useCallback, useRef } from "react";
 import { useLenisRef } from "../../hooks/useLenisRef";
+import { trackCtaClick } from "../../lib/analytics";
 
 const base =
   "relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-full px-5 py-2.5 text-sm font-medium transition-colors duration-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent";
@@ -38,6 +39,9 @@ export function ButtonLink({
 
   const onClick = useCallback(
     (e: MouseEvent<HTMLAnchorElement>) => {
+      const label = e.currentTarget.textContent?.trim() ?? "Button link";
+      trackCtaClick(label, href, "button_link");
+
       const lenis = lenisRef.current;
       if (href.startsWith("#") && lenis) {
         e.preventDefault();

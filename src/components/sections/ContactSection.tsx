@@ -1,6 +1,7 @@
 import { motion, useReducedMotion } from "framer-motion";
 import portrait from "../../assets/pic.png";
 import { contact, siteMeta } from "../../data/site";
+import { trackExternalLinkClick } from "../../lib/analytics";
 import { GLASS_CARD_HOVER, LINK_HOVER } from "../../lib/interactive";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
@@ -107,6 +108,9 @@ export function ContactSection() {
                     className={LINK_HOVER}
                     target="_blank"
                     rel="noreferrer"
+                    onClick={() => {
+                      trackExternalLinkClick(s.label, s.href, "contact_social");
+                    }}
                   >
                     {s.label}
                   </a>
@@ -116,6 +120,9 @@ export function ContactSection() {
             <a
               href={mailHref}
               className={`mt-8 inline-block text-xs text-fg-subtle ${LINK_HOVER}`}
+              onClick={() => {
+                trackExternalLinkClick(contact.email, mailHref, "contact_email");
+              }}
             >
               {contact.email}
             </a>

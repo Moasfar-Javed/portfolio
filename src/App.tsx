@@ -1,7 +1,8 @@
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect } from "react";
 import { ThemeProvider } from "./context/ThemeProvider";
 import { LenisProvider } from "./context/LenisProvider";
 import { CustomCursor } from "./components/layout/CustomCursor";
+import { initAnalytics, trackPageView, trackSectionView } from "./lib/analytics";
 
 const SceneBackground = lazy(() =>
   import("./components/layout/SceneBackground").then((m) => ({
@@ -25,6 +26,34 @@ import { TestimonialsSection } from "./components/sections/TestimonialsSection";
 import { ContactSection } from "./components/sections/ContactSection";
 
 export default function App() {
+  useEffect(() => {
+    void initAnalytics().then(() => {
+      trackPageView(`${window.location.pathname}${window.location.search}`);
+    });
+  }, []);
+
+  useEffect(() => {
+    const seen = new Set<string>();
+    const nodes = document.querySelectorAll<HTMLElement>("[data-analytics-section]");
+    if (!nodes.length) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          const sectionId = entry.target.getAttribute("data-analytics-section");
+          if (!sectionId || seen.has(sectionId)) continue;
+          seen.add(sectionId);
+          trackSectionView(sectionId);
+        }
+      },
+      { threshold: 0.45, rootMargin: "-10% 0px -20% 0px" },
+    );
+
+    for (const node of nodes) observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
+
   return (
     <ThemeProvider>
       <LenisProvider>

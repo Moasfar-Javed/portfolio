@@ -12,3 +12,16 @@ npm run lint
 ```
 
 MIT licensed.
+
+## Firebase Analytics setup
+
+2. Fill in all `VITE_FIREBASE_*` values from your Firebase web app config.
+3. Ensure Google Analytics is enabled for your Firebase project.
+
+The site tracks:
+- Page views
+- Section visibility (first in-view)
+- Navigation interactions (desktop + mobile)
+- CTA clicks
+- External/social/email link clicks
+- Theme toggles and back-to-top clicks

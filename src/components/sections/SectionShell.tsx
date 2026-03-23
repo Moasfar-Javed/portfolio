@@ -14,6 +14,7 @@ export function SectionShell({
   return (
     <section
       id={id}
+      data-analytics-section={id}
       aria-label={ariaLabel}
       className={`scroll-mt-24 md:scroll-mt-28 ${className}`.trim()}
     >
