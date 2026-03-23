@@ -10,7 +10,13 @@ import { SectionShell } from "./SectionShell";
 
 export function ContactSection() {
   const reduce = useReducedMotion();
-  const mailHref = `mailto:${contact.email}`;
+  const mailSubject = encodeURIComponent(
+    `Project inquiry from ${siteMeta.shortTitle} portfolio`,
+  );
+  const mailBody = encodeURIComponent(
+    "Hi Moasfar,\n\nI would like to discuss a project with you.\n\nProject details:\n- \n\nTimeline:\n- \n\nBudget:\n- \n\nBest,\n",
+  );
+  const mailHref = `mailto:${contact.email}?subject=${mailSubject}&body=${mailBody}`;
 
   return (
     <SectionShell id="contact" className="py-24 md:py-32" ariaLabel="Contact">
