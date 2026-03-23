@@ -11,7 +11,11 @@ export function ProjectsSection() {
   const reduce = useReducedMotion();
 
   return (
-    <SectionShell id="work" className="py-20 md:py-24" ariaLabel="Selected work">
+    <SectionShell
+      id="work"
+      className="py-20 md:py-24"
+      ariaLabel="Selected work"
+    >
       <Container>
         <SectionHeader
           eyebrow="Selected work"
@@ -27,7 +31,7 @@ export function ProjectsSection() {
         >
           {projects.map((p, i) => {
             const span =
-              i === 0 ? "lg:col-span-7" : i === 1 ? "lg:col-span-5" : "lg:col-span-12";
+              i === 4 || i === 5 ? "lg:col-span-6" : "lg:col-span-12";
             return (
               <motion.article
                 key={p.name}
@@ -62,8 +66,13 @@ export function ProjectsSection() {
                           <span className="text-xs font-medium uppercase tracking-[0.2em] text-fg-subtle">
                             {p.role}
                           </span>
-                          <span className="h-1 w-1 rounded-full bg-border-strong" aria-hidden />
-                          <span className="text-xs text-fg-subtle">Featured build</span>
+                          <span
+                            className="h-1 w-1 rounded-full bg-border-strong"
+                            aria-hidden
+                          />
+                          <span className="text-xs text-fg-subtle">
+                            Featured
+                          </span>
                         </div>
                         <h3 className="mt-4 font-display text-2xl font-medium tracking-tight text-fg md:text-3xl">
                           {p.name}
@@ -71,7 +80,9 @@ export function ProjectsSection() {
                         <p className="mt-3 text-sm leading-relaxed text-fg-muted md:text-base">
                           {p.summary}
                         </p>
-                        <p className="mt-4 text-sm font-medium text-fg">{p.outcome}</p>
+                        <p className="mt-4 text-sm font-medium text-fg">
+                          {p.outcome}
+                        </p>
                       </div>
                       <ul className="flex flex-wrap gap-2 md:max-w-xs md:justify-end">
                         {p.tags.map((t) => (
