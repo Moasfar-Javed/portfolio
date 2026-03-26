@@ -1,5 +1,4 @@
 import { motion, useReducedMotion } from "framer-motion";
-import portrait from "../../assets/pic.png";
 import { contact, siteMeta } from "../../data/site";
 import { trackExternalLinkClick } from "../../lib/analytics";
 import { GLASS_CARD_HOVER, LINK_HOVER } from "../../lib/interactive";
@@ -11,6 +10,7 @@ import { SectionShell } from "./SectionShell";
 
 export function ContactSection() {
   const reduce = useReducedMotion();
+  const portrait = "/assets/pic.png";
   const mailSubject = encodeURIComponent(
     `Project inquiry from ${siteMeta.shortTitle} portfolio`,
   );
