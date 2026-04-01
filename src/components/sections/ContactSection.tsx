@@ -103,21 +103,26 @@ export function ContactSection() {
               viewport={{ once: true }}
               transition={{ duration: 0.45, ease: easing, delay: 0.2 }}
             >
-              {contact.socials.map((s) => (
-                <li key={s.label}>
-                  <a
-                    href={s.href}
-                    className={LINK_HOVER}
-                    target="_blank"
-                    rel="noreferrer"
-                    onClick={() => {
-                      trackExternalLinkClick(s.label, s.href, "contact_social");
-                    }}
-                  >
-                    {s.label}
-                  </a>
-                </li>
-              ))}
+              {contact.socials.map((s) => {
+                const remote = /^https?:\/\//i.test(s.href);
+                return (
+                  <li key={s.label}>
+                    <a
+                      href={s.href}
+                      className={LINK_HOVER}
+                      {...(remote
+                        ? { target: "_blank", rel: "noreferrer" as const }
+                        : {})}
+                      {...(s.download ? { download: s.download } : {})}
+                      onClick={() => {
+                        trackExternalLinkClick(s.label, s.href, "contact_social");
+                      }}
+                    >
+                      {s.label}
+                    </a>
+                  </li>
+                );
+              })}
             </motion.ul>
             <a
               href={mailHref}

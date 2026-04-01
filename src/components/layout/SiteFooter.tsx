@@ -18,7 +18,8 @@ export function SiteFooter() {
               {siteMeta.name}
             </p>
             <p className="mt-2 max-w-sm text-sm text-fg-muted">
-              Full-stack engineering with experience in more than just development.
+              Full-stack engineering with experience in more than just
+              development.
             </p>
           </div>
           <motion.ul
@@ -28,21 +29,26 @@ export function SiteFooter() {
             viewport={{ once: true }}
             transition={{ duration: 0.45, ease: easing }}
           >
-            {contact.socials.map((s) => (
-              <li key={s.label}>
-                <a
-                  href={s.href}
-                  className={LINK_HOVER}
-                  target="_blank"
-                  rel="noreferrer"
-                  onClick={() => {
-                    trackExternalLinkClick(s.label, s.href, "footer_social");
-                  }}
-                >
-                  {s.label}
-                </a>
-              </li>
-            ))}
+            {contact.socials.map((s) => {
+              const remote = /^https?:\/\//i.test(s.href);
+              return (
+                <li key={s.label}>
+                  <a
+                    href={s.href}
+                    className={LINK_HOVER}
+                    {...(remote
+                      ? { target: "_blank", rel: "noreferrer" as const }
+                      : {})}
+                    {...(s.download ? { download: s.download } : {})}
+                    onClick={() => {
+                      trackExternalLinkClick(s.label, s.href, "footer_social");
+                    }}
+                  >
+                    {s.label}
+                  </a>
+                </li>
+              );
+            })}
           </motion.ul>
         </div>
         <div className="mt-12 flex flex-col gap-3 border-t border-border pt-8 text-xs text-fg-subtle sm:flex-row sm:items-center sm:justify-between">

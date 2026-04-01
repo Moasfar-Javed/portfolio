@@ -330,6 +330,13 @@ export const testimonials = [
   },
 ];
 
+export type ContactSocialLink = {
+  label: string;
+  href: string;
+  /** Same-origin file; browsers offer a download with this filename */
+  download?: string;
+};
+
 export const contact = {
   title: "Let's build something meaningful",
   subtitle:
@@ -340,7 +347,8 @@ export const contact = {
     { label: "LinkedIn", href: "https://www.linkedin.com/in/moasfar-javed/" },
     {
       label: "PDF Resume",
-      href: "https://drive.google.com/file/d/16nTja22B5EdeLdA04x8uV83q4PWj0dZd/view?usp=sharing",
+      href: "/assets/moasfars-cv.pdf",
+      download: "Moasfar-Javed-CV.pdf",
     },
-  ],
+  ] satisfies ContactSocialLink[],
 };
