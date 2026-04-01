@@ -44,6 +44,8 @@ export function ContactSection() {
                   width={160}
                   height={160}
                   decoding="async"
+                  loading="lazy"
+                  fetchPriority="low"
                 />
               </div>
             </motion.div>

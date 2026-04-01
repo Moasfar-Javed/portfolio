@@ -23,6 +23,7 @@ import {
 } from "../../data/site";
 import { useActiveSection } from "../../hooks/useActiveSection";
 import { useLenisRef } from "../../hooks/useLenisRef";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useTheme } from "../../hooks/useTheme";
 
 const GRAPH_SCOPE_ID = "graph-scope";
@@ -414,6 +415,12 @@ function computeGitFrontierY(scrollY: number, H: number): number {
 }
 
 export function ScrollGitTree() {
+  const lg = useMediaQuery("(min-width: 1024px)");
+  if (!lg) return null;
+  return <ScrollGitTreeInner />;
+}
+
+function ScrollGitTreeInner() {
   const { theme } = useTheme();
   const branchColors = useMemo(
     () =>

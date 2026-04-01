@@ -15,6 +15,7 @@ import {
   type ReactNode,
   type TouchEvent,
 } from "react";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 function clamp(n: number, min: number, max: number) {
   return Math.min(max, Math.max(min, n));
@@ -41,6 +42,7 @@ export function SpotlightSurface({
 }: SpotlightSurfaceProps) {
   const rootRef = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
+  const coarsePointer = useMediaQuery("(pointer: coarse)");
   const hoverActiveRef = useRef(false);
   const [hovered, setHovered] = useState(false);
   const xp = useMotionValue(50);
@@ -61,7 +63,7 @@ export function SpotlightSurface({
   });
 
   useEffect(() => {
-    if (reduce || !hovered) return;
+    if (reduce || !hovered || coarsePointer) return;
     let id = 0;
     const step = () => {
       id = requestAnimationFrame(step);
@@ -83,7 +85,7 @@ export function SpotlightSurface({
     };
     id = requestAnimationFrame(step);
     return () => cancelAnimationFrame(id);
-  }, [reduce, hovered, xs, ys]);
+  }, [reduce, hovered, coarsePointer, xs, ys]);
 
   const update = useCallback(
     (clientX: number, clientY: number) => {

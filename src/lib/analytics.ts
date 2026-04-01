@@ -1,11 +1,5 @@
-import { initializeApp, type FirebaseOptions, getApps } from "firebase/app";
-import {
-  getAnalytics,
-  isSupported,
-  logEvent,
-  setAnalyticsCollectionEnabled,
-  type Analytics,
-} from "firebase/analytics";
+import type { FirebaseOptions } from "firebase/app";
+import type { Analytics } from "firebase/analytics";
 
 type AnalyticsParams = Record<string, string | number | boolean>;
 
@@ -20,6 +14,7 @@ const firebaseConfig: FirebaseOptions = {
 };
 
 let analyticsInstance: Analytics | null = null;
+let logEventImpl: typeof import("firebase/analytics").logEvent | null = null;
 let analyticsInitAttempted = false;
 
 function hasFirebaseConfig() {
@@ -37,6 +32,14 @@ export async function initAnalytics() {
 
   if (typeof window === "undefined" || !hasFirebaseConfig()) return null;
 
+  const [{ initializeApp, getApps }, analyticsMod] = await Promise.all([
+    import("firebase/app"),
+    import("firebase/analytics"),
+  ]);
+
+  const { getAnalytics, isSupported, setAnalyticsCollectionEnabled, logEvent } = analyticsMod;
+  logEventImpl = logEvent;
+
   const app = getApps()[0] ?? initializeApp(firebaseConfig);
   const supported = await isSupported();
   if (!supported) return null;
@@ -47,13 +50,13 @@ export async function initAnalytics() {
 }
 
 function withAnalytics(cb: (analytics: Analytics) => void) {
-  if (!analyticsInstance) return;
+  if (!analyticsInstance || !logEventImpl) return;
   cb(analyticsInstance);
 }
 
 export function trackEvent(name: string, params: AnalyticsParams = {}) {
   withAnalytics((analytics) => {
-    logEvent(analytics, name, {
+    logEventImpl!(analytics, name, {
       ...params,
       page_path: window.location.pathname,
       page_location: window.location.href,
@@ -63,7 +66,7 @@ export function trackEvent(name: string, params: AnalyticsParams = {}) {
 
 export function trackPageView(pathname: string, title = document.title) {
   withAnalytics((analytics) => {
-    logEvent(analytics, "page_view", {
+    logEventImpl!(analytics, "page_view", {
       page_title: title,
       page_path: pathname,
       page_location: window.location.href,

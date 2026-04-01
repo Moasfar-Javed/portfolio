@@ -1,12 +1,16 @@
 import { motion, useReducedMotion } from "framer-motion";
 import { hero } from "../../data/site";
 import { easing, staggerContainer } from "../../lib/motion";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { Container } from "../ui/Container";
 import { ButtonLink } from "../ui/ButtonLink";
 import { SectionShell } from "./SectionShell";
 
 export function HeroSection() {
   const reduce = useReducedMotion();
+  const coarse = useMediaQuery("(pointer: coarse)");
+  /** Blur orbs + glass + noise + stagger are costly on typical phone GPUs. */
+  const lightHero = reduce || coarse;
 
   return (
     <SectionShell
@@ -16,22 +20,38 @@ export function HeroSection() {
     >
       <div className="hero-backdrop-vanish pointer-events-none absolute inset-0">
         <div className="absolute inset-0 bg-grid opacity-[0.35] dark:opacity-[0.2]" />
-        <div className="absolute inset-0 bg-noise opacity-60" />
+        {!coarse ? (
+          <div className="absolute inset-0 bg-noise opacity-60" />
+        ) : null}
         <div className="hero-readability-scrim absolute inset-0" aria-hidden />
       </div>
-      <div className="pointer-events-none absolute -left-32 top-24 h-72 w-72 rounded-full bg-accent/15 blur-[100px] dark:bg-accent/12" />
-      <div className="pointer-events-none absolute -right-24 bottom-10 h-80 w-80 rounded-full bg-accent/10 blur-[110px] dark:bg-accent/8" />
+      <div
+        className={
+          coarse
+            ? "pointer-events-none absolute -left-32 top-24 h-72 w-72 rounded-full opacity-95 [background:radial-gradient(circle_at_38%_42%,color-mix(in_srgb,var(--accent)_26%,transparent)_0%,transparent_70%)]"
+            : "pointer-events-none absolute -left-32 top-24 h-72 w-72 rounded-full bg-accent/15 blur-[100px] dark:bg-accent/12"
+        }
+        aria-hidden
+      />
+      <div
+        className={
+          coarse
+            ? "pointer-events-none absolute -right-24 bottom-10 h-80 w-80 rounded-full opacity-90 [background:radial-gradient(circle_at_62%_48%,color-mix(in_srgb,var(--accent)_18%,transparent)_0%,transparent_72%)]"
+            : "pointer-events-none absolute -right-24 bottom-10 h-80 w-80 rounded-full bg-accent/10 blur-[110px] dark:bg-accent/8"
+        }
+        aria-hidden
+      />
 
       <Container className="relative z-10">
         <motion.div
-          variants={reduce ? undefined : staggerContainer}
-          initial={reduce ? false : "hidden"}
-          animate={reduce ? undefined : "show"}
+          variants={lightHero ? undefined : staggerContainer}
+          initial={lightHero ? false : "hidden"}
+          animate={lightHero ? undefined : "show"}
           className="max-w-3xl"
         >
           <motion.div
             variants={
-              reduce
+              lightHero
                 ? undefined
                 : {
                     hidden: { opacity: 0, y: 14 },
@@ -42,10 +62,14 @@ export function HeroSection() {
                     },
                   }
             }
-            className="glass-card mb-8 inline-flex items-center gap-2 rounded-full border border-border-strong px-3 py-1 text-xs font-medium text-fg-muted shadow-soft"
+            className={
+              coarse
+                ? "mb-8 inline-flex items-center gap-2 rounded-full border border-border-strong bg-[color-mix(in_srgb,var(--surface-1)_92%,transparent)] px-3 py-1 text-xs font-medium text-fg-muted shadow-soft dark:bg-[color-mix(in_srgb,var(--surface-2)_80%,transparent)]"
+                : "glass-card mb-8 inline-flex items-center gap-2 rounded-full border border-border-strong px-3 py-1 text-xs font-medium text-fg-muted shadow-soft"
+            }
           >
             <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/50 opacity-60" />
+              <span className="hero-badge-ping absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/50 opacity-60" />
               <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
             </span>
             {hero.badge}
@@ -53,7 +77,7 @@ export function HeroSection() {
 
           <motion.h1
             variants={
-              reduce
+              lightHero
                 ? undefined
                 : {
                     hidden: { opacity: 0, y: 22 },
@@ -71,7 +95,7 @@ export function HeroSection() {
 
           <motion.p
             variants={
-              reduce
+              lightHero
                 ? undefined
                 : {
                     hidden: { opacity: 0, y: 18 },
@@ -89,7 +113,7 @@ export function HeroSection() {
 
           <motion.p
             variants={
-              reduce
+              lightHero
                 ? undefined
                 : {
                     hidden: { opacity: 0, y: 16 },
@@ -107,7 +131,7 @@ export function HeroSection() {
 
           <motion.div
             variants={
-              reduce
+              lightHero
                 ? undefined
                 : {
                     hidden: { opacity: 0, y: 16 },

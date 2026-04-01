@@ -7,6 +7,7 @@ import {
 } from "framer-motion";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { useTheme } from "../../hooks/useTheme";
 
 const wf = {
@@ -430,6 +431,9 @@ export function SceneBackground() {
   const { theme } = useTheme();
   const reduce = useReducedMotion();
   const fine = useFinePointer();
+  const narrow = useMediaQuery("(max-width: 767px)");
+  const coarse = useMediaQuery("(pointer: coarse)");
+  const lightWebGl = narrow || coarse;
   const { scrollYProgress } = useScroll();
   const isDark = theme === "dark";
   const primary = isDark ? "#6ba3ff" : "#3d6ad4";
@@ -457,10 +461,12 @@ export function SceneBackground() {
           camera={{ position: [2.58, 1.38, 5.32], fov: 42 }}
           gl={{
             alpha: true,
-            antialias: true,
-            powerPreference: "high-performance",
+            antialias: !lightWebGl,
+            powerPreference: lightWebGl ? "low-power" : "high-performance",
+            stencil: false,
+            depth: true,
           }}
-          dpr={[1, 1.6]}
+          dpr={lightWebGl ? [1, 1.25] : [1, 1.6]}
         >
           <ScrollMorphScene
             key={theme}
