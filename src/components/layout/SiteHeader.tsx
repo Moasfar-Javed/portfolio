@@ -1,5 +1,11 @@
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useCallback, useEffect, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
 import { navItems, siteMeta } from "../../data/site";
 import { useActiveSection } from "../../hooks/useActiveSection";
 import { useLenisRef } from "../../hooks/useLenisRef";
@@ -116,71 +122,49 @@ export function SiteHeader() {
             })}
           </nav>
 
-          <div className="flex items-center gap-2">
-            <button
-              type="button"
-              onClick={() => {
+          {/* Reserve width on <lg; real controls are in MobileHeaderToolbar (above overlay when open). */}
+          <div
+            className="flex w-[calc(2.5rem*2+0.5rem)] shrink-0 items-center justify-end gap-2 lg:hidden"
+            aria-hidden
+          />
+          <div className="hidden items-center gap-2 lg:flex">
+            <ThemeToggleButton
+              theme={theme}
+              reduce={reduce}
+              onToggle={() => {
                 toggleTheme();
-                trackEvent("theme_toggle", { next_theme: theme === "dark" ? "light" : "dark" });
+                trackEvent("theme_toggle", {
+                  next_theme: theme === "dark" ? "light" : "dark",
+                });
               }}
-              className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border-strong bg-surface-1 text-fg shadow-soft transition-colors hover:border-accent/35 hover:bg-surface-2"
-              aria-label={
-                theme === "dark"
-                  ? "Switch to light mode"
-                  : "Switch to dark mode"
-              }
-            >
-              <ThemeToggleGlyph theme={theme} reduceMotion={Boolean(reduce)} />
-            </button>
-
-            <button
-              type="button"
-              className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border-strong bg-surface-1 text-fg shadow-soft transition-colors hover:border-accent/35 hover:bg-surface-2 lg:hidden"
-              aria-expanded={open}
-              aria-controls="mobile-nav"
-              onClick={() =>
-                setOpen((v) => {
-                  const next = !v;
-                  trackEvent("mobile_menu_toggle", { is_open: next });
-                  return next;
-                })
-              }
-              aria-label={open ? "Close menu" : "Open menu"}
-            >
-              <span className="sr-only">Menu</span>
-              <div className="flex w-5 flex-col gap-1">
-                <motion.span
-                  animate={{
-                    rotate: open ? 45 : 0,
-                    y: open ? 6 : 0,
-                  }}
-                  className="h-0.5 w-full origin-center rounded-full bg-fg"
-                  transition={{ duration: 0.25, ease: easing }}
-                />
-                <motion.span
-                  animate={{ opacity: open ? 0 : 1 }}
-                  className="h-0.5 w-full rounded-full bg-fg"
-                  transition={{ duration: 0.2 }}
-                />
-                <motion.span
-                  animate={{
-                    rotate: open ? -45 : 0,
-                    y: open ? -6 : 0,
-                  }}
-                  className="h-0.5 w-full origin-center rounded-full bg-fg"
-                  transition={{ duration: 0.25, ease: easing }}
-                />
-              </div>
-            </button>
+            />
           </div>
         </Container>
       </header>
+
+      <div
+        className={`fixed right-0 top-0 flex h-16 items-center gap-2 pr-5 sm:pr-6 md:h-[4.5rem] lg:hidden ${
+          open ? "z-[60]" : "z-50"
+        }`}
+      >
+        <ThemeToggleButton
+          theme={theme}
+          reduce={reduce}
+          onToggle={() => {
+            toggleTheme();
+            trackEvent("theme_toggle", {
+              next_theme: theme === "dark" ? "light" : "dark",
+            });
+          }}
+        />
+        <MobileMenuButton open={open} setOpen={setOpen} />
+      </div>
 
       <AnimatePresence>
         {open ? (
           <motion.div
             id="mobile-nav"
-            className="fixed inset-0 z-40 lg:hidden"
+            className="fixed inset-0 z-[55] lg:hidden"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -235,6 +219,79 @@ export function SiteHeader() {
         ) : null}
       </AnimatePresence>
     </>
+  );
+}
+
+function ThemeToggleButton({
+  theme,
+  reduce,
+  onToggle,
+}: {
+  theme: "light" | "dark";
+  reduce: boolean | null;
+  onToggle: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className="relative flex h-10 w-10 items-center justify-center overflow-hidden rounded-full border border-border-strong bg-surface-1 text-fg shadow-soft transition-colors hover:border-accent/35 hover:bg-surface-2"
+      aria-label={
+        theme === "dark" ? "Switch to light mode" : "Switch to dark mode"
+      }
+    >
+      <ThemeToggleGlyph theme={theme} reduceMotion={Boolean(reduce)} />
+    </button>
+  );
+}
+
+function MobileMenuButton({
+  open,
+  setOpen,
+}: {
+  open: boolean;
+  setOpen: Dispatch<SetStateAction<boolean>>;
+}) {
+  return (
+    <button
+      type="button"
+      className="inline-flex h-10 w-10 items-center justify-center rounded-full border border-border-strong bg-surface-1 text-fg shadow-soft transition-colors hover:border-accent/35 hover:bg-surface-2"
+      aria-expanded={open}
+      aria-controls="mobile-nav"
+      onClick={() =>
+        setOpen((v) => {
+          const next = !v;
+          trackEvent("mobile_menu_toggle", { is_open: next });
+          return next;
+        })
+      }
+      aria-label={open ? "Close menu" : "Open menu"}
+    >
+      <span className="sr-only">Menu</span>
+      <div className="flex w-5 flex-col gap-1">
+        <motion.span
+          animate={{
+            rotate: open ? 45 : 0,
+            y: open ? 6 : 0,
+          }}
+          className="h-0.5 w-full origin-center rounded-full bg-fg"
+          transition={{ duration: 0.25, ease: easing }}
+        />
+        <motion.span
+          animate={{ opacity: open ? 0 : 1 }}
+          className="h-0.5 w-full rounded-full bg-fg"
+          transition={{ duration: 0.2 }}
+        />
+        <motion.span
+          animate={{
+            rotate: open ? -45 : 0,
+            y: open ? -6 : 0,
+          }}
+          className="h-0.5 w-full origin-center rounded-full bg-fg"
+          transition={{ duration: 0.25, ease: easing }}
+        />
+      </div>
+    </button>
   );
 }
 
