@@ -54,26 +54,27 @@ function ScreenshotGallery({
             key={shot.src}
             className={
               shots.length % 2 === 1 && index === shots.length - 1
-                ? "sm:col-span-2"
-                : undefined
+                ? "flex sm:col-span-2"
+                : "flex"
             }
           >
             <button
               type="button"
               onClick={() => onOpenLightbox(index)}
-              className="group w-full cursor-pointer overflow-hidden rounded-xl border border-border-strong text-left shadow-soft transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-glow"
-              aria-label={`Open screenshot ${index + 1} of ${shots.length}: ${shot.alt}`}
+              className="group flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border-strong text-left shadow-soft transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-glow"
+              aria-label={`Open screenshot ${index + 1} of ${shots.length}${shot.description ? `: ${shot.description}` : ""}`}
             >
               <ProjectImageFrame
                 src={shot.src}
-                alt=""
+                alt={shot.description}
                 primaryColor={primaryColor}
                 aspectRatio="16 / 10"
                 padding="compact"
+                className="shrink-0"
               />
-              <span className="flex items-center justify-between gap-3 border-t border-border bg-surface-1 px-4 py-3 text-xs leading-relaxed text-fg-muted">
-                <span>{shot.alt}</span>
-                <span className="shrink-0 font-medium uppercase tracking-[0.14em] text-accent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
+              <span className="flex flex-1 items-start justify-between gap-3 border-t border-border bg-surface-1 px-4 py-3 text-xs leading-relaxed text-fg-muted">
+                {shot.description ? <span>{shot.description}</span> : <span aria-hidden />}
+                <span className="shrink-0 self-center font-medium uppercase tracking-[0.14em] text-accent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
                   View
                 </span>
               </span>
@@ -189,7 +190,7 @@ export function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps
             >
               <ProjectImageFrame
                 src={project.heroImage.src}
-                alt={project.heroImage.alt}
+                alt={project.heroImage.description}
                 primaryColor={project.primaryColor}
                 aspectRatio="21 / 9"
                 className="border-b border-border"

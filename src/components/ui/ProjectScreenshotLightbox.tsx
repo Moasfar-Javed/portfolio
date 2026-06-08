@@ -311,7 +311,7 @@ export function ProjectScreenshotLightbox({
             >
               <ZoomableImage
                 src={activeShot.src}
-                alt={activeShot.alt}
+                alt={activeShot.description}
                 reduce={reduce}
                 onZoomChange={setIsZoomed}
               />
@@ -340,7 +340,11 @@ export function ProjectScreenshotLightbox({
               ) : null}
             </div>
 
-            <p className="px-1 text-center text-sm text-fg-muted">{activeShot.alt}</p>
+            {activeShot.description ? (
+              <p className="px-1 text-center text-sm text-fg-muted">
+                {activeShot.description}
+              </p>
+            ) : null}
           </motion.div>
         </motion.div>
       ) : null}

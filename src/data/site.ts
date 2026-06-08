@@ -1,3 +1,5 @@
+import { projectScreenshots } from "./project-screenshots";
+
 export type NavItem = { id: string; label: string; href: string };
 
 export const siteMeta = {
@@ -105,7 +107,8 @@ export const about = {
 
 export type ProjectScreenshot = {
   src: string;
-  alt: string;
+  /** Visible caption in the gallery and lightbox; also used as image alt text. */
+  description: string;
 };
 
 export type Project = {
@@ -130,7 +133,7 @@ export const projects: Project[] = [
     summary:
       "Restoration job management software transforming industry workflows and equipping field technicians with cutting-edge tech",
     description:
-      "Albi is restoration job management software used by contractors and field technicians to run jobs end-to-end—from intake and documentation through billing and closeout. I work across the mobile apps and backend, shipping features that replace paper-heavy workflows with reliable, offline-capable tooling in the field.\n\nOn mobile I helped accelerate launch velocity and owned advanced capabilities including interactive floor plan sketching, LiDAR-powered 3D room scanning for accurate scope capture, and check deposit workflows tied into backend services. On the server side I contributed to API design, data modeling in MS SQL, and code quality practices including testing, documentation and mentorship for the wider engineering team.",
+      "Developed and scaled high-impact features across mobile, backend, and web systems to drive the core Albi product ecosystem. Spearheaded the development push to successfully launch the mobile application shortly after joining the team.\n\nEngineered a suite of complex tools, including an interactive room sketching interface, a LiDAR-powered 3D room scanning module and check scanning and deposit workflow to streamline financial operations for users. Collaborated directly with Product and Customer Support teams to translate user feedback and pain points into technical improvements.\n\nArchitected and maintained scalable backend services while ensuring production stability through rigorous testing and documentation. Actively mentor other developers and new hires, providing technical guidance on best practices to accelerate their onboarding and professional growth.",
     role: "Full-Stack Engineer",
     outcome:
       "Helped accelerate mobile launch and built advanced features including floor plan sketching, LiDAR-powered 3D room scanning and check deposit workflows",
@@ -146,14 +149,44 @@ export const projects: Project[] = [
     ],
     heroImage: {
       src: "/assets/projects/albi/hero.png",
-      alt: "Albi restoration job management platform",
+      description: "Albi restoration job management platform",
     },
-    screenshots: [
-      ...Array.from({ length: 10 }, (_, i) => ({
-        src: `/assets/projects/albi/phone${i + 1}.png`,
-        alt: `Albi mobile app screenshot ${i + 1}`,
-      })),
-    ],
+    screenshots: projectScreenshots("albi", [
+      {
+        file: "phone1.png",
+        description: "Home with persistent clock-in timer",
+      },
+      { file: "phone2.png", description: "Project status dashboard" },
+      {
+        file: "phone3.png",
+        description: "Scheduler with events and multiple views",
+      },
+      { file: "phone4.png", description: "LiDAR-powered 3D room scanning" },
+      {
+        file: "phone5.png",
+        description: "Comprehensive floor plan sketch editor",
+      },
+      {
+        file: "phone6.png",
+        description: "Equipment/inventory barcode scanning and management",
+      },
+      {
+        file: "phone7.png",
+        description: "Custom camera implementation for job documentation",
+      },
+      {
+        file: "phone8.png",
+        description: "Job documents' library",
+      },
+      {
+        file: "phone9.png",
+        description: "Onsite payment request",
+      },
+      {
+        file: "phone10.png",
+        description: "Check scanning and deposit processing",
+      },
+    ]),
   },
   {
     slug: "real",
@@ -162,7 +195,7 @@ export const projects: Project[] = [
     summary:
       "Feature-rich dating app for iOS and Android with subscriptions, secure messaging, verification and admin tooling",
     description:
-      "Real is a feature-rich dating platform for iOS and Android built around trust, safety and a polished consumer experience. The product spans native mobile clients, a scalable AWS backend, real-time messaging, subscription billing and internal tooling for moderation and support.\n\nI delivered and deployed the full stack: Flutter mobile apps, Node.js and Lambda services, OAuth flows, and an ML-assisted verification pipeline to reduce fraud and improve match quality. I also built the internal CRM and moderation suite that lets the operations team review profiles, handle reports and keep the community healthy at scale.",
+      "Developed and launched a feature-rich dating app on iOS and Android, integrating subscription management and multi-provider OAuth. Built a privacy-first architecture with encrypted user content and signed data packets to ensure regulatory compliance and user data integrity.\n\nAutomated the user verification pipeline by implementing AWS ML for facial recognition and document processing. Orchestrated an AWS-based backend using queues and Lambdas to handle real-time messaging and heavy media processing.\n\nDesigned a proprietary CRM and moderation suite to streamline content approval and platform analytics.",
     role: "Full-stack engineer",
     outcome:
       "Delivered and deployed the mobile app, AWS-based backend, ML-assisted verification pipeline and internal CRM/moderation suite",
@@ -177,18 +210,60 @@ export const projects: Project[] = [
     ],
     heroImage: {
       src: "/assets/projects/real/hero.png",
-      alt: "Real dating app on iOS and Android",
+      description: "Real dating app on iOS and Android",
     },
-    screenshots: [
-      ...Array.from({ length: 7 }, (_, i) => ({
-        src: `/assets/projects/real/phone${i + 1}.png`,
-        alt: `Real mobile app screenshot ${i + 1}`,
-      })),
-      ...Array.from({ length: 5 }, (_, i) => ({
-        src: `/assets/projects/real/admin${i + 1}.png`,
-        alt: `Real admin dashboard screenshot ${i + 1}`,
-      })),
-    ],
+    screenshots: projectScreenshots("real", [
+      {
+        file: "phone1.png",
+        description: "Splash screen",
+      },
+      {
+        file: "phone2.png",
+        description: "Login screen",
+      },
+      {
+        file: "phone3.png",
+        description: "Discovery screen with personalized suggestions",
+      },
+      {
+        file: "phone4.png",
+        description: 'Payment gated "liked by"',
+      },
+      {
+        file: "phone5.png",
+        description: "Real-time chat with notifications",
+      },
+      {
+        file: "phone6.png",
+        description:
+          "Profile screen with settings, preferences and report options",
+      },
+      {
+        file: "phone7.png",
+        description: "Request data compliance",
+      },
+      {
+        file: "admin1.png",
+        description: "Admin: User management",
+      },
+      {
+        file: "admin2.png",
+        description:
+          "Admin: User details, verification requests and moderation",
+      },
+      {
+        file: "admin3.png",
+        description: "Admin: Developer details and server metrics",
+      },
+      {
+        file: "admin4.png",
+        description: "Admin: Content management",
+      },
+      {
+        file: "admin5.png",
+        description: "Admin: Broadcasting an announcement",
+      },
+    ]),
   },
   {
     slug: "planetj",
@@ -197,7 +272,7 @@ export const projects: Project[] = [
     summary:
       "High concurrency video game betting and live-streaming platform built for real-time interaction and secure transactions",
     description:
-      "PlanetJ is a high-concurrency platform where viewers watch live gameplay, place bets in real time and interact through WebSockets-backed experiences. The system integrates Unity game builds, crypto wallet flows and IVS live broadcast infrastructure on AWS.\n\nAs technical lead I architected the streaming and betting pipeline, designed PostgreSQL schemas for transactional integrity under load, and managed a team of developers while keeping stakeholders aligned on milestones. The React front end and .NET services were tuned for low-latency updates, secure wallet operations and reliable session handling during peak events.",
+      "Architected and deployed a high-concurrency platform using React, .NET and PostgreSQL, hosted on AWS to support real-time betting and live streaming. Integrated AWS IVS for low-latency video streaming and implemented WebSockets and Webhooks to handle real-time game states, odds updates and transaction notifications.\n\nDeveloped secure crypto wallet integrations for betting and spearheaded the development of a React-based gaming portal that seamlessly wraps and communicates with Unity builds.\n\nActed as the primary technical liaison, coordinating between the design, QA and Unity game development teams while managing direct client communication to align technical delivery with business roadmaps.",
     role: "Technical lead",
     outcome:
       "Architected a live streaming and betting system with crypto wallet and Unity game build integration. Managed a team of developers and communicated with stakeholders",
@@ -213,22 +288,25 @@ export const projects: Project[] = [
     ],
     heroImage: {
       src: "/assets/projects/planetj/hero.png",
-      alt: "PlanetJ live streaming and betting platform",
+      description: "PlanetJ live streaming and betting platform",
     },
-    screenshots: [
-      ...Array.from({ length: 2 }, (_, i) => ({
-        src: `/assets/projects/planetj/game${i + 1}.png`,
-        alt: `PlanetJ live game screenshot ${i + 1}`,
-      })),
-      ...Array.from({ length: 3 }, (_, i) => ({
-        src: `/assets/projects/planetj/web${i + 1}.png`,
-        alt: `PlanetJ web platform screenshot ${i + 1}`,
-      })),
+    screenshots: projectScreenshots("planetj", [
+      { file: "game1.png", description: "Unity game build in web app" },
+      { file: "game2.png", description: "Live leaderboard and game stats" },
       {
-        src: "/assets/projects/planetj/admin1.png",
-        alt: "PlanetJ admin dashboard screenshot",
+        file: "web1.png",
+        description: "Modern login page with social login options",
       },
-    ],
+      {
+        file: "web2.png",
+        description: "Home page with live games and AI chat",
+      },
+      {
+        file: "web3.png",
+        description: "Game page with live stream, betting and odds updates",
+      },
+      { file: "admin1.png", description: "Admin panel with system overview" },
+    ]),
   },
   {
     slug: "trainerjoe",
@@ -237,7 +315,7 @@ export const projects: Project[] = [
     summary:
       "Multi-platform fitness coaching ecosystem with web, presentation tooling, admin systems and cloud-hosted backend services.",
     description:
-      "TrainerJOE is a multi-platform fitness coaching ecosystem spanning web apps, presentation tooling for trainers, admin analytics and cloud-hosted backend services. Coaches use it to build programs, run sessions and track client progress; admins rely on dashboards for operations and content management.\n\nI built workout presentation tools that trainers use live with clients, admin analytics for business insights, and a customizable training instruction presentation platform on React and Flutter Web. Backend work on .NET and MS SQL focused on data sync, performance budgets and reliable AWS deployments.",
+      "Engineered a comprehensive fitness ecosystem comprising a React landing page and web app, a specialized Flutter for Web presentation engine and a .NET/MS SQL backend.\n\nDeveloped a full-featured Presentation Mode with real-time controls for workout sequencing, pause/resume functionality, rest delays and automated slide transitions. Implemented a granular workout constructor allowing instructors to customize branding, timings, exercise video integration and slide-specific configurations.\n\nBuilt an extensive admin dashboard featuring a video library management system and integrated performance analytics to track instructor and presentation usage. Managed the end-to-end deployment and hosting of the entire microservices-based architecture on AWS.",
     role: "Full-stack engineer",
     outcome:
       "Built workout presentation tools, admin analytics and a customizable training instruction presentation platform",
@@ -252,18 +330,32 @@ export const projects: Project[] = [
     ],
     heroImage: {
       src: "/assets/projects/trainerjoe/hero.png",
-      alt: "TrainerJOE fitness coaching platform",
+      description: "TrainerJOE fitness coaching platform",
     },
-    screenshots: [
-      ...Array.from({ length: 7 }, (_, i) => ({
-        src: `/assets/projects/trainerjoe/web${i + 1}.png`,
-        alt: `TrainerJOE web platform screenshot ${i + 1}`,
-      })),
-      ...Array.from({ length: 2 }, (_, i) => ({
-        src: `/assets/projects/trainerjoe/admin${i + 1}.png`,
-        alt: `TrainerJOE admin dashboard screenshot ${i + 1}`,
-      })),
-    ],
+    screenshots: projectScreenshots("trainerjoe", [
+      { file: "web1.png", description: "Login page with social options" },
+      {
+        file: "web2.png",
+        description: "Exercise library with video integration",
+      },
+      {
+        file: "web3.png",
+        description:
+          "Workout builder with personalized branding, controls and durations",
+      },
+      { file: "web4.png", description: "Theme customization" },
+      {
+        file: "web5.png",
+        description: "Full customizable workout presentation view",
+      },
+      { file: "web6.png", description: "Workout presentation's controls" },
+      { file: "web7.png", description: "Workout presentation - rest screen" },
+      { file: "admin1.png", description: "Admin: Exercise library management" },
+      {
+        file: "admin2.png",
+        description: "Admin: Analytics and product metrics",
+      },
+    ]),
   },
   {
     slug: "prints-on-pendants",
@@ -272,21 +364,37 @@ export const projects: Project[] = [
     summary:
       "Cross-platform app for securely capturing and storing images, handwriting and fingerprints for custom jewelry workflows.",
     description:
-      "Prints on Pendants is a cross-platform app for jewelers and customers to securely capture images, handwriting samples and fingerprints that are engraved into custom jewelry. Privacy and accuracy are central—the app guides users through capture, validates quality with ML, and stores sensitive biometric data behind strict access controls.\n\nI built the Flutter mobile experience, an ML-backed scanning pipeline for reliable captures, and AWS microservices that process, store and route orders without exposing raw biometric data unnecessarily. The workflow connects mobile capture to fulfillment systems so each piece ships with the customer's exact imprint.",
+      "Developed a mobile application for iOS and Android that allows users to securely store and manage images, handwriting and fingerprints. Built a custom ML microservice for automated document scanning and high-fidelity fingerprint feature extraction from raw images.\n\nEngineered a Node.js backend using AWS microservices, SQS queues and compute resources for scalable data processing. Designed a secure storage system for biometric data used in the custom physical jewelry manufacturing process.",
     role: "Full-stack engineer",
     outcome:
       "Built the mobile app, ML-backed scanning pipeline and AWS microservices for secure biometric data processing.",
     tags: ["Flutter", "Node.js", "Model", "ML"],
     heroImage: {
       src: "/assets/projects/prints-on-pendants/hero.png",
-      alt: "Prints on Pendants custom jewelry capture app",
+      description: "Prints on Pendants custom jewelry capture app",
     },
-    screenshots: [
-      ...Array.from({ length: 7 }, (_, i) => ({
-        src: `/assets/projects/prints-on-pendants/phone${i + 1}.png`,
-        alt: `Prints on Pendants mobile app screenshot ${i + 1}`,
-      })),
-    ],
+    screenshots: projectScreenshots("prints-on-pendants", [
+      {
+        file: "phone1.png",
+        description: "Splash screen",
+      },
+      { file: "phone2.png", description: "Registration screen" },
+      { file: "phone3.png", description: "Home screen with core options" },
+      { file: "phone4.png", description: "Fingerprints capture - hand-wise" },
+      {
+        file: "phone5.png",
+        description: "Custom camera implementation for fingerprint capture",
+      },
+      {
+        file: "phone6.png",
+        description:
+          "ML processing flow for feature extraction with live results",
+      },
+      {
+        file: "phone7.png",
+        description: "Handwriting capture and feature extraction",
+      },
+    ]),
   },
   {
     slug: "warrior-adventures",
@@ -295,25 +403,45 @@ export const projects: Project[] = [
     summary:
       "Team-based adventure platform featuring live location, navigation, real-time gameplay and coordinated backend.",
     description:
-      "WARRIOR Adventures is a team-based outdoor adventure platform where groups compete through live location tracking, navigation challenges and real-time gameplay mechanics. Players see teammates on the map, complete checkpoints and climb leaderboards while the backend coordinates game state across devices.\n\nI developed the Flutter app with maps, geolocation and offline-tolerant UX, plus Node.js services for live tracking, leaderboards and team coordination. WebSockets and efficient sync keep gameplay responsive even when connectivity fluctuates on the trail.",
+      "Designed and developed the mobile application for iOS and Android using Flutter. Implemented live location tracking, navigation and interactive challenges for team-based gameplay.\n\nBuilt Node.js backend services to manage real-time leaderboards, team coordination and game logic.",
     role: "Mobile engineer",
     outcome:
       "Developed the Flutter app and Node.js backend services for live tracking, leaderboards and team coordination.",
     tags: ["Flutter", "Node.js", "Real-time", "Maps", "Mobile"],
     heroImage: {
       src: "/assets/projects/warrior-adventures/hero.png",
-      alt: "WARRIOR Adventures team adventure platform",
+      description: "WARRIOR Adventures team adventure platform",
     },
-    screenshots: [
-      ...Array.from({ length: 5 }, (_, i) => ({
-        src: `/assets/projects/warrior-adventures/phone${i + 1}.png`,
-        alt: `WARRIOR Adventures mobile app screenshot ${i + 1}`,
-      })),
-      ...Array.from({ length: 2 }, (_, i) => ({
-        src: `/assets/projects/warrior-adventures/admin${i + 1}.png`,
-        alt: `WARRIOR Adventures admin dashboard screenshot ${i + 1}`,
-      })),
-    ],
+    screenshots: projectScreenshots("warrior-adventures", [
+      {
+        file: "phone1.png",
+        description: "Splash screen",
+      },
+      {
+        file: "phone2.png",
+        description: "Idle map showing quests",
+      },
+      {
+        file: "phone3.png",
+        description: "Map state when quests started - routing to quests",
+      },
+      {
+        file: "phone4.png",
+        description: "Quest completion and points summary",
+      },
+      {
+        file: "phone5.png",
+        description: "Live leaderboard screen",
+      },
+      {
+        file: "admin1.png",
+        description: "Admin: Quest and challenges management",
+      },
+      {
+        file: "admin2.png",
+        description: "Admin: Adding a new challenge to a quest",
+      },
+    ]),
   },
 ];
 
