@@ -109,14 +109,6 @@
   }
 }
 
-/* Continuous ping animations are costly on mobile GPUs; keep a static halo. */
-@media (pointer: coarse) {
-  .hero-badge-ping {
-    animation: none;
-    opacity: 0.35;
-  }
-}
-
 @media (prefers-reduced-motion: reduce) {
   .glass-card,
   .glass-card-muted,

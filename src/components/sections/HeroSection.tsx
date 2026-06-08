@@ -68,10 +68,6 @@ export function HeroSection() {
                 : "glass-card mb-8 inline-flex items-center gap-2 rounded-full border border-border-strong px-3 py-1 text-xs font-medium text-fg-muted shadow-soft"
             }
           >
-            <span className="relative flex h-2 w-2">
-              <span className="hero-badge-ping absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400/50 opacity-60" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-400" />
-            </span>
             {hero.badge}
           </motion.div>
 
