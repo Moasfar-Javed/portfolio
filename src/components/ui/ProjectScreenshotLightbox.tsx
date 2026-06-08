@@ -42,6 +42,8 @@ type ZoomableImageProps = {
 
 function ZoomableImage({ src, alt, reduce, onZoomChange }: ZoomableImageProps) {
   const viewportRef = useRef<HTMLDivElement>(null);
+  const imgRef = useRef<HTMLImageElement>(null);
+  const [loaded, setLoaded] = useState(false);
   const [scale, setScale] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
   const [dragging, setDragging] = useState(false);
@@ -62,6 +64,11 @@ function ZoomableImage({ src, alt, reduce, onZoomChange }: ZoomableImageProps) {
 
   useEffect(() => {
     resetZoom();
+    setLoaded(false);
+    const img = imgRef.current;
+    if (img?.complete && img.naturalWidth > 0) {
+      setLoaded(true);
+    }
   }, [src, resetZoom]);
 
   useEffect(() => {
@@ -192,14 +199,16 @@ function ZoomableImage({ src, alt, reduce, onZoomChange }: ZoomableImageProps) {
           <AnimatePresence mode="wait" initial={false}>
             <motion.img
               key={src}
+              ref={imgRef}
               src={src}
               alt={alt}
               draggable={false}
+              onLoad={() => setLoaded(true)}
               className="max-h-full max-w-full select-none object-contain p-6 sm:p-8"
-              initial={reduce ? false : { opacity: 0 }}
-              animate={{ opacity: 1 }}
+              initial={false}
+              animate={{ opacity: loaded ? 1 : 0 }}
               exit={reduce ? undefined : { opacity: 0 }}
-              transition={{ duration: 0.2, ease: easing }}
+              transition={{ duration: reduce ? 0 : 0.35, ease: easing }}
             />
           </AnimatePresence>
         </div>

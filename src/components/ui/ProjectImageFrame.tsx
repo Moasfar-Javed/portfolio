@@ -1,3 +1,6 @@
+import { useEffect, useRef, useState } from "react";
+import { useReducedMotion } from "framer-motion";
+
 type ProjectImageFrameProps = {
   src: string;
   alt: string;
@@ -26,6 +29,18 @@ export function ProjectImageFrame({
   padded = true,
   padding = "default",
 }: ProjectImageFrameProps) {
+  const reduce = useReducedMotion();
+  const [loaded, setLoaded] = useState(false);
+  const imgRef = useRef<HTMLImageElement>(null);
+
+  useEffect(() => {
+    setLoaded(false);
+    const img = imgRef.current;
+    if (img?.complete && img.naturalWidth > 0) {
+      setLoaded(true);
+    }
+  }, [src]);
+
   return (
     <div
       className={`relative w-full overflow-hidden ${fill ? "h-full min-h-0" : ""} ${className}`}
@@ -35,11 +50,13 @@ export function ProjectImageFrame({
       }}
     >
       <img
+        ref={imgRef}
         src={src}
         alt={alt}
         loading="lazy"
         decoding="async"
-        className={`h-full w-full object-contain ${padded ? paddingClass[padding] : ""} ${imageClassName}`}
+        onLoad={() => setLoaded(true)}
+        className={`h-full w-full object-contain transition-opacity ${reduce ? "duration-0" : "duration-500 ease-out"} ${loaded ? "opacity-100" : "opacity-0"} ${padded ? paddingClass[padding] : ""} ${imageClassName}`}
       />
     </div>
   );
