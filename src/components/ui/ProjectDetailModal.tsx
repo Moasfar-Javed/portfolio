@@ -48,40 +48,46 @@ function ScreenshotGallery({
       <h3 className="text-xs font-medium uppercase tracking-[0.2em] text-fg-subtle">
         Gallery
       </h3>
-      <ul className="mt-4 grid gap-4 sm:grid-cols-2">
-        {shots.map((shot, index) => (
-          <li
-            key={shot.src}
-            className={
-              shots.length % 2 === 1 && index === shots.length - 1
-                ? "flex sm:col-span-2"
-                : "flex"
-            }
-          >
-            <button
-              type="button"
-              onClick={() => onOpenLightbox(index)}
-              className="group flex h-full w-full cursor-pointer flex-col overflow-hidden rounded-xl border border-border-strong text-left shadow-soft transition-[border-color,box-shadow] duration-300 hover:border-accent/40 hover:shadow-glow"
-              aria-label={`Open screenshot ${index + 1} of ${shots.length}${shot.description ? `: ${shot.description}` : ""}`}
+      <div className="mt-4 overflow-hidden rounded-xl border border-border-strong">
+        <ul className="grid grid-cols-1 gap-px bg-border sm:grid-cols-2">
+          {shots.map((shot, index) => (
+            <li
+              key={shot.src}
+              className={`bg-surface-1 ${
+                shots.length % 2 === 1 && index === shots.length - 1
+                  ? "sm:col-span-2"
+                  : ""
+              }`}
             >
-              <ProjectImageFrame
-                src={shot.src}
-                alt={shot.description}
-                primaryColor={primaryColor}
-                aspectRatio="16 / 10"
-                padding="compact"
-                className="shrink-0"
-              />
-              <span className="flex flex-1 items-start justify-between gap-3 border-t border-border bg-surface-1 px-4 py-3 text-xs leading-relaxed text-fg-muted">
-                {shot.description ? <span>{shot.description}</span> : <span aria-hidden />}
-                <span className="shrink-0 self-center font-medium uppercase tracking-[0.14em] text-accent opacity-0 transition-opacity duration-300 group-hover:opacity-100">
-                  View
-                </span>
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
+              <button
+                type="button"
+                onClick={() => onOpenLightbox(index)}
+                className="group flex h-full w-full cursor-pointer flex-col text-left transition-colors duration-200 hover:bg-surface-2/40"
+                aria-label={`Open screenshot ${index + 1} of ${shots.length}${shot.description ? `: ${shot.description}` : ""}`}
+              >
+                <div className="relative w-full shrink-0">
+                  <ProjectImageFrame
+                    src={shot.src}
+                    alt={shot.description}
+                    primaryColor={primaryColor}
+                    aspectRatio="16 / 10"
+                    padding="compact"
+                    className="w-full"
+                  />
+                  <span className="pointer-events-none absolute right-3 top-3 rounded-full border border-border-strong bg-surface-1/90 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.14em] text-accent opacity-0 backdrop-blur-sm transition-opacity duration-200 group-hover:opacity-100">
+                    Open
+                  </span>
+                </div>
+                {shot.description ? (
+                  <span className="line-clamp-1 border-t border-border px-3 py-2 text-[11px] leading-snug text-fg-subtle">
+                    {shot.description}
+                  </span>
+                ) : null}
+              </button>
+            </li>
+          ))}
+        </ul>
+      </div>
 
       <ProjectScreenshotLightbox
         shots={shots}
