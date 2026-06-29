@@ -5,7 +5,6 @@ import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
 import { SpotlightSurface } from "../ui/SpotlightSurface";
 import { ButtonLink } from "../ui/ButtonLink";
-import { Reveal } from "../ui/Reveal";
 import { SectionHeader } from "../ui/SectionHeader";
 import { SectionShell } from "./SectionShell";
 
@@ -38,12 +37,17 @@ export function FreelanceSection() {
               transition={{ duration: 0.5, ease: easing, delay: 0.08 }}
             >
               {freelance.bullets.map((b, i) => (
-                <Reveal key={b} delay={0.05 * i}>
-                  <li className={`flex gap-3 ${ROW_HOVER}`}>
-                    <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
-                    <span className="leading-relaxed">{b}</span>
-                  </li>
-                </Reveal>
+                <motion.li
+                  key={b}
+                  className={`flex gap-3 ${ROW_HOVER}`}
+                  initial={reduce ? false : { opacity: 0, y: 20 }}
+                  whileInView={reduce ? undefined : { opacity: 1, y: 0 }}
+                  viewport={{ once: true, margin: "-10% 0px" }}
+                  transition={{ duration: 0.55, ease: easing, delay: 0.05 * i }}
+                >
+                  <span className="mt-1.5 h-1 w-1 shrink-0 rounded-full bg-accent" />
+                  <span className="leading-relaxed">{b}</span>
+                </motion.li>
               ))}
             </motion.ul>
           </div>

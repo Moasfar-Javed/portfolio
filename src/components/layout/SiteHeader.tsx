@@ -2,6 +2,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   useCallback,
   useEffect,
+  useRef,
   useState,
   type Dispatch,
   type SetStateAction,
@@ -27,6 +28,7 @@ export function SiteHeader() {
   const reduce = useReducedMotion();
   const [open, setOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const initialPathRef = useRef(window.location.pathname);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 12);
@@ -34,6 +36,30 @@ export function SiteHeader() {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  /** Deep-link in: honor an incoming /section path on first load (captured before the path-sync effect can rewrite it). */
+  useEffect(() => {
+    const id = initialPathRef.current.replace(/^\/+|\/+$/g, "");
+    if (!id || id === "hero" || !sectionIds.includes(id)) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    requestAnimationFrame(() => {
+      const lenis = lenisRef.current;
+      if (lenis) lenis.scrollTo(el, { offset: -76, immediate: true });
+      else el.scrollIntoView({ block: "start" });
+    });
+  }, [lenisRef]);
+
+  /** Keep the URL path in sync with the section in view, so any scroll position is copy-pasteable. */
+  useEffect(() => {
+    if (!activeId) return;
+    // While a project is open it owns the URL (/projects?work=…); don't fight it.
+    if (new URLSearchParams(window.location.search).has("work")) return;
+    const path = activeId === sectionIds[0] ? "/" : `/${activeId}`;
+    const next = `${path}${window.location.search}`;
+    const current = `${window.location.pathname}${window.location.search}`;
+    if (next !== current) window.history.replaceState(null, "", next);
+  }, [activeId]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -52,6 +78,8 @@ export function SiteHeader() {
       } else if (el instanceof HTMLElement) {
         el.scrollIntoView({ behavior: "smooth", block: "start" });
       }
+      const path = href === "#hero" ? "/" : `/${href.slice(1)}`;
+      window.history.replaceState(null, "", `${path}${window.location.search}`);
       setOpen(false);
     },
     [lenisRef],
@@ -66,10 +94,10 @@ export function SiteHeader() {
             : "border-b border-transparent bg-transparent"
         }`}
       >
-        <Container className="flex h-16 items-center justify-between gap-4 md:h-[4.5rem]">
+        <Container className="flex h-16 items-center justify-between gap-4 md:h-[4.5rem] lg:grid lg:grid-cols-[1fr_auto_1fr] lg:items-center">
           <a
             href="#hero"
-            className="group flex flex-col rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent"
+            className="group flex flex-col rounded-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent lg:justify-self-start"
             onClick={(e) => {
               e.preventDefault();
               trackNavigationClick("#hero", "header_logo");
@@ -85,7 +113,7 @@ export function SiteHeader() {
           </a>
 
           <nav
-            className="hidden items-center gap-1 lg:flex"
+            className="col-start-2 row-start-1 hidden items-center gap-1 justify-self-center lg:flex"
             aria-label="Primary"
           >
             {navItems.map((item) => {
@@ -127,7 +155,7 @@ export function SiteHeader() {
             className="flex w-[calc(2.5rem*2+0.5rem)] shrink-0 items-center justify-end gap-2 lg:hidden"
             aria-hidden
           />
-          <div className="hidden items-center gap-2 lg:flex">
+          <div className="col-start-3 row-start-1 hidden items-center justify-self-end gap-2 lg:flex">
             <ThemeToggleButton
               theme={theme}
               reduce={reduce}

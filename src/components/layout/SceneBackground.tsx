@@ -439,6 +439,15 @@ export function SceneBackground() {
   const primary = isDark ? "#6ba3ff" : "#3d6ad4";
   const secondary = isDark ? "#8a8fb8" : "#64748b";
 
+  /** Stop driving the render loop when the tab is backgrounded — no point spending GPU/CPU on an unseen canvas. */
+  const [frameloop, setFrameloop] = useState<"always" | "never">("always");
+  useEffect(() => {
+    const sync = () => setFrameloop(document.hidden ? "never" : "always");
+    sync();
+    document.addEventListener("visibilitychange", sync);
+    return () => document.removeEventListener("visibilitychange", sync);
+  }, []);
+
   if (reduce || !fine) {
     return (
       <div
@@ -458,6 +467,7 @@ export function SceneBackground() {
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_85%_55%_at_50%_-15%,var(--glow),transparent)] opacity-50 dark:opacity-[0.85]" />
         <Canvas
           className="!absolute inset-0 h-full w-full"
+          frameloop={frameloop}
           camera={{ position: [2.58, 1.38, 5.32], fov: 42 }}
           gl={{
             alpha: true,

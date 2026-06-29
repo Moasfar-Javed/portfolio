@@ -5,14 +5,14 @@ export type NavItem = { id: string; label: string; href: string };
 export const siteMeta = {
   name: "Moasfar Javed",
   shortTitle: "Moasfar J.",
-  tagline: "Full Stack Software Engineer",
+  tagline: "Full Stack Engineer",
 };
 
 export const navItems: NavItem[] = [
   { id: "hero", label: "Intro", href: "#hero" },
   { id: "impact", label: "Impact", href: "#impact" },
   { id: "about", label: "About", href: "#about" },
-  { id: "work", label: "Work", href: "#work" },
+  { id: "projects", label: "Work", href: "#projects" },
   { id: "journey", label: "Journey", href: "#journey" },
   { id: "stack", label: "Stack", href: "#stack" },
   { id: "freelance", label: "Clients", href: "#freelance" },
@@ -78,7 +78,7 @@ export const hero = {
       variant: "secondary" as const,
       external: true,
     },
-    { label: "View work", href: "#work", variant: "ghost" as const },
+    { label: "View work", href: "#projects", variant: "ghost" as const },
   ],
 };
 

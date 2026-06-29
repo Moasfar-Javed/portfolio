@@ -1,5 +1,5 @@
 import { motion, useReducedMotion } from "framer-motion";
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { projects, type Project } from "../../data/site";
 import { trackEvent } from "../../lib/analytics";
 import { GLASS_CARD_HOVER } from "../../lib/interactive";
@@ -84,22 +84,55 @@ function ProjectHeroImage({
 export function ProjectsSection() {
   const reduce = useReducedMotion();
   const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  /** True when *we* pushed the ?project= entry, so closing can step back instead of stranding history. */
+  const didPushRef = useRef(false);
+
+  // Source of truth = the URL. Restores on deep-link/refresh and on browser Back/Forward.
+  useEffect(() => {
+    const applyFromUrl = () => {
+      const slug = new URLSearchParams(window.location.search).get("work");
+      const match = slug
+        ? (projects.find((p) => p.slug === slug) ?? null)
+        : null;
+      if (!match) didPushRef.current = false;
+      setSelectedProject(match);
+    };
+    applyFromUrl();
+    window.addEventListener("popstate", applyFromUrl);
+    return () => window.removeEventListener("popstate", applyFromUrl);
+  }, []);
 
   const openProject = useCallback((project: Project) => {
-    setSelectedProject(project);
     trackEvent("project_detail_open", {
       project_slug: project.slug,
       project_name: project.name,
     });
+    const url = new URL(window.location.href);
+    url.pathname = "/projects";
+    url.searchParams.set("work", project.slug);
+    window.history.pushState({ work: project.slug }, "", url);
+    didPushRef.current = true;
+    setSelectedProject(project);
   }, []);
 
   const closeProject = useCallback(() => {
-    setSelectedProject(null);
+    if (didPushRef.current) {
+      // We added the history entry → go back so Back-button behaviour stays intuitive.
+      didPushRef.current = false;
+      window.history.back();
+    } else {
+      // Opened via deep link (no prior entry) → drop back to the root in place.
+      const url = new URL(window.location.href);
+      url.pathname = "/";
+      url.searchParams.delete("work");
+      window.history.replaceState(null, "", url);
+      setSelectedProject(null);
+    }
   }, []);
 
   return (
     <SectionShell
-      id="work"
+      id="projects"
       className="py-20 md:py-24"
       ariaLabel="Selected work"
     >

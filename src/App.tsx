@@ -69,6 +69,19 @@ export default function App() {
         <main id="main" className="relative z-10">
           <HeroSection />
           <div id="graph-scope" className="relative">
+            {/* Readability layer between the fixed 3D scene (z-0) and content (z-10):
+                faint fill + soft blur so copy stays legible while the scene still
+                animates through. Masked at the top so the blur eases in past the hero. */}
+            <div
+              className="pointer-events-none absolute inset-0 z-[1] bg-surface-0/30 backdrop-blur-[0.5px] dark:bg-surface-0/45"
+              style={{
+                WebkitMaskImage:
+                  "linear-gradient(to bottom, transparent 0, #000 16rem)",
+                maskImage:
+                  "linear-gradient(to bottom, transparent 0, #000 16rem)",
+              }}
+              aria-hidden
+            />
             <div
               className="post-hero-scrim-bridge pointer-events-none absolute inset-x-0 top-0 z-[1]"
               aria-hidden
