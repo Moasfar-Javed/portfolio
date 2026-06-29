@@ -20,6 +20,8 @@ import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
 
 const sectionIds = navItems.map((n) => n.id);
+const mainNavItems = navItems.filter((item) => item.id !== "contact");
+const contactNavItem = navItems.find((item) => item.id === "contact");
 
 export function SiteHeader() {
   const activeId = useActiveSection(sectionIds);
@@ -116,38 +118,16 @@ export function SiteHeader() {
             className="col-start-2 row-start-1 hidden items-center gap-1 justify-self-center lg:flex"
             aria-label="Primary"
           >
-            {navItems.map((item) => {
-              const active = activeId === item.id;
-              return (
-                <a
-                  key={item.id}
-                  href={item.href}
-                  className={`relative rounded-full px-3 py-1.5 text-sm transition-colors ${
-                    active ? "text-fg" : "text-fg-muted hover:text-fg"
-                  }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    trackNavigationClick(item.href, "header_nav");
-                    scrollTo(item.href);
-                  }}
-                >
-                  {active && !reduce ? (
-                    <motion.span
-                      layoutId="nav-pill"
-                      className="absolute inset-0 -z-10 rounded-full border border-border-strong bg-surface-1 shadow-soft"
-                      transition={{
-                        type: "spring",
-                        stiffness: 380,
-                        damping: 32,
-                      }}
-                    />
-                  ) : active ? (
-                    <span className="absolute inset-0 -z-10 rounded-full border border-border-strong bg-surface-1 shadow-soft" />
-                  ) : null}
-                  <span className="relative z-10">{item.label}</span>
-                </a>
-              );
-            })}
+            {mainNavItems.map((item) => (
+              <HeaderNavLink
+                key={item.id}
+                item={item}
+                active={activeId === item.id}
+                reduce={reduce}
+                source="header_nav"
+                onNavigate={scrollTo}
+              />
+            ))}
           </nav>
 
           {/* Reserve width on <lg; real controls are in MobileHeaderToolbar (above overlay when open). */}
@@ -155,7 +135,14 @@ export function SiteHeader() {
             className="flex w-[calc(2.5rem*2+0.5rem)] shrink-0 items-center justify-end gap-2 lg:hidden"
             aria-hidden
           />
-          <div className="col-start-3 row-start-1 hidden items-center justify-self-end gap-2 lg:flex">
+          <div className="col-start-3 row-start-1 hidden items-center justify-self-end gap-3 lg:flex">
+            {contactNavItem ? (
+              <HeaderContactCta
+                item={contactNavItem}
+                active={activeId === contactNavItem.id}
+                onNavigate={scrollTo}
+              />
+            ) : null}
             <ThemeToggleButton
               theme={theme}
               reduce={reduce}
@@ -215,8 +202,8 @@ export function SiteHeader() {
               className="absolute right-0 top-0 flex h-full w-[min(100%,20rem)] flex-col border-l border-border bg-surface-1 px-6 pb-10 pt-24 shadow-soft"
               aria-label="Mobile primary"
             >
-              <ul className="flex flex-col gap-1">
-                {navItems.map((item, i) => (
+              <ul className="flex flex-1 flex-col gap-1">
+                {mainNavItems.map((item, i) => (
                   <motion.li
                     key={item.id}
                     initial={{ opacity: 0, x: 16 }}
@@ -242,11 +229,97 @@ export function SiteHeader() {
                   </motion.li>
                 ))}
               </ul>
+              {contactNavItem ? (
+                <motion.div
+                  initial={{ opacity: 0, x: 16 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.04 * mainNavItems.length, ease: easing }}
+                  className="mt-6 border-t border-border pt-6"
+                >
+                  <HeaderContactCta
+                    item={contactNavItem}
+                    active={activeId === contactNavItem.id}
+                    onNavigate={scrollTo}
+                    className="w-full justify-center px-5 py-3 text-base"
+                  />
+                </motion.div>
+              ) : null}
             </motion.nav>
           </motion.div>
         ) : null}
       </AnimatePresence>
     </>
+  );
+}
+
+function HeaderContactCta({
+  item,
+  active,
+  onNavigate,
+  className = "",
+}: {
+  item: (typeof navItems)[number];
+  active: boolean;
+  onNavigate: (href: string) => void;
+  className?: string;
+}) {
+  return (
+    <a
+      href={item.href}
+      className={`inline-flex items-center justify-center rounded-full bg-fg px-4 py-2 text-sm font-medium text-surface-0 shadow-soft transition-[background-color,box-shadow] duration-300 hover:bg-fg/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent ${
+        active ? "ring-2 ring-accent/40 ring-offset-2 ring-offset-surface-0" : ""
+      } ${className}`.trim()}
+      onClick={(e) => {
+        e.preventDefault();
+        trackNavigationClick(item.href, "header_contact");
+        onNavigate(item.href);
+      }}
+    >
+      {item.label}
+    </a>
+  );
+}
+
+function HeaderNavLink({
+  item,
+  active,
+  reduce,
+  source,
+  onNavigate,
+}: {
+  item: (typeof navItems)[number];
+  active: boolean;
+  reduce: boolean | null;
+  source: string;
+  onNavigate: (href: string) => void;
+}) {
+  return (
+    <a
+      href={item.href}
+      className={`relative rounded-full px-3 py-1.5 text-sm transition-colors ${
+        active ? "text-fg" : "text-fg-muted hover:text-fg"
+      }`}
+      onClick={(e) => {
+        e.preventDefault();
+        trackNavigationClick(item.href, source);
+        onNavigate(item.href);
+      }}
+    >
+      {active && !reduce ? (
+        <motion.span
+          layoutId="nav-pill"
+          className="absolute inset-0 -z-10 rounded-full border border-border-strong bg-surface-1 shadow-soft"
+          transition={{
+            type: "spring",
+            stiffness: 380,
+            damping: 32,
+          }}
+        />
+      ) : active ? (
+        <span className="absolute inset-0 -z-10 rounded-full border border-border-strong bg-surface-1 shadow-soft" />
+      ) : null}
+      <span className="relative z-10">{item.label}</span>
+    </a>
   );
 }
 
