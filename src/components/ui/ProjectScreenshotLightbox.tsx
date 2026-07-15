@@ -276,7 +276,7 @@ export function ProjectScreenshotLightbox({
     <AnimatePresence>
       {activeShot && activeIndex !== null ? (
         <motion.div
-          className="fixed inset-0 z-[105] flex items-center justify-center p-4 sm:p-8"
+          className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-8"
           role="dialog"
           aria-modal="true"
           aria-label="Screenshot gallery"
@@ -288,7 +288,7 @@ export function ProjectScreenshotLightbox({
         >
           <button
             type="button"
-            className="absolute inset-0 bg-surface-0/85 backdrop-blur-md"
+            className="absolute inset-0 bg-surface-0/92"
             aria-label="Close gallery"
             onClick={onClose}
           />

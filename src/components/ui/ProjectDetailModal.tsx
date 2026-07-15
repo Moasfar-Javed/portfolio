@@ -10,6 +10,8 @@ import { ProjectScreenshotLightbox } from "./ProjectScreenshotLightbox";
 type ProjectDetailModalProps = {
   project: Project | null;
   onClose: () => void;
+  /** When true, closing does not restore body scroll / Lenis (e.g. portfolio still open). */
+  leaveScrollLocked?: boolean;
 };
 
 const paneVariants = {
@@ -101,7 +103,11 @@ function ScreenshotGallery({
   );
 }
 
-export function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps) {
+export function ProjectDetailModal({
+  project,
+  onClose,
+  leaveScrollLocked = false,
+}: ProjectDetailModalProps) {
   const reduce = useReducedMotion();
   const titleId = useId();
   const descId = useId();
@@ -118,35 +124,51 @@ export function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps
     setLightboxIndex(null);
   }, [project?.slug]);
 
+  // Focus once when a project opens — never re-run when the lightbox opens,
+  // otherwise Close steals focus and the sheet can scroll/flicker under nested panels.
+  useEffect(() => {
+    if (!project) return;
+    closeRef.current?.focus();
+  }, [project?.slug]);
+
   useEffect(() => {
     if (!project) return;
 
-    closeRef.current?.focus();
     lenisRef.current?.stop();
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+
+    return () => {
+      if (!leaveScrollLocked) {
+        document.body.style.overflow = prevOverflow;
+        lenisRef.current?.start();
+      }
+    };
+  }, [project, lenisRef, leaveScrollLocked]);
+
+  useEffect(() => {
+    if (!project) return;
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && lightboxIndex === null) onClose();
     };
     window.addEventListener("keydown", onKeyDown);
-
-    return () => {
-      window.removeEventListener("keydown", onKeyDown);
-      document.body.style.overflow = prevOverflow;
-      lenisRef.current?.start();
-    };
-  }, [project, onClose, lenisRef, lightboxIndex]);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, [project, onClose, lightboxIndex]);
 
   if (!portalRoot) return null;
+
+  const lightboxOpen = lightboxIndex !== null;
 
   return createPortal(
     <AnimatePresence>
       {project ? (
-        <div className="fixed inset-0 z-[100]" role="presentation">
+        <div className="fixed inset-0 z-[110]" role="presentation">
           <motion.button
             type="button"
-            className="absolute inset-0 bg-surface-0/70 backdrop-blur-sm dark:bg-surface-0/80 md:bg-surface-0/60"
+            className={`absolute inset-0 bg-surface-0/70 dark:bg-surface-0/80 md:bg-surface-0/60 ${
+              lightboxOpen ? "" : "backdrop-blur-sm"
+            }`}
             aria-label="Close project details"
             onClick={onClose}
             initial={reduce ? false : { opacity: 0 }}
@@ -160,8 +182,11 @@ export function ProjectDetailModal({ project, onClose }: ProjectDetailModalProps
             aria-modal="true"
             aria-labelledby={titleId}
             aria-describedby={descId}
+            aria-hidden={lightboxOpen || undefined}
             data-lenis-prevent
-            className="glass-card fixed inset-0 z-[1] flex h-dvh max-h-dvh flex-col overflow-hidden border-border-strong bg-surface-1 shadow-soft md:inset-y-0 md:left-auto md:h-dvh md:w-full md:max-w-[min(64rem,58vw)] md:border-l"
+            className={`fixed inset-0 z-[1] flex h-dvh max-h-dvh flex-col overflow-hidden border-border-strong bg-surface-1 shadow-soft md:inset-y-0 md:left-auto md:h-dvh md:w-full md:max-w-[min(64rem,58vw)] md:border-l ${
+              lightboxOpen ? "" : "glass-card"
+            }`}
             variants={reduce ? undefined : paneVariants}
             initial={reduce ? false : "hidden"}
             animate="show"

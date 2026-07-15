@@ -82,7 +82,7 @@ export function CustomCursor() {
   return (
     <>
       <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[110] mix-blend-difference"
+        className="pointer-events-none fixed left-0 top-0 z-[200] mix-blend-difference"
         style={{ x: sx, y: sy, translateX: "-50%", translateY: "-50%" }}
         animate={{
           scale: ringScale,
@@ -97,7 +97,7 @@ export function CustomCursor() {
       </motion.div>
 
       <motion.div
-        className="pointer-events-none fixed left-0 top-0 z-[111]"
+        className="pointer-events-none fixed left-0 top-0 z-[201]"
         style={{ x: ox, y: oy, translateX: "-50%", translateY: "-50%" }}
         animate={{
           scale: dotScale,

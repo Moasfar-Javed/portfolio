@@ -445,6 +445,162 @@ export const projects: Project[] = [
   },
 ];
 
+/** Extra work shown only in the /portfolio panel — not on the home featured grid. */
+export const moreProjects: Project[] = [
+  {
+    slug: "rezerve",
+    name: "Rezerve",
+    primaryColor: "#1B2A4A",
+    summary:
+      "Marketplace and business suite for booking beauty and lifestyle services with discovery, scheduling, payments and analytics",
+    description:
+      "Part of a team that led end-to-end development of Rezerve from architecture through production, building both the consumer booking experience and the business end mobile app used by shops as well.\n\nImplemented map-based discovery, service checkout with specialists and scheduling, tip and payment flows including card via Stripe, appointment management with status history, and promotional tooling like Rezerve Ads.\n\nIntegrated external services and APIs while shipping the dual customer and merchant surfaces that keep bookings, earnings and client activity in one product.",
+    role: "Flutter developer",
+    outcome:
+      "Shipped Rezerve from architecture to production. Consumer booking, merchant dashboard, payments and promotional tooling",
+    tags: [
+      "Flutter",
+      "Maps",
+      "Payments",
+      "Booking",
+      "Analytics",
+      "Marketplace",
+      "Stripe",
+    ],
+    heroImage: {
+      src: "/assets/projects/rezerve/hero.png",
+      description: "Rezerve service booking and business promotion app",
+    },
+    screenshots: projectScreenshots("rezerve", [
+      {
+        file: "phone1.png",
+        description: "Home with location, search and recommended salons",
+      },
+      {
+        file: "phone2.png",
+        description: "Salon dashboard with appointments, views and earnings",
+      },
+      {
+        file: "phone3.png",
+        description: "Map discovery for services with business preview cards",
+      },
+      {
+        file: "phone4.png",
+        description: "Checkout with services, specialist and date/time",
+      },
+      {
+        file: "phone5.png",
+        description: "Payment sheet with card and BLIK options",
+      },
+      {
+        file: "phone6.png",
+        description: "Appointment details with status and pricing summary",
+      },
+      {
+        file: "phone7.png",
+        description: "Rezerve Ads to promote a business with free trial offer",
+      },
+      {
+        file: "phone8.png",
+        description: "Seller feedback rating form",
+      },
+    ]),
+  },
+  {
+    slug: "prime-car",
+    name: "Primecar",
+    primaryColor: "#FF6A00",
+    summary:
+      "French vehicle rental and sales platform with map search, chauffeur options, booking chat and multi-step seller listings",
+    description:
+      "Maintained and built new features on Primecar as an app for renting vehicles across Abidjan, with map-driven search, rental windows, chauffeur filters and detailed vehicle pages in French.\n\nImplemented listing flows for owners (including multi-step sales options), real-time assistance chat, account and referral tooling, and dual pricing for inside vs outside Abidjan.\n\nCollaborated with design, QA and stakeholders to ship a marketplace that covers both renter discovery and seller listing workflows.",
+    role: "Flutter developer",
+    outcome:
+      "Maintained a production rental and sales marketplace with map search, booking assistance and owner listing flows",
+    tags: ["Flutter", "Maps", "Marketplace", "Chat", "Localization", "Mobile"],
+    heroImage: {
+      src: "/assets/projects/prime-car/hero.png",
+      description: "Primecar vehicle rental and sales app for Abidjan",
+    },
+    screenshots: projectScreenshots("prime-car", [
+      { file: "phone1.png", description: "Splash screen with Primecar mark" },
+      {
+        file: "phone2.png",
+        description: "Map search with rental dates and vehicle type filters",
+      },
+      {
+        file: "phone3.png",
+        description:
+          "Vehicle detail with features, pricing and reserve actions",
+      },
+      {
+        file: "phone4.png",
+        description: "Search results with chauffeur tags and day rates",
+      },
+      {
+        file: "phone5.png",
+        description: "In-app assistance chat with Primecar support",
+      },
+      {
+        file: "phone6.png",
+        description:
+          "Account drawer with owner mode, messages and referral code",
+      },
+      {
+        file: "phone7.png",
+        description: "Multi-step seller listing — sales options form",
+      },
+    ]),
+  },
+  {
+    slug: "smart-farm",
+    name: "Smart Farm",
+    primaryColor: "#1B5E3B",
+    summary:
+      "Smart farming companion for zone health, soil moisture, and smart irrigation controls",
+    description:
+      "Engineered a comprehensive smart farming solution for managing crop zones with live health status, custom hardware connectivity, soil moisture readings and automated irrigation controls.\n\nBuilt zone dashboards with weather context, manual release overrides, irrigation logs that distinguish smart vs manual cycles, and analytics charts for irrigations and sensor readings over time.\n\nIncluded building the custom hardware and software for the sensor devices, pumps, valves and the backend for the zone monitoring and irrigation controls including the machine learning model for water release decisions.",
+    role: "Product Lead",
+    outcome:
+      "Shipped zone monitoring, smart/manual irrigation controls, soil logging and analytics for connected farms",
+    tags: ["Embedded Systems", "IoT", "Sensors", "ML"],
+    heroImage: {
+      src: "/assets/projects/smart-farm/hero.png",
+      description: "Smart Farm zone monitoring and irrigation controls",
+    },
+    screenshots: projectScreenshots("smart-farm", [
+      {
+        file: "phone1.png",
+        description: "Phone verification with OTP entry",
+      },
+      {
+        file: "phone2.png",
+        description: "Home with weather forecast and crop empty state",
+      },
+      {
+        file: "phone3.png",
+        description:
+          "Zone detail with health, hardware status and water control",
+      },
+      {
+        file: "phone4.png",
+        description: "Irrigation logs with smart vs manual releases",
+      },
+      {
+        file: "phone5.png",
+        description: "Manual release duration override",
+      },
+      {
+        file: "phone6.png",
+        description: "Analytics with monthly irrigations and sensor readings",
+      },
+    ]),
+  },
+];
+
+/** Featured home work plus portfolio-only entries. */
+export const portfolioProjects: Project[] = [...projects, ...moreProjects];
+
 export type ExperienceItem = {
   period: string;
   title: string;

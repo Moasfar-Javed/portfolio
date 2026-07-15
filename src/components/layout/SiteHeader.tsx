@@ -16,6 +16,12 @@ import {
   trackNavigationClick,
   trackSectionView,
 } from "../../lib/analytics";
+import {
+  deepLinkIntroDelay,
+  setSuppressPathSync,
+  shouldSuppressPathSync,
+  wait,
+} from "../../lib/deep-link";
 import { easing } from "../../lib/motion";
 import { Container } from "../ui/Container";
 
@@ -39,24 +45,45 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
-  /** Deep-link in: honor an incoming /section path on first load (captured before the path-sync effect can rewrite it). */
+  /** Deep-link in: show the site first, then animated-scroll to the section. */
   useEffect(() => {
+    // Project overlays are owned by ProjectsSection (scroll + open pane).
+    if (new URLSearchParams(window.location.search).has("work")) return;
+
     const id = initialPathRef.current.replace(/^\/+|\/+$/g, "");
     if (!id || id === "hero" || !sectionIds.includes(id)) return;
     const el = document.getElementById(id);
     if (!el) return;
-    requestAnimationFrame(() => {
+
+    let cancelled = false;
+    setSuppressPathSync(true);
+
+    const run = async () => {
+      await wait(deepLinkIntroDelay(Boolean(reduce)));
+      if (cancelled) return;
+      const duration = reduce ? 0 : 1.25;
       const lenis = lenisRef.current;
-      if (lenis) lenis.scrollTo(el, { offset: -76, immediate: true });
-      else el.scrollIntoView({ block: "start" });
-    });
-  }, [lenisRef]);
+      if (lenis) lenis.scrollTo(el, { offset: -76, duration });
+      else el.scrollIntoView({ behavior: reduce ? "auto" : "smooth", block: "start" });
+      await wait(duration * 1000 + 80);
+      if (!cancelled) setSuppressPathSync(false);
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+      setSuppressPathSync(false);
+    };
+  }, [lenisRef, reduce]);
 
   /** Keep the URL path in sync with the section in view, so any scroll position is copy-pasteable. */
   useEffect(() => {
     if (!activeId) return;
-    // While a project is open it owns the URL (/projects?work=…); don't fight it.
+    if (shouldSuppressPathSync()) return;
+    // While a project detail or portfolio panel owns the URL, don't fight it.
     if (new URLSearchParams(window.location.search).has("work")) return;
+    const pathname = window.location.pathname.replace(/\/+$/, "") || "/";
+    if (pathname === "/portfolio") return;
     const path = activeId === sectionIds[0] ? "/" : `/${activeId}`;
     const next = `${path}${window.location.search}`;
     const current = `${window.location.pathname}${window.location.search}`;
